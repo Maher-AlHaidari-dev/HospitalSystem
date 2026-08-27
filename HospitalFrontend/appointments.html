@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="appointmentsTitle">إدارة المواعيد - MediCore HMS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex text-sm">
+
+    <!-- الشريط الجانبي -->
+    <aside class="w-64 bg-[#091E25] text-slate-300 flex flex-col justify-between shrink-0 min-h-screen">
+        <div>
+            <div class="p-5 flex items-center gap-3 border-b border-slate-800/60">
+                <div class="w-8 h-8 bg-[#00A896] rounded-lg flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <span class="text-lg font-bold text-white tracking-wide">MediCore HMS</span>
+            </div>
+            <nav class="p-3 space-y-1">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-chart-pie w-5"></i>
+                    <span data-i18n="navDashboard">لوحة التحكم</span>
+                </a>
+                <a href="patients.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-user-group w-5"></i>
+                    <span data-i18n="navPatients">إدارة المرضى</span>
+                </a>
+                <a href="appointments.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00A896] text-white font-semibold shadow-lg shadow-[#00A896]/20">
+                    <i class="fa-regular fa-calendar-check w-5"></i>
+                    <span data-i18n="navAppointments">المواعيد</span>
+                </a>
+                    <a href="medical-records.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-file-medical w-5"></i>
+                    <span data-i18n="navMedicalRecords">السجلات الطبية</span>
+                </a>
+                <a href="invoices.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-receipt w-5"></i>
+                    <span data-i18n="navInvoices">الفواتير</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+                    <i class="fa-solid fa-chart-line w-5"></i>
+                    <span data-i18n="navReports">التقارير</span>
+                </a>
+                <a href="settings.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-gear w-6 text-slate-400"></i>
+                        <span data-i18n="navSettings">الإعدادات</span> 
+                 </a>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800/60 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-[#00A896]/20 border border-[#00A896]/40 text-[#00A896] flex items-center justify-center font-bold">م</div>
+                <div>
+                    <h4 class="text-xs font-bold text-white">ماهر الحيدري</h4>
+                    <p class="text-[10px] text-slate-400" data-i18n="adminRole">إدارة النظام</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <header class="bg-white border-b border-slate-200/80 px-8 py-3.5 flex items-center justify-between gap-4">
+            <!-- شريط البحث الهيدر -->
+            <div class="relative w-96 flex items-center">
+                <input type="text" id="globalSearchInput" placeholder="البحث عن مريض، موعد، أو طبيب..." data-i18n-placeholder="searchPlaceholder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/30 focus:border-[#00A896] transition">
+                <i class="fa-solid fa-magnifying-glass absolute ltr:right-3.5 rtl:right-3.5 text-slate-400 text-xs pointer-events-none"></i>
+            </div>
+
+            <!-- زر تغيير اللغة -->
+            <button id="langToggleBtn" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                <i class="fa-solid fa-globe text-[#00A896]"></i>
+                <span id="currentLangLabel">English</span>
+            </button>
+        </header>
+
+        <main class="p-8 space-y-6 overflow-y-auto">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900" data-i18n="appointmentsHeader">المواعيد والحجوزات</h1>
+                <p class="text-xs text-slate-500 mt-1" data-i18n="appointmentsSubHeader">جدولة، بحث، وإدارة مواعيد العيادات الخارجية والعمليات بشكل لحظي.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- جدول المواعيد -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                    <div class="relative max-w-md flex items-center">
+                        <input type="text" id="tableSearchInput" placeholder="تصفية المواعيد حسب الاسم، القسم..." data-i18n-placeholder="filterPlaceholder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                        <i class="fa-solid fa-magnifying-glass absolute ltr:right-3.5 rtl:right-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full ltr:text-left rtl:text-right border-collapse">
+                            <thead>
+                                <tr class="text-[11px] font-bold text-slate-400 border-b border-slate-100">
+                                    <th class="pb-3 px-3">#</th>
+                                    <th class="pb-3 px-3" data-i18n="thPatient">المريض</th>
+                                    <th class="pb-3 px-3" data-i18n="thDoctor">الطبيب</th>
+                                    <th class="pb-3 px-3" data-i18n="thDepartment">القسم</th>
+                                    <th class="pb-3 px-3" data-i18n="thAppointmentDate">الموعد</th>
+                                    <th class="pb-3 px-3" data-i18n="thStatus">الحالة</th>
+                                    <th class="pb-3 px-3 text-center" data-i18n="thActions">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTableBody" class="text-xs divide-y divide-slate-100">
+                                <!-- يتم تحميل المواعيد هنا برمجياً -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- نموذج حجز موعد جديد -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm h-fit space-y-4">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-regular fa-calendar-plus text-[#00A896]"></i>
+                        <span data-i18n="newAppointmentTitle">حجز موعد جديد</span>
+                    </h3>
+
+                    <form id="appointmentForm" class="space-y-4">
+                        <div>
+                            <label for="patientName" class="block text-xs font-bold text-slate-700 mb-1" data-i18n="lblPatientName">اسم المريض</label>
+                            <input type="text" id="patientName" required placeholder="سعد" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                        </div>
+
+                        <div>
+                            <label for="doctorName" class="block text-xs font-bold text-slate-700 mb-1" data-i18n="lblDoctorName">الطبيب المعالج</label>
+                            <input type="text" id="doctorName" required placeholder="أحمد المقطري" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                        </div>
+
+                        <div>
+                            <label for="department" class="block text-xs font-bold text-slate-700 mb-1" data-i18n="lblDepartment">القسم / العيادة</label>
+                            <select id="department" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                                <option value="العيادة الباطنية" data-i18n="deptInternal">العيادة الباطنية</option>
+                                <option value="عيادة العظام" data-i18n="deptOrtho">عيادة العظام</option>
+                                <option value="عيادة الأطفال" data-i18n="deptPediatrics">عيادة الأطفال</option>
+                                <option value="عيادة الأسنان" data-i18n="deptDental">عيادة الأسنان</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="appointmentDate" class="block text-xs font-bold text-slate-700 mb-1" data-i18n="lblAppointmentDate">تاريخ ووقت الموعد</label>
+                            <input type="datetime-local" id="appointmentDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                        </div>
+
+                        <div>
+                            <label for="notes" class="block text-xs font-bold text-slate-700 mb-1" data-i18n="lblNotes">ملاحظات إضافية</label>
+                            <textarea id="notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#00A896] hover:bg-[#008f80] text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span data-i18n="btnSubmitAppointment">تأكيد وحفظ الموعد</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/appointments.js"></script>
+</body>
+</html>
