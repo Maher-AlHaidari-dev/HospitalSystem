@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pJE2Gt9Rphc=",
+  "dgSpecHash": "Us78iIPZ5TY=",
   "success": true,
   "projectFilePath": "D:\\Maher Projects\\HospitalSystem\\hospitalbackend\\HospitalBackend.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,8 @@
     "C:\\Users\\QMA\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\QMA\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\QMA\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
+    "C:\\Users\\QMA\\.nuget\\packages\\mysqlconnector\\2.4.0\\mysqlconnector.2.4.0.nupkg.sha512",
+    "C:\\Users\\QMA\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\9.0.0\\pomelo.entityframeworkcore.mysql.9.0.0.nupkg.sha512",
     "C:\\Users\\QMA\\.nuget\\packages\\swashbuckle.aspnetcore\\7.0.0\\swashbuckle.aspnetcore.7.0.0.nupkg.sha512",
     "C:\\Users\\QMA\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\7.0.0\\swashbuckle.aspnetcore.swagger.7.0.0.nupkg.sha512",
     "C:\\Users\\QMA\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\7.0.0\\swashbuckle.aspnetcore.swaggergen.7.0.0.nupkg.sha512",

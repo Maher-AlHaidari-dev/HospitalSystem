@@ -14,13 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات لتقرأ الرابط بسلاسة من إعدادات المشروع أو متغيرات البيئة في السحابة
+// 2. إعداد قاعدة البيانات مع وضع رابط الـ MySQL الخاص بك مباشرة لضمان الاتصال الفوري
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-                       ?? Environment.GetEnvironmentVariable("DATABASE_URL") 
-                       ?? builder.Configuration["DATABASE_URL"];
+                       ?? Environment.GetEnvironmentVariable("MYSQL_URL") 
+                       ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+                       ?? "mysql://root:AvzfxCZVwOddXuPNPOQwufZBcATrvtXg@mysql.railway.internal:3306/railway";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString),
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)),
     ServiceLifetime.Scoped);
 
 // 3. إعداد مصادقة JWT الآمنة
