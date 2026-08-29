@@ -1,3 +1,6 @@
+[phases.setup]
+nixPkgs = ["dotnet-sdk_9"]
+
 [phases.build]
 cmds = [
   "dotnet restore",
