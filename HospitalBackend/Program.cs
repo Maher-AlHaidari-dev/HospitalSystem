@@ -14,9 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات مع تحسين إدارة الاتصالات لتتحمل الضغط والطلبات العالية
+// 2. إعداد قاعدة البيانات لتقرأ الرابط بسلاسة من إعدادات المشروع أو متغيرات البيئة في السحابة
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? Environment.GetEnvironmentVariable("DATABASE_URL") 
+                       ?? builder.Configuration["DATABASE_URL"];
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    options.UseSqlServer(connectionString),
     ServiceLifetime.Scoped);
 
 // 3. إعداد مصادقة JWT الآمنة
@@ -42,7 +46,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 4. إعداد سياسة CORS لتسمح لجميع المصادر (تتجاوز مشاكل Vercel بشكل جذري)
+// 4. إعداد سياسة CORS لتسمح لجميع المصادر
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
