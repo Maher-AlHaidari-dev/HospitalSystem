@@ -6,6 +6,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// إجبار السيرفر على الاستماع للبورت 8080 المطلوب من منصة Railway
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 // 1. إضافة خدمات الـ Controllers والـ API Explorer
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -63,12 +66,11 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 6. تفعيل واجهة Swagger (تمت إتاحتها حتى في الإنتاج لتسهيل فحص الـ Endpoints إذا رغبت)
+// 6. تفعيل واجهة Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
 // 7. تفعيل البرمجيات الوسيطة (Middlewares) بالترتيب الهندسي الصحيح
-// ملاحظة هامة: يجب أن يكون UseCors في المقدمة وقبل الـ Routing والمصادقة لكي تستقبل طلبات الـ Preflight (OPTIONS) وتعالجها بنجاح
 app.UseCors("AllowAll");
 
 app.UseRouting();
