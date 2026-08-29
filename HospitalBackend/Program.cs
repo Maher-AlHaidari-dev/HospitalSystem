@@ -39,10 +39,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 4. إعداد سياسة CORS
+// 4. إعداد سياسة CORS لتسمح لجميع المصادر (تتجاوز مشاكل Vercel بشكل جذري)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 5. معالجة الأخطاء العالمية (Global Exception Handling) لمنع تسريب بيانات النظام عند حدوث أي استثناء
+// 5. معالجة الأخطاء العالمية (Global Exception Handling)
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -63,15 +63,13 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 6. تفعيل واجهة Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// 6. تفعيل واجهة Swagger (تمت إتاحتها حتى في الإنتاج لتسهيل فحص الـ Endpoints إذا رغبت)
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // 7. تفعيل البرمجيات الوسيطة (Middlewares) بالترتيب الهندسي الصحيح
-app.UseCors("AllowFrontend");
+// ملاحظة هامة: يجب أن يكون UseCors في المقدمة وقبل الـ Routing والمصادقة لكي تستقبل طلبات الـ Preflight (OPTIONS) وتعالجها بنجاح
+app.UseCors("AllowAll");
 
 app.UseRouting();
 
