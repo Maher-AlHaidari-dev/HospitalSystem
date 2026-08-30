@@ -14,25 +14,47 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات بقراءة متغير MYSQL_URL المباشر الذي ربطناه في Railway
-var connectionString = Environment.GetEnvironmentVariable("MYSQL_URL") 
-                       ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+// 2. إعداد قاعدة البيانات بذكاء لتدعم متغيرات Railway بجميع صيغها تلقائياً
+string connectionString = "";
 
-if (string.IsNullOrEmpty(connectionString))
+var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+if (!string.IsNullOrEmpty(host))
 {
-    var host = Environment.GetEnvironmentVariable("MYSQLHOST");
-    if (!string.IsNullOrEmpty(host))
+    // الطريقة الأولى والأسرع: الاعتماد على المتغيرات الفردية التي توفرها Railway عند الربط
+    var port = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
+    var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
+    var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
+    var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+    
+    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+}
+else
+{
+    // الطريقة الثانية: معالجة رابط MYSQL_URL أو DATABASE_URL وتحويله للصيغة القياسية
+    var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+    
+    if (!string.IsNullOrEmpty(rawUrl) && rawUrl.StartsWith("mysql://"))
     {
-        var port = Environment.GetEnvironmentVariable("MYSQLPORT");
-        var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
-        var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
-        var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
-        
-        connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+        try
+        {
+            var uri = new Uri(rawUrl);
+            var userInfo = uri.UserInfo.Split(':');
+            var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "root";
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+            var database = uri.AbsolutePath.TrimStart('/');
+            var port = uri.Port > 0 ? uri.Port : 3306;
+            
+            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+        }
+        catch
+        {
+            connectionString = rawUrl;
+        }
     }
     else
     {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        // الطريقة الثالثة: التشغيل المحلي من appsettings.json
+        connectionString = rawUrl ?? builder.Configuration.GetConnectionString("DefaultConnection");
     }
 }
 
