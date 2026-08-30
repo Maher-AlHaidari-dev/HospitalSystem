@@ -55,7 +55,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 }, ServiceLifetime.Scoped);
 
-// [حماية أمنية 1]: فرض وجود مفتاح JWT سري من متغيرات البيئة حصراً
+// [حماية أمنية 1]: فرض وجود مفتاح JWT سري من متغيرات البيئة
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
 {
@@ -82,13 +82,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// [حماية أمنية 2]: تقييد الـ CORS فقط لرابط موقعك على Vercel
-var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "https://your-frontend-domain.vercel.app";
+// [حماية أمنية 2]: الـ CORS مرتبط برابطك الحقيقي على Vercel والمنافذ المحلية
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "https://hospital-system-ovqjgj89x-tiki-taka2.vercel.app";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("StrictCorsPolicy", policy =>
     {
-        policy.WithOrigins(frontendUrl)
+        policy.WithOrigins(frontendUrl, "http://localhost:3000", "http://127.0.0.1:5500", "http://localhost:5500")
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -103,7 +103,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-// [حماية أمنية 3]: معالجة مركزية وآمنة للأخطاء دون تسريب تفاصيل النظام
+// [حماية أمنية 3]: معالجة مركزية وآمنة للأخطاء
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
