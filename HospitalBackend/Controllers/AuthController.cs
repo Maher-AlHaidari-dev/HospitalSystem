@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 
@@ -31,25 +32,33 @@ namespace HospitalBackend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // التحقق هل البريد مسجل مسبقاً
-            var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
-            if (emailExists)
-                return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل" });
-
-            var user = new User
+            try
             {
-                FullName = dto.FullName,
-                Email = dto.Email,
-                PasswordHash = HashPassword(dto.Password),
-                Role = string.IsNullOrEmpty(dto.Role) ? "Doctor" : dto.Role,
-                AppointmentReminders = true,
-                CreatedAt = DateTime.UtcNow
-            };
+                // التحقق هل البريد مسجل مسبقاً
+                var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
+                if (emailExists)
+                    return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل" });
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                var user = new User
+                {
+                    FullName = dto.FullName,
+                    Email = dto.Email,
+                    PasswordHash = HashPassword(dto.Password),
+                    Role = string.IsNullOrEmpty(dto.Role) ? "Doctor" : dto.Role,
+                    AppointmentReminders = true,
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            return Ok(new { message = "تم إنشاء الحساب بنجاح" });
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "تم إنشاء الحساب بنجاح" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Register Error] {ex.Message}");
+                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء إنشاء الحساب، يرجى المحاولة لاحقاً." });
+            }
         }
 
         // 2. POST: api/auth/login
@@ -60,24 +69,37 @@ namespace HospitalBackend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null || !VerifyPassword(dto.Password, user.PasswordHash))
-                return Unauthorized(new { message = "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
-
-            var token = GenerateJwtToken(user);
-
-            return Ok(new
+            try
             {
-                token,
-                user = new
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                
+                // التحقق من وجود المستخدم وصحة كلمة المرور بأمان تام لمنع الـ NullReferenceException
+                if (user == null || !VerifyPassword(dto.Password, user.PasswordHash))
                 {
-                    user.Id,
-                    user.FullName,
-                    user.Email,
-                    user.Role,
-                    user.AppointmentReminders
+                    return Unauthorized(new { message = "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
                 }
-            });
+
+                var token = GenerateJwtToken(user);
+
+                return Ok(new
+                {
+                    token,
+                    user = new
+                    {
+                        user.Id,
+                        user.FullName,
+                        user.Email,
+                        user.Role,
+                        user.AppointmentReminders
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // تسجيل الخطأ الحقيقي في الـ Console الخاص بـ Railway للتشخيص الفوري
+                Console.WriteLine($"[Login Error] {ex.Message} - {ex.StackTrace}");
+                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء تسجيل الدخول، يرجى المحاولة لاحقاً." });
+            }
         }
 
         // --- دوال مساعدة للتشفير وتوليد التوكن ---
@@ -122,18 +144,30 @@ namespace HospitalBackend.Controllers
         }
     }
 
-    // الـ DTOs الخاصة باستقبال البيانات
+    // الـ DTOs الخاصة باستقبال البيانات مع إضافة شروط التحقق (Data Annotations)
     public class RegisterDto
     {
+        [Required(ErrorMessage = "الاسم الكامل مطلوب")]
         public string FullName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "البريد الإلكتروني مطلوب")]
+        [EmailAddress(ErrorMessage = "صيغة البريد الإلكتروني غير صحيحة")]
         public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "كلمة المرور مطلوبة")]
+        [MinLength(6, ErrorMessage = "يجب ألا تقل كلمة المرور عن 6 أحرف")]
         public string Password { get; set; } = string.Empty;
+
         public string Role { get; set; } = "Doctor";
     }
 
     public class LoginDto
     {
-        public string Email { get; set; } = string.Empty;
+        [Required(ErrorMessage = "البريد الإلكتروني مطلوب")]
+        [EmailAddress(ErrorMessage = "صيغة البريد الإلكتروني غير صحيحة")]
+        public string Email { get: set; } = string.Empty;
+
+        [Required(ErrorMessage = "كلمة المرور مطلوبة")]
         public string Password { get; set; } = string.Empty;
     }
 }
