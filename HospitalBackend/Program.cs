@@ -42,7 +42,7 @@ builder.Services.AddRateLimiter(options =>
     };
 });
 
-// إعداد قاعدة البيانات لـ MySQL
+// إعداد قاعدة البيانات لـ MySQL على Railway
 string connectionString = "";
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
 var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
@@ -111,7 +111,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// [حماية أمنية 2]: قبول أي رابط ينتهي بـ vercel.app تلقائياً لتجنب مشاكل الهاش المتغير
+// [حماية أمنية 2]: قبول أي رابط ينتهي بـ vercel.app تلقائياً لتجنب مشاكل الهاش المتغير للرابط
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("StrictCorsPolicy", policy =>
@@ -120,9 +120,7 @@ builder.Services.AddCors(options =>
               {
                   if (string.IsNullOrEmpty(origin)) return false;
                   var uri = new Uri(origin);
-                  return uri.Host.EndsWith("vercel.app") || 
-                         uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase) || 
-                         uri.Host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                  return uri.Host.EndsWith("vercel.app", StringComparison.OrdinalIgnoreCase);
               })
               .AllowAnyMethod()
               .AllowAnyHeader();
@@ -134,7 +132,7 @@ var app = builder.Build();
 // تفعيل ضغط البيانات عند الخروج
 app.UseResponseCompression();
 
-// تشغيل الـ Migrations تلقائياً عند الإقلاع
+// تشغيل الـ Migrations تلقائياً عند الإقلاع على السيرفر
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -155,12 +153,12 @@ app.UseExceptionHandler(errorApp =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("StrictCorsPolicy");
+// ⚠️ الترتيب الصحيح والحاسم لمنع فشل طلبات الـ CORS على السحابة
 app.UseRouting();
+app.UseCors("StrictCorsPolicy");
 
-// تفعيل نظام تقييد الطلبات
+// تفعيل نظام تقييد الطلبات والمصادقة
 app.UseRateLimiter();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
