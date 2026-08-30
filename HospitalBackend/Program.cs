@@ -145,7 +145,7 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 6. تفعيل واجهة Swagger
+// 6. تفعيل واجهة Swagger (توضع قبل المصادقة لكي تفتح للعامة دون قيود توكن)
 app.UseSwagger();
 app.UseSwaggerUI();
 
