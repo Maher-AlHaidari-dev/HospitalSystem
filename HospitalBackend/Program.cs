@@ -107,21 +107,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// إنشاء الجداول تلقائياً وآمنة 100% عبر EnsureCreated
+// إنشاء الجداول تلقائياً (بدون إخفاء الأخطاء لضمان معرفة السبب فورا في الـ Logs إن حدثت مشكلة)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
-    {
-        var dbContext = services.GetRequiredService<ApplicationDbContext>();
-        // التأكد من إنشاء القاعدة والجداول المتوافقة مع MySQL فوراً
-        dbContext.Database.EnsureCreated();
-        Console.WriteLine("[Railway Diagnostic] Database tables ensured/created successfully.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[Railway Diagnostic Critical] EnsureCreated failed: {ex.Message}");
-    }
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+    Console.WriteLine("[Railway Diagnostic] Database tables ensured/created successfully.");
 }
 
 app.UseExceptionHandler(errorApp =>
