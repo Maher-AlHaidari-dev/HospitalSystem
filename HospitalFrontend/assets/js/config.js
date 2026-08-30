@@ -93,7 +93,7 @@ const CONFIG = {
             modalNewRecordTitle: "إضافة سجل طبي جديد",
             btnSaveRecord: "حفظ السجل",
 
-            // صفحة الإعدادات (مضافة حديثاً)
+            // صفحة الإعدادات
             settingsTitle: "الإعدادات - MediCore HMS",
             settingsHeader: "الإعدادات",
             settingsSubHeader: "إدارة الملف الشخصي، التنبيهات، وتفضيلات بيئة العمل.",
@@ -107,7 +107,7 @@ const CONFIG = {
             subAppointmentReminders: "إرسال تذكيرات عبر البريد الإلكتروني و SMS للمرضى.",
             msgSaveSuccess: "تم حفظ التغييرات بنجاح!",
 
-            // صفحات الحسابات والأمان (مضافة حديثاً)
+            // صفحات الحسابات والأمان
             loginTitle: "تسجيل الدخول - MediCore HMS",
             registerTitle: "إنشاء حساب - MediCore HMS",
             authWelcomeBack: "مرحباً بعودتك",
@@ -221,7 +221,7 @@ const CONFIG = {
             modalNewRecordTitle: "Add New Medical Record",
             btnSaveRecord: "Save Record",
 
-            // Settings Page (Newly Added)
+            // Settings Page
             settingsTitle: "Settings - MediCore HMS",
             settingsHeader: "Settings",
             settingsSubHeader: "Manage your profile, notifications, and workspace preferences.",
@@ -235,7 +235,7 @@ const CONFIG = {
             subAppointmentReminders: "Send Email + SMS reminders to patients.",
             msgSaveSuccess: "Changes saved successfully!",
 
-            // Authentication Pages (Newly Added)
+            // Authentication Pages
             loginTitle: "Login - MediCore HMS",
             registerTitle: "Register - MediCore HMS",
             authWelcomeBack: "Welcome back",
@@ -307,7 +307,12 @@ const CONFIG = {
 
     // ميثود الاتصال بالـ API مع تزويد التوكن التلقائي للطلبات المحمية
     async request(endpoint, options = {}) {
-        const token = localStorage.getItem('auth_token');
+        // البحث عن التوكن بأي اسم محتمل في الـ LocalStorage
+        const token = localStorage.getItem('auth_token') || 
+                      localStorage.getItem('token') || 
+                      localStorage.getItem('authToken') || 
+                      localStorage.getItem('jwt');
+
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -319,7 +324,9 @@ const CONFIG = {
         
         if (!response.ok) {
             const err = await response.json().catch(() => ({}));
-            throw new Error(err.title || err.message || 'حدث خطأ في النظام');
+            const errorObj = new Error(err.title || err.message || 'حدث خطأ في النظام');
+            errorObj.status = response.status; // تمرير كود الخطأ ليتم فحصه في الواجهة
+            throw errorObj;
         }
 
         return response.status !== 204 ? await response.json() : null;
