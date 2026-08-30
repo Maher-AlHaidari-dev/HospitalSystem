@@ -14,26 +14,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات بقراءة متغيرات Railway البيئية تلقائياً وبأمان تام
-var host = Environment.GetEnvironmentVariable("MYSQLHOST");
-var port = Environment.GetEnvironmentVariable("MYSQLPORT");
-var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
-var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
-var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
-
-string connectionString;
-
-if (!string.IsNullOrEmpty(host))
-{
-    // إذا كان التطبيق يعمل على Railway، سيتم تكوين رابط الاتصال تلقائياً من متغيرات المنصة
-    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
-}
-else
-{
-    // إذا كنت تعمل محلياً على جهازك، سيتم القراءة من ملف appsettings.json
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-                       ?? Environment.GetEnvironmentVariable("MYSQL_URL") 
+// 2. إعداد قاعدة البيانات بقراءة متغير MYSQL_URL المباشر الذي ربطناه في Railway
+var connectionString = Environment.GetEnvironmentVariable("MYSQL_URL") 
                        ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+    if (!string.IsNullOrEmpty(host))
+    {
+        var port = Environment.GetEnvironmentVariable("MYSQLPORT");
+        var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
+        var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
+        var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+        
+        connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
