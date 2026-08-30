@@ -107,13 +107,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// إنشاء الجداول تلقائياً (بدون إخفاء الأخطاء لضمان معرفة السبب فورا في الـ Logs إن حدثت مشكلة)
+// تطبيق الـ Migrations تلقائياً عند إقلاع الخادم لبناء الجداول في MySQL
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated();
-    Console.WriteLine("[Railway Diagnostic] Database tables ensured/created successfully.");
+    dbContext.Database.Migrate();
+    Console.WriteLine("[Railway Diagnostic] Database migrations applied and tables created successfully.");
 }
 
 app.UseExceptionHandler(errorApp =>

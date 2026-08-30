@@ -153,3 +153,5 @@ D:\Maher Projects\HospitalSystem\hospitalbackend\obj\Debug\net9.0\HospitalBacken
 D:\Maher Projects\HospitalSystem\hospitalbackend\obj\Debug\net9.0\HospitalBackend.genruntimeconfig.cache
 D:\Maher Projects\HospitalSystem\hospitalbackend\obj\Debug\net9.0\ref\HospitalBackend.dll
 D:\Maher Projects\HospitalSystem\hospitalbackend\obj\Debug\net9.0\HospitalBackend.sourcelink.json
+D:\Maher Projects\HospitalSystem\hospitalbackend\bin\Debug\net9.0\MySqlConnector.dll
+D:\Maher Projects\HospitalSystem\hospitalbackend\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
