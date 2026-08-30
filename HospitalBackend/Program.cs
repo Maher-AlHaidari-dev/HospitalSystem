@@ -36,9 +36,9 @@ builder.Services.AddRateLimiter(options =>
 
     options.OnRejected = async (context, cancellationToken) =>
     {
-        context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"message\":\"تم تجاوز الحد المسموح من الطلبات، يرجى المهلة قليلاً.\"}");
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync("{\"message\":\"تم تجاوز الحد المسموح من الطلبات، يرجى المهلة قليلاً.\"}");
     };
 });
 
