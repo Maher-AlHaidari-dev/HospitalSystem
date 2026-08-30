@@ -118,11 +118,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// تطبيق الـ Migrations وإنشاء الجداول تلقائياً في قاعدة البيانات عند بدء التشغيل
+// تطبيق الـ Migrations بشكل آمن تماماً (Try-Catch) لمنع انهيار الخادم
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
+        Console.WriteLine("[Railway Diagnostic] Database migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Railway Diagnostic Warning] Migration could not be applied immediately: {ex.Message}");
+    }
 }
 
 // 5. معالجة الأخطاء العالمية (Global Exception Handling)
