@@ -8,6 +8,12 @@ const CONFIG = {
         ar: {
             // الملاحة العامة والصفحات
             appointmentsTitle: "إدارة المواعيد - MediCore HMS",
+            patientsTitle: "إدارة المرضى - MediCore HMS",
+            invoicesTitle: "الفواتير والمدفوعات - MediCore HMS",
+            medicalRecordsTitle: "السجلات الطبية - MediCore HMS",
+            dashboardTitle: "لوحة التحكم - MediCore HMS",
+            settingsTitle: "الإعدادات - MediCore HMS",
+            
             navDashboard: "لوحة التحكم",
             navPatients: "إدارة المرضى",
             navAppointments: "المواعيد",
@@ -17,8 +23,25 @@ const CONFIG = {
             navMedicalRecords: "السجلات الطبية",
             adminRole: "إدارة النظام",
             searchPlaceholder: "البحث عن مريض، موعد، أو طبيب...",
-            filterPlaceholder: "تصفية المواعيد حسب الاسم، القسم...",
+            filterPlaceholder: "تصفية العناصر حسب الاسم، القسم...",
             
+            // صفحة المرضى (Patients)
+            patientsHeader: "إدارة المرضى",
+            patientsSubHeader: "تسجيل، بحث، ومتابعة الملفات الشخصية والتاريخ الطبي للمرضى.",
+            btnNewPatient: "مريض جديد",
+            thPatientName: "اسم المريض",
+            thPhone: "رقم الهاتف",
+            thAge: "العمر",
+            thGender: "الجنس",
+            thBloodGroup: "فصيلة الدم",
+            loadingPatients: "جاري تحميل بيانات المرضى...",
+            errorFetchPatients: "فشل جلب بيانات المرضى من السيرفر",
+            noPatientsFound: "لا توجد ملفات مرضى مسجلة حالياً",
+            modalNewPatientTitle: "تسجيل مريض جديد",
+            btnSavePatient: "حفظ بيانات المريض",
+            genderMale: "ذكر",
+            genderFemale: "أنثى",
+
             // صفحة المواعيد
             appointmentsHeader: "المواعيد والحجوزات",
             appointmentsSubHeader: "جدولة، بحث، وإدارة مواعيد العيادات الخارجية والعمليات بشكل لحظي.",
@@ -48,7 +71,6 @@ const CONFIG = {
             statusPending: "قيد الانتظار",
 
             // صفحة لوحة التحكم
-            dashboardTitle: "لوحة التحكم - MediCore HMS",
             welcomeBack: "مرحباً بعودتك",
             greetingAdmin: "مساء الخير، المدير.",
             greetingSub: "إليك نظرة عامة على ما يحدث في المستشفى اليوم.",
@@ -63,7 +85,6 @@ const CONFIG = {
             chartDeptSub: "التوزيع عبر التخصصات",
 
             // صفحة الفواتير والمدفوعات
-            invoicesTitle: "الفواتير والمدفوعات - MediCore HMS",
             invoicesHeader: "الفواتير والمدفوعات",
             invoicesSubHeader: "إنشاء الفواتير، تطبيق الضرائب والخصومات، ومتابعة المدفوعات.",
             btnNewInvoice: "فاتورة جديدة",
@@ -80,7 +101,6 @@ const CONFIG = {
             noInvoicesFound: "لا توجد فواتير مسجلة حالياً",
 
             // صفحة السجلات الطبية
-            medicalRecordsTitle: "السجلات الطبية - MediCore HMS",
             recordsHeader: "السجلات الطبية",
             recordsSubHeader: "سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.",
             btnNewRecord: "سجل جديد",
@@ -94,7 +114,6 @@ const CONFIG = {
             btnSaveRecord: "حفظ السجل",
 
             // صفحة الإعدادات
-            settingsTitle: "الإعدادات - MediCore HMS",
             settingsHeader: "الإعدادات",
             settingsSubHeader: "إدارة الملف الشخصي، التنبيهات، وتفضيلات بيئة العمل.",
             sectionProfile: "الملف الشخصي",
@@ -128,7 +147,7 @@ const CONFIG = {
             linkRegister: "إنشاء حساب جديد",
             linkLogin: "تسجيل الدخول",
             errPasswordMismatch: "كلمتا المرور غير متطابقتين",
-            errWeakPassword: "كلمة المرور يجب أن تحتوى على 8 خانات على الأقل وتتضمن حرفاً كبيراً ورشماً ورمزاً",
+            errWeakPassword: "كلمة المرور يجب أن تحتوى على 8 خانات على الأقل وتتضمن حرفاً كبيراً ورقماً ورمزاً", // تم تصحيح كلمة ورشم إلى رقم
             msgLoginSuccess: "تم تسجيل الدخول بنجاح!",
             msgRegisterSuccess: "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن."
         },
@@ -136,6 +155,12 @@ const CONFIG = {
         en: {
             // Navigation & General
             appointmentsTitle: "Appointments - MediCore HMS",
+            patientsTitle: "Patients - MediCore HMS",
+            invoicesTitle: "Billing & Payments - MediCore HMS",
+            medicalRecordsTitle: "Medical Records - MediCore HMS",
+            dashboardTitle: "Dashboard - MediCore HMS",
+            settingsTitle: "Settings - MediCore HMS",
+
             navDashboard: "Dashboard",
             navPatients: "Patients",
             navAppointments: "Appointments",
@@ -145,8 +170,25 @@ const CONFIG = {
             navMedicalRecords: "Medical Records",
             adminRole: "System Admin",
             searchPlaceholder: "Search patient, appointment, or doctor...",
-            filterPlaceholder: "Filter appointments by name, department...",
+            filterPlaceholder: "Filter items by name, department...",
             
+            // Patients Page
+            patientsHeader: "Patient Management",
+            patientsSubHeader: "Register, search, and manage patient profiles and medical history.",
+            btnNewPatient: "New Patient",
+            thPatientName: "Patient Name",
+            thPhone: "Phone Number",
+            thAge: "Age",
+            thGender: "Gender",
+            thBloodGroup: "Blood Group",
+            loadingPatients: "Loading patients...",
+            errorFetchPatients: "Failed to fetch patients from server",
+            noPatientsFound: "No patient records found",
+            modalNewPatientTitle: "Register New Patient",
+            btnSavePatient: "Save Patient",
+            genderMale: "Male",
+            genderFemale: "Female",
+
             // Appointments Page
             appointmentsHeader: "Appointments & Bookings",
             appointmentsSubHeader: "Real-time scheduling, search, and management for clinics and operations.",
@@ -176,7 +218,6 @@ const CONFIG = {
             statusPending: "Pending",
 
             // Dashboard Page
-            dashboardTitle: "Dashboard - MediCore HMS",
             welcomeBack: "Welcome back",
             greetingAdmin: "Good evening, Admin.",
             greetingSub: "Here is what is happening across the hospital today.",
@@ -191,7 +232,6 @@ const CONFIG = {
             chartDeptSub: "Distribution across specialties",
 
             // Billing & Invoices Page
-            invoicesTitle: "Billing & Payments - MediCore HMS",
             invoicesHeader: "Billing & Payments",
             invoicesSubHeader: "Generate invoices, apply taxes and discounts, and track payments.",
             btnNewInvoice: "New invoice",
@@ -208,7 +248,6 @@ const CONFIG = {
             noInvoicesFound: "No invoices recorded yet",
 
             // Medical Records Page
-            medicalRecordsTitle: "Medical Records - MediCore HMS",
             recordsHeader: "Medical Records",
             recordsSubHeader: "Centralized, versioned patient records with role-based access and full audit.",
             btnNewRecord: "New record",
@@ -222,7 +261,6 @@ const CONFIG = {
             btnSaveRecord: "Save Record",
 
             // Settings Page
-            settingsTitle: "Settings - MediCore HMS",
             settingsHeader: "Settings",
             settingsSubHeader: "Manage your profile, notifications, and workspace preferences.",
             sectionProfile: "Profile",
@@ -305,13 +343,12 @@ const CONFIG = {
         return element;
     },
 
-    // ميثود الاتصال بالـ API مع تزويد التوكن التلقائي للطلبات المحمية
+    // ميثود الاتصال بالـ API مع تزويد التوكن التلقائي للطلبات المحمية وضبط المسارات بأمان
     async request(endpoint, options = {}) {
-        // البحث عن التوكن بأي اسم محتمل في الـ LocalStorage
         const token = localStorage.getItem('auth_token') || 
-                      localStorage.getItem('token') || 
-                      localStorage.getItem('authToken') || 
-                      localStorage.getItem('jwt');
+                    localStorage.getItem('token') || 
+                    localStorage.getItem('authToken') || 
+                    localStorage.getItem('jwt');
 
         const headers = {
             'Content-Type': 'application/json',
@@ -320,12 +357,17 @@ const CONFIG = {
             ...options.headers
         };
 
-        const response = await fetch(`${this.API_BASE_URL}${endpoint}`, { ...options, headers });
+        // دمج الرابط الأساسي مع نقطة النهاية بشكل آمن لتجنب أخطاء الشرطة المائلة
+        const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
+        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const url = `${baseUrl}${cleanEndpoint}`;
+
+        const response = await fetch(url, { ...options, headers });
         
         if (!response.ok) {
             const err = await response.json().catch(() => ({}));
             const errorObj = new Error(err.title || err.message || 'حدث خطأ في النظام');
-            errorObj.status = response.status; // تمرير كود الخطأ ليتم فحصه في الواجهة
+            errorObj.status = response.status;
             throw errorObj;
         }
 
