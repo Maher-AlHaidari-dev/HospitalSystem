@@ -140,7 +140,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 8. ربط المسارات
+// 8. ربط المساراات    
 app.MapControllers();
 
 app.Run();
