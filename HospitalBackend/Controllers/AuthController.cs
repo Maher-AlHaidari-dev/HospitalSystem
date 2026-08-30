@@ -54,8 +54,10 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Register Error] {ex.Message}");
-                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء إنشاء الحساب، يرجى المحاولة لاحقاً." });
+                // إظهار الخطأ التقني التفصيلي صراحةً لمعرفة سبب فشل حفظ البيانات في قاعدة البيانات
+                var detailedError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine($"[Register Error Detailed] {ex}");
+                return StatusCode(500, new { message = $"خطأ قاعدة البيانات: {detailedError}" });
             }
         }
 
@@ -92,8 +94,9 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Login Error] {ex.Message} - {ex.StackTrace}");
-                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء تسجيل الدخول، يرجى المحاولة لاحقاً." });
+                var detailedError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine($"[Login Error Detailed] {ex}");
+                return StatusCode(500, new { message = $"خطأ تسجيل الدخول: {detailedError}" });
             }
         }
 
