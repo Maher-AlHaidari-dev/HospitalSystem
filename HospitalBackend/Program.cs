@@ -20,20 +20,14 @@ string connectionString = "";
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
 var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-// طباعة رسائل تشخيصية في الـ Logs لتوضيح القيم الممررة من المنصة
-Console.WriteLine($"[Railway Diagnostic] MYSQLHOST: {host ?? "NULL"}");
-Console.WriteLine($"[Railway Diagnostic] MYSQL_URL exists: {!string.IsNullOrEmpty(rawUrl)}");
-
 if (!string.IsNullOrEmpty(host))
 {
-    // الاعتماد على المتغيرات الفردية المباشرة من Railway مع إضافة AllowPublicKeyRetrieval لتجنب خطأ التشفير
     var port = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
     var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
     var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
     var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
     
     connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
-    Console.WriteLine("[Railway Diagnostic] Using individual environment variables for connection.");
 }
 else if (!string.IsNullOrEmpty(rawUrl))
 {
@@ -48,9 +42,7 @@ else if (!string.IsNullOrEmpty(rawUrl))
             var database = uri.AbsolutePath.TrimStart('/');
             var port = uri.Port > 0 ? uri.Port : 3306;
             
-            // إضافة SslMode=None و AllowPublicKeyRetrieval=True لتفادي مشاكل الاتصال الأمنية مع MySQL 8
             connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
-            Console.WriteLine("[Railway Diagnostic] Parsed MYSQL_URL successfully.");
         }
         catch
         {
@@ -65,19 +57,16 @@ else if (!string.IsNullOrEmpty(rawUrl))
 else
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
-    Console.WriteLine("[Railway Diagnostic] Using local ConnectionString from appsettings.");
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     try
     {
-        // محاولة جلب إصدار قاعدة البيانات تلقائياً
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
     }
     catch
     {
-        // نسخة احتياطية آمنة لضمان عدم توقف السيرفر أبداً في حال فشل الفحص الفوري
         options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 33)));
     }
 }, ServiceLifetime.Scoped);
@@ -105,7 +94,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 4. إعداد سياسة CORS لتسمح لجميع المصادر
+// 4. إعداد سياسة CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -118,33 +107,23 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// تطبيق الـ Migrations وإنشاء الجداول تلقائياً (مع Fallback بـ EnsureCreated لضمان عدم فقدان الجداول مثل Users)
+// إنشاء الجداول تلقائياً وآمنة 100% عبر EnsureCreated
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
-        Console.WriteLine("[Railway Diagnostic] Database migrations applied successfully.");
+        // التأكد من إنشاء القاعدة والجداول المتوافقة مع MySQL فوراً
+        dbContext.Database.EnsureCreated();
+        Console.WriteLine("[Railway Diagnostic] Database tables ensured/created successfully.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Railway Diagnostic Warning] Migration failed: {ex.Message}. Trying EnsureCreated fallback...");
-        try
-        {
-            var dbContext = services.GetRequiredService<ApplicationDbContext>();
-            dbContext.Database.EnsureCreated();
-            Console.WriteLine("[Railway Diagnostic] Database tables created successfully via EnsureCreated fallback.");
-        }
-        catch (Exception innerEx)
-        {
-            Console.WriteLine($"[Railway Diagnostic Critical] EnsureCreated also failed: {innerEx.Message}");
-        }
+        Console.WriteLine($"[Railway Diagnostic Critical] EnsureCreated failed: {ex.Message}");
     }
 }
 
-// 5. معالجة الأخطاء العالمية (Global Exception Handling)
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -155,19 +134,14 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 6. تفعيل واجهة Swagger (توضع قبل المصادقة لكي تفتح للعامة دون قيود توكن)
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// 7. تفعيل البرمجيات الوسيطة (Middlewares) بالترتيب الهندسي الصحيح
 app.UseCors("AllowAll");
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 8. ربط المسارات    
 app.MapControllers();
 
 app.Run();
