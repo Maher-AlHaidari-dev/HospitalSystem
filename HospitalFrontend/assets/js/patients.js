@@ -66,7 +66,7 @@ async function loadPatients() {
     tableBody.appendChild(loadingRow);
 
     try {
-        const patients = await CONFIG.request('/Patients');
+        const patients = await CONFIG.request('/api/Patients');
         // التأكد من أن النتيجة مصفوفة دائماً
         allPatientsCache = Array.isArray(patients) ? patients : (patients ? [patients] : []);
         renderPatientsTable(allPatientsCache);
