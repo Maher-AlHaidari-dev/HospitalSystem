@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260830190918_InitialMySQL")]
+    [Migration("20260830192410_InitialMySQL")]
     partial class InitialMySQL
     {
         /// <inheritdoc />
