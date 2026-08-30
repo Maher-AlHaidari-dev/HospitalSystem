@@ -25,7 +25,6 @@ namespace HospitalBackend.Controllers
         }
 
         // 1. POST: api/auth/register
-        // إنشاء حساب جديد في النظام
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
@@ -34,7 +33,6 @@ namespace HospitalBackend.Controllers
 
             try
             {
-                // التحقق هل البريد مسجل مسبقاً
                 var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
                 if (emailExists)
                     return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل" });
@@ -62,7 +60,6 @@ namespace HospitalBackend.Controllers
         }
 
         // 2. POST: api/auth/login
-        // تسجيل الدخول وإرجاع JWT Token
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
@@ -73,7 +70,6 @@ namespace HospitalBackend.Controllers
             {
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
                 
-                // التحقق من وجود المستخدم وصحة كلمة المرور بأمان تام لمنع الـ NullReferenceException
                 if (user == null || !VerifyPassword(dto.Password, user.PasswordHash))
                 {
                     return Unauthorized(new { message = "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
@@ -96,7 +92,6 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                // تسجيل الخطأ الحقيقي في الـ Console الخاص بـ Railway للتشخيص الفوري
                 Console.WriteLine($"[Login Error] {ex.Message} - {ex.StackTrace}");
                 return StatusCode(500, new { message = "حدث خطأ داخلي أثناء تسجيل الدخول، يرجى المحاولة لاحقاً." });
             }
@@ -144,7 +139,6 @@ namespace HospitalBackend.Controllers
         }
     }
 
-    // الـ DTOs الخاصة باستقبال البيانات مع إضافة شروط التحقق (Data Annotations)
     public class RegisterDto
     {
         [Required(ErrorMessage = "الاسم الكامل مطلوب")]
@@ -165,7 +159,7 @@ namespace HospitalBackend.Controllers
     {
         [Required(ErrorMessage = "البريد الإلكتروني مطلوب")]
         [EmailAddress(ErrorMessage = "صيغة البريد الإلكتروني غير صحيحة")]
-        public string Email { get: set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "كلمة المرور مطلوبة")]
         public string Password { get; set; } = string.Empty;
