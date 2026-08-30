@@ -28,7 +28,22 @@ if (!string.IsNullOrEmpty(host))
 }
 else if (!string.IsNullOrEmpty(rawUrl))
 {
-    connectionString = rawUrl.StartsWith("mysql://") ? new Uri(rawUrl).ToString() : rawUrl; // simplified parsing or direct url
+    try
+    {
+        var uri = new Uri(rawUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "root";
+        var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+        var server = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 3306;
+        var database = uri.AbsolutePath.TrimStart('/');
+        
+        connectionString = $"Server={server};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
+    }
+    catch
+    {
+        connectionString = rawUrl;
+    }
 }
 else
 {
