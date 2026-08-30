@@ -61,7 +61,7 @@ async function loadAppointments() {
     tbody.appendChild(trLoading);
 
     try {
-        const appointments = await CONFIG.request('/Appointments', {
+        const appointments = await CONFIG.request('api/Appointments', {
             headers: getAuthHeaders()
         });
         cacheAppointments = appointments || [];
@@ -157,7 +157,7 @@ async function handleAddAppointment(e) {
     };
 
     try {
-        await CONFIG.request('/Appointments', {
+        await CONFIG.request('api/Appointments', {
             method: 'POST',
             headers: getAuthHeaders({
                 'Content-Type': 'application/json'
@@ -179,7 +179,7 @@ async function deleteAppointment(id) {
     if (!confirm(msg)) return;
 
     try {
-        await CONFIG.request(`/Appointments/${id}`, { 
+        await CONFIG.request(`api/Appointments/${id}`, { 
             method: 'DELETE',
             headers: getAuthHeaders()
         });
