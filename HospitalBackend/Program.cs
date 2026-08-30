@@ -14,26 +14,30 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات بذكاء لتدعم متغيرات Railway بجميع صيغها تلقائياً
+// 2. إعداد قاعدة البيانات مع التشخيص الذكي ومتغيرات Railway
 string connectionString = "";
 
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+// طباعة رسائل تشخيصية في الـ Logs لترانا القيم الممررة من المنصة بدقة
+Console.WriteLine($"[Railway Diagnostic] MYSQLHOST: {host ?? "NULL"}");
+Console.WriteLine($"[Railway Diagnostic] MYSQL_URL exists: {!string.IsNullOrEmpty(rawUrl)}");
+
 if (!string.IsNullOrEmpty(host))
 {
-    // الطريقة الأولى والأسرع: الاعتماد على المتغيرات الفردية التي توفرها Railway عند الربط
+    // الاعتماد على المتغيرات الفردية المباشرة من Railway
     var port = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
     var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
     var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
     var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
     
-    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;";
+    Console.WriteLine("[Railway Diagnostic] Using individual environment variables for connection.");
 }
-else
+else if (!string.IsNullOrEmpty(rawUrl))
 {
-    // الطريقة الثانية: معالجة رابط MYSQL_URL أو DATABASE_URL وتحويله للصيغة القياسية
-    var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
-    
-    if (!string.IsNullOrEmpty(rawUrl) && rawUrl.StartsWith("mysql://"))
+    if (rawUrl.StartsWith("mysql://"))
     {
         try
         {
@@ -44,7 +48,8 @@ else
             var database = uri.AbsolutePath.TrimStart('/');
             var port = uri.Port > 0 ? uri.Port : 3306;
             
-            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=Preferred;";
+            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;";
+            Console.WriteLine("[Railway Diagnostic] Parsed MYSQL_URL successfully.");
         }
         catch
         {
@@ -53,14 +58,28 @@ else
     }
     else
     {
-        // الطريقة الثالثة: التشغيل المحلي من appsettings.json
-        connectionString = rawUrl ?? builder.Configuration.GetConnectionString("DefaultConnection");
+        connectionString = rawUrl;
     }
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+    Console.WriteLine("[Railway Diagnostic] Using local ConnectionString from appsettings.");
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)),
-    ServiceLifetime.Scoped);
+{
+    try
+    {
+        // محاولة جلب إصدار قاعدة البيانات تلقائياً
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    }
+    catch
+    {
+        // نسخة احتياطية آمنة لضمان عدم توقف السيرفر أبداً في حال فشل الفحص الفوري
+        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 33)));
+    }
+}, ServiceLifetime.Scoped);
 
 // 3. إعداد مصادقة JWT الآمنة
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MediCore_Secret_Key_Super_Secure_2026_JWT";
