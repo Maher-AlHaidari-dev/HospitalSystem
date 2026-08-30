@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعداد قاعدة البيانات مع التشخيص الذكي ومتغيرات Railway
+// 2. إعدااد قاعدة البيانات مع التشخيص الذكي ومتغيرات Railway
 string connectionString = "";
 
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
