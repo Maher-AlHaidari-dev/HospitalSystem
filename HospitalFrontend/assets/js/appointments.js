@@ -27,6 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let cacheAppointments = [];
 
+// دالة مساعد لجلب توكن المصادقة من الـ LocalStorage
+function getAuthHeaders(additionalHeaders = {}) {
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('jwt');
+    const headers = { ...additionalHeaders };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
+
+// دالة للتعامل مع أخطاء المصادقة
+function handleAuthError(error) {
+    if (error && (error.status === 401 || error.message?.includes('401') || error.message?.includes('Unauthorized'))) {
+        alert('انتهت صلاحية الجلسة أو لم يتم تسجيل الدخول، يرجى تسجيل الدخول من جديد.');
+        window.location.href = 'login.html'; // أو صفحة الدخول الخاصة بك
+    }
+}
+
 async function loadAppointments() {
     const tbody = document.getElementById('appointmentsTableBody');
     if (!tbody) return;
@@ -43,11 +61,15 @@ async function loadAppointments() {
     tbody.appendChild(trLoading);
 
     try {
-        const appointments = await CONFIG.request('/Appointments');
+        const appointments = await CONFIG.request('/Appointments', {
+            headers: getAuthHeaders()
+        });
         cacheAppointments = appointments || [];
         renderAppointmentsTable(cacheAppointments);
     } catch (error) {
         console.error('Error fetching appointments:', error);
+        handleAuthError(error);
+        
         tbody.replaceChildren();
         const trError = document.createElement('tr');
         const tdError = CONFIG.createSafeElement('td', dict.errorFetchAppointments, 'py-8 text-center text-rose-500 font-bold');
@@ -137,12 +159,16 @@ async function handleAddAppointment(e) {
     try {
         await CONFIG.request('/Appointments', {
             method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
             body: JSON.stringify(payload)
         });
 
         document.getElementById('appointmentForm').reset();
         await loadAppointments();
     } catch (error) {
+        handleAuthError(error);
         alert('حدث خطأ أثناء حفظ الموعد: ' + (error.message || 'خطأ في الاتصال'));
     }
 }
@@ -153,9 +179,13 @@ async function deleteAppointment(id) {
     if (!confirm(msg)) return;
 
     try {
-        await CONFIG.request(`/Appointments/${id}`, { method: 'DELETE' });
+        await CONFIG.request(`/Appointments/${id}`, { 
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
         await loadAppointments();
     } catch (error) {
+        handleAuthError(error);
         alert(error.message || 'فشل إلغاء الموعد');
     }
 }
@@ -186,6 +216,5 @@ function toggleLanguage() {
         CONFIG.applyTranslations(newLang);
     }
 
-    // إعادة رسم جدول البيانات ليتم ترجمة الحالات والتواريخ ديناميكياً
     renderAppointmentsTable(cacheAppointments);
 }
