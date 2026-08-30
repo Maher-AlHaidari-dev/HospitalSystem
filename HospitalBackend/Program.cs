@@ -20,19 +20,19 @@ string connectionString = "";
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
 var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-// طباعة رسائل تشخيصية في الـ Logs لترانا القيم الممررة من المنصة بدقة
+// طباعة رسائل تشخيصية في الـ Logs لتوضيح القيم الممررة من المنصة
 Console.WriteLine($"[Railway Diagnostic] MYSQLHOST: {host ?? "NULL"}");
 Console.WriteLine($"[Railway Diagnostic] MYSQL_URL exists: {!string.IsNullOrEmpty(rawUrl)}");
 
 if (!string.IsNullOrEmpty(host))
 {
-    // الاعتماد على المتغيرات الفردية المباشرة من Railway
+    // الاعتماد على المتغيرات الفردية المباشرة من Railway مع إضافة AllowPublicKeyRetrieval لتجنب خطأ التشفير
     var port = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
     var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
     var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
     var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
     
-    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;";
+    connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
     Console.WriteLine("[Railway Diagnostic] Using individual environment variables for connection.");
 }
 else if (!string.IsNullOrEmpty(rawUrl))
@@ -48,7 +48,8 @@ else if (!string.IsNullOrEmpty(rawUrl))
             var database = uri.AbsolutePath.TrimStart('/');
             var port = uri.Port > 0 ? uri.Port : 3306;
             
-            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;";
+            // إضافة SslMode=None و AllowPublicKeyRetrieval=True لتفادي مشاكل الاتصال الأمنية مع MySQL 8
+            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
             Console.WriteLine("[Railway Diagnostic] Parsed MYSQL_URL successfully.");
         }
         catch
@@ -140,7 +141,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 8. ربط المساراات    
+// 8. ربط المسارات    
 app.MapControllers();
 
 app.Run();
