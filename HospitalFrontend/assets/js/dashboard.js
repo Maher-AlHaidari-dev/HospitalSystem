@@ -68,7 +68,7 @@ function updateLayoutDirection(lang) {
 
 async function loadDashboardStats() {
     try {
-        const stats = await CONFIG.request('/dashboard/stats');
+        const stats = await CONFIG.request('api/dashboard/stats');
         
         if (stats) {
             document.getElementById('kpiTotalPatientsVal').textContent = stats.totalPatients;
