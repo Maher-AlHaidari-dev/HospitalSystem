@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (submitBtn) submitBtn.disabled = true;
 
-                // إرسال طلب تسجيل الدخول إلى AuthController في الـ Backend
-                const response = await CONFIG.request('/auth/login', {
+                // إرسال طلب تسجيل الدخول إلى AuthController في الـ Backend مع إضافة api/
+                const response = await CONFIG.request('/api/auth/login', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (submitBtn) submitBtn.disabled = true;
 
-                // إرسال طلب إنشاء الحساب إلى AuthController في الـ Backend
-                await CONFIG.request('/auth/register', {
+                // إرسال طلب إنشاء الحساب إلى AuthController في الـ Backend مع إضافة api/
+                await CONFIG.request('/api/auth/register', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
