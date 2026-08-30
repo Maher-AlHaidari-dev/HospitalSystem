@@ -3,6 +3,8 @@ using HospitalBackend.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,33 @@ builder.WebHost.UseUrls("http://0.0.0.0:8080");
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// [تحسين الأداء]: ضغط الاستجابات لتسريع نقل البيانات عبر الشبكة
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
+// [حماية متقدمة]: تقييد معدل الطلبات (Rate Limiting) لحماية السيرفر من الضغط والسبام
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100, // أقصى عدد طلبات مسموح به
+                Window = TimeSpan.FromMinutes(1), // خلال دقيقة واحدة
+                QueueLimit = 5
+            }));
+
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"message\":\"تم تجاوز الحد المسموح من الطلبات، يرجى المهلة قليلاً.\"}");
+    };
+});
 
 // إعداد قاعدة البيانات لـ MySQL
 string connectionString = "";
@@ -102,6 +131,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// تفعيل ضغط البيانات عند الخروج
+app.UseResponseCompression();
+
 // تشغيل الـ Migrations تلقائياً عند الإقلاع
 using (var scope = app.Services.CreateScope())
 {
@@ -125,6 +157,10 @@ app.UseSwaggerUI();
 
 app.UseCors("StrictCorsPolicy");
 app.UseRouting();
+
+// تفعيل نظام تقييد الطلبات
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
