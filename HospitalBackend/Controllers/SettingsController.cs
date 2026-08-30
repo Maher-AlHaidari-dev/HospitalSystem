@@ -24,22 +24,33 @@ namespace HospitalBackend.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userId = GetCurrentUserId();
-            if (userId == null)
-                return Unauthorized(new { message = "المستخدم غير مصرح له" });
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                return NotFound(new { message = "لم يتم العثور على حساب المستخدم" });
-
-            return Ok(new
+            try
             {
-                user.Id,
-                user.FullName,
-                user.Email,
-                user.Role,
-                user.AppointmentReminders
-            });
+                var userId = GetCurrentUserId();
+                if (userId == null)
+                    return Unauthorized(new { message = "المستخدم غير مصرح له" });
+
+                var user = await _context.Users
+                    .AsNoTracking() // [تحسين أداء]: قراءة البيانات فقط بدون تتبع لتسريع الاستعلام
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                    return NotFound(new { message = "لم يتم العثور على حساب المستخدم" });
+
+                return Ok(new
+                {
+                    user.Id,
+                    user.FullName,
+                    user.Email,
+                    user.Role,
+                    user.AppointmentReminders
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetProfile Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب الملف الشخصي." });
+            }
         }
 
         // 2. PUT: api/settings/profile
@@ -50,41 +61,52 @@ namespace HospitalBackend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userId = GetCurrentUserId();
-            if (userId == null)
-                return Unauthorized(new { message = "المستخدم غير مصرح له" });
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                return NotFound(new { message = "لم يتم العثور على حساب المستخدم" });
-
-            // التحقق مما إذا كان البريد الجديد مستخدماً من قبل شخص آخر
-            if (user.Email != dto.Email)
+            try
             {
-                var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email && u.Id != userId);
-                if (emailExists)
-                    return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر" });
+                var userId = GetCurrentUserId();
+                if (userId == null)
+                    return Unauthorized(new { message = "المستخدم غير مصرح له" });
 
-                user.Email = dto.Email;
-            }
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                    return NotFound(new { message = "لم يتم العثور على حساب المستخدم" });
 
-            user.FullName = dto.FullName;
-            user.AppointmentReminders = dto.AppointmentReminders;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "تم تحديث الإعدادات بنجاح",
-                user = new
+                // التحقق مما إذا كان البريد الجديد مستخدماً من قبل شخص آخر
+                if (user.Email != dto.Email)
                 {
-                    user.Id,
-                    user.FullName,
-                    user.Email,
-                    user.Role,
-                    user.AppointmentReminders
+                    var emailExists = await _context.Users
+                        .AsNoTracking()
+                        .AnyAsync(u => u.Email == dto.Email && u.Id != userId);
+
+                    if (emailExists)
+                        return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر" });
+
+                    user.Email = dto.Email;
                 }
-            });
+
+                user.FullName = dto.FullName;
+                user.AppointmentReminders = dto.AppointmentReminders;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "تم تحديث الإعدادات بنجاح",
+                    user = new
+                    {
+                        user.Id,
+                        user.FullName,
+                        user.Email,
+                        user.Role,
+                        user.AppointmentReminders
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UpdateProfile Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء تحديث الإعدادات." });
+            }
         }
 
         // دالة مساعدة لاستخراج معرف المستخدم من الـ JWT Claims

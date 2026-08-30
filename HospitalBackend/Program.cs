@@ -9,14 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 // إجبار السيرفر على الاستماع للبورت 8080 المطلوب من منصة Railway
 builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
-// 1. إضافة خدمات الـ Controllers والـ API Explorer
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. إعدااد قاعدة البيانات مع التشخيص الذكي ومتغيرات Railway
+// إعداد قاعدة البيانات لـ MySQL
 string connectionString = "";
-
 var host = Environment.GetEnvironmentVariable("MYSQLHOST");
 var rawUrl = Environment.GetEnvironmentVariable("MYSQL_URL") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
@@ -26,33 +24,11 @@ if (!string.IsNullOrEmpty(host))
     var database = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
     var user = Environment.GetEnvironmentVariable("MYSQLUSER") ?? "root";
     var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
-    
     connectionString = $"Server={host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
 }
 else if (!string.IsNullOrEmpty(rawUrl))
 {
-    if (rawUrl.StartsWith("mysql://"))
-    {
-        try
-        {
-            var uri = new Uri(rawUrl);
-            var userInfo = uri.UserInfo.Split(':');
-            var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "root";
-            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
-            var database = uri.AbsolutePath.TrimStart('/');
-            var port = uri.Port > 0 ? uri.Port : 3306;
-            
-            connectionString = $"Server={uri.Host};Port={port};Database={database};Uid={user};Pwd={password};SslMode=None;AllowPublicKeyRetrieval=True;";
-        }
-        catch
-        {
-            connectionString = rawUrl;
-        }
-    }
-    else
-    {
-        connectionString = rawUrl;
-    }
+    connectionString = rawUrl.StartsWith("mysql://") ? new Uri(rawUrl).ToString() : rawUrl; // simplified parsing or direct url
 }
 else
 {
@@ -61,19 +37,16 @@ else
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    try
-    {
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-    }
-    catch
-    {
-        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 33)));
-    }
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 }, ServiceLifetime.Scoped);
 
-// 3. إعداد مصادقة JWT الآمنة
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "MediCore_Secret_Key_Super_Secure_2026_JWT";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "MediCoreHMS";
+// [حماية أمنية 1]: فرض وجود مفتاح JWT سري من متغيرات البيئة حصراً
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("Security Error: JWT_KEY must be set in environment variables and be at least 32 characters long.");
+}
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MediCoreHMS";
 
 builder.Services.AddAuthentication(options =>
 {
@@ -94,12 +67,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 4. إعداد سياسة CORS
+// [حماية أمنية 2]: تقييد الـ CORS فقط لرابط موقعك على Vercel
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "https://your-frontend-domain.vercel.app";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("StrictCorsPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(frontendUrl)
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -107,15 +81,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// تطبيق الـ Migrations تلقائياً عند إقلاع الخادم لبناء الجداول في MySQL
+// تشغيل الـ Migrations تلقائياً عند الإقلاع
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.Migrate();
-    Console.WriteLine("[Railway Diagnostic] Database migrations applied and tables created successfully.");
 }
 
+// [حماية أمنية 3]: معالجة مركزية وآمنة للأخطاء دون تسريب تفاصيل النظام
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -129,7 +102,7 @@ app.UseExceptionHandler(errorApp =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("AllowAll");
+app.UseCors("StrictCorsPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 using System;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace HospitalBackend.Controllers
 {
+    [Authorize] // [حماية أمنية]: حماية لوحة التحكم ومنع الوصول للإحصائيات الحساسة دون مصادقة
     [ApiController]
     [Route("api/[controller]")]
     public class DashboardController : ControllerBase
@@ -36,26 +38,26 @@ namespace HospitalBackend.Controllers
                 // 3. إجمالي المواعيد
                 var totalScheduled = await _context.Appointments.CountAsync();
 
-                // 4. حساب الفواتير والإيرادات الحقيقية من جدول Invoices
-                var invoices = await _context.Invoices.ToListAsync();
+                // 4. تحسين الأداء: حساب الفواتير والإيرادات مباشرة داخل قاعدة البيانات (Database-side aggregation)
+                var pendingInvoicesQuery = _context.Invoices
+                    .Where(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial");
+
+                var pendingBillsCount = await pendingInvoicesQuery.CountAsync();
                 
-                // احتساب الفواتير المعلقة أو غير المدفوعة أو المدفوعة جزئياً
-                var pendingBillsCount = invoices.Count(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial");
+                var pendingAmount = await pendingInvoicesQuery
+                    .SumAsync(i => (decimal?)(i.Amount - i.PaidAmount)) ?? 0;
                 
-                // حساب المبلغ المتبقي بدقة (إجمالي المبلغ - المبلغ المدفوع فعلياً)
-                var pendingAmount = invoices
-                    .Where(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial")
-                    .Sum(i => i.Amount - i.PaidAmount);
-                
-                // الإيرادات المحصلة (مجموع المبالغ المدفوعة الفعلية PaidAmount لهذا الشهر)
+                // الإيرادات المحصلة لهذا الشهر (مجموع المبالغ المدفوعة الفعلية PaidAmount)
                 var currentMonth = today.Month;
                 var currentYear = today.Year;
-                var totalRevenue = invoices
+                
+                var totalRevenue = await _context.Invoices
                     .Where(i => i.Date.Month == currentMonth && i.Date.Year == currentYear)
-                    .Sum(i => i.PaidAmount);
+                    .SumAsync(i => (decimal?)i.PaidAmount) ?? 0;
 
                 // 5. توزيع المواعيد حسب القسم
                 var deptStats = await _context.Appointments
+                    .AsNoTracking()
                     .Where(a => !string.IsNullOrEmpty(a.Department))
                     .GroupBy(a => a.Department)
                     .Select(g => new
@@ -73,6 +75,7 @@ namespace HospitalBackend.Controllers
                 var startDate = today.AddDays(-6).Date;
 
                 var patientsList = await _context.Patients
+                    .AsNoTracking()
                     .Where(p => p.CreatedAt >= startDate)
                     .ToListAsync();
 
@@ -100,7 +103,9 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                // [حماية أمنية]: تسجيل الخطأ داخلياً وعدم تسريب تفاصيل قاعدة البيانات للعميل
+                Console.WriteLine($"[DashboardStats Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب إحصائيات لوحة التحكم." });
             }
         }
     }

@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 using HospitalBackend.DTOs;
 
 namespace HospitalBackend.Controllers
 {
+    [Authorize] // [حماية أمنية]: قفل الكنترولر بالكامل بحيث لا يمكن الوصول إليه إلا بمصادقة صحيحة
     [ApiController]
     [Route("api/[controller]")]
     public class AppointmentsController : ControllerBase
@@ -21,26 +23,42 @@ namespace HospitalBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
-            return await _context.Appointments
-                .AsNoTracking()
-                .OrderByDescending(a => a.AppointmentDate)
-                .ToListAsync();
+            try
+            {
+                return await _context.Appointments
+                    .AsNoTracking()
+                    .OrderByDescending(a => a.AppointmentDate)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetAppointments Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب المواعيد." });
+            }
         }
 
         // GET: api/Appointments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Appointment>> GetAppointment(int id)
         {
-            var appointment = await _context.Appointments
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id);
-
-            if (appointment == null)
+            try
             {
-                return NotFound(new { message = "الموعد غير موجود" });
-            }
+                var appointment = await _context.Appointments
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(a => a.Id == id);
 
-            return appointment;
+                if (appointment == null)
+                {
+                    return NotFound(new { message = "الموعد غير موجود" });
+                }
+
+                return appointment;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetAppointment Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب بيانات الموعد." });
+            }
         }
 
         // POST: api/Appointments
@@ -52,21 +70,29 @@ namespace HospitalBackend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var appointment = new Appointment
+            try
             {
-                PatientName = dto.PatientName,
-                DoctorName = dto.DoctorName,
-                Department = dto.Department,
-                AppointmentDate = dto.AppointmentDate,
-                Notes = dto.Notes,
-                Status = "مؤكد",
-                CreatedAt = DateTime.UtcNow
-            };
+                var appointment = new Appointment
+                {
+                    PatientName = dto.PatientName,
+                    DoctorName = dto.DoctorName,
+                    Department = dto.Department,
+                    AppointmentDate = dto.AppointmentDate,
+                    Notes = dto.Notes,
+                    Status = "مؤكد",
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
+                _context.Appointments.Add(appointment);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
+                return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PostAppointment Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء إنشاء الموعد." });
+            }
         }
 
         // PUT: api/Appointments/5
@@ -99,9 +125,14 @@ namespace HospitalBackend.Controllers
             {
                 if (!AppointmentExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "الموعد غير موجود" });
                 }
                 throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PutAppointment Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء تحديث الموعد." });
             }
 
             return NoContent();
@@ -111,16 +142,24 @@ namespace HospitalBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
-            if (appointment == null)
+            try
             {
-                return NotFound(new { message = "الموعد غير موجود" });
+                var appointment = await _context.Appointments.FindAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound(new { message = "الموعد غير موجود" });
+                }
+
+                _context.Appointments.Remove(appointment);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DeleteAppointment Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء حذف الموعد." });
+            }
         }
 
         private bool AppointmentExists(int id)

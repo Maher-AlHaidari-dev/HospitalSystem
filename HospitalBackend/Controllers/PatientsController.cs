@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 
 namespace HospitalBackend.Controllers
 {
+    [Authorize] // [حماية أمنية]: قفل ملفات المرضى وحمايتها من الوصول غير المصرح به (بيانات سرية وحساسة)
     [ApiController]
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
@@ -20,46 +22,72 @@ namespace HospitalBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatients()
         {
-            return await _context.Patients
-                .AsNoTracking()
-                .OrderByDescending(p => p.Id)
-                .ToListAsync();
+            try
+            {
+                return await _context.Patients
+                    .AsNoTracking()
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetPatients Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب قائمة المرضى." });
+            }
         }
 
         // GET: api/Patients/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Patient>> GetPatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-
-            if (patient == null)
+            try
             {
-                return NotFound(new { message = "المريض غير موجود / Patient not found" });
-            }
+                var patient = await _context.Patients
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.Id == id);
 
-            return patient;
+                if (patient == null)
+                {
+                    return NotFound(new { message = "المريض غير موجود / Patient not found" });
+                }
+
+                return patient;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetPatient Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب بيانات المريض." });
+            }
         }
 
         // GET: api/Patients/search?query=ahmed
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Patient>>> SearchPatients([FromQuery] string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            try
             {
-                return await GetPatients();
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return await GetPatients();
+                }
+
+                var cleanQuery = query.Trim().ToLower();
+
+                var patients = await _context.Patients
+                    .AsNoTracking()
+                    .Where(p => p.Name.ToLower().Contains(cleanQuery) ||
+                                (p.PhoneNumber != null && p.PhoneNumber.Contains(cleanQuery)) ||
+                                (p.Email != null && p.Email.ToLower().Contains(cleanQuery)))
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+
+                return Ok(patients);
             }
-
-            var cleanQuery = query.Trim().ToLower();
-
-            var patients = await _context.Patients
-                .AsNoTracking()
-                .Where(p => p.Name.ToLower().Contains(cleanQuery) ||
-                            (p.PhoneNumber != null && p.PhoneNumber.Contains(cleanQuery)) ||
-                            (p.Email != null && p.Email.ToLower().Contains(cleanQuery)))
-                .OrderByDescending(p => p.Id)
-                .ToListAsync();
-
-            return Ok(patients);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SearchPatients Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء البحث عن المرضى." });
+            }
         }
 
         // POST: api/Patients
@@ -71,18 +99,26 @@ namespace HospitalBackend.Controllers
                 return BadRequest(ModelState);
             }
 
-            // حساب العمر تلقائياً بناءً على تاريخ الميلاد
-            if (patient.DateOfBirth.HasValue)
+            try
             {
-                patient.Age = CalculateAge(patient.DateOfBirth.Value);
+                // حساب العمر تلقائياً بناءً على تاريخ الميلاد
+                if (patient.DateOfBirth.HasValue)
+                {
+                    patient.Age = CalculateAge(patient.DateOfBirth.Value);
+                }
+
+                patient.CreatedAt = DateTime.UtcNow;
+
+                _context.Patients.Add(patient);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetPatient), new { id = patient.Id }, patient);
             }
-
-            patient.CreatedAt = DateTime.UtcNow;
-
-            _context.Patients.Add(patient);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPatient), new { id = patient.Id }, patient);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PostPatient Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء إضافة المريض." });
+            }
         }
 
         // PUT: api/Patients/5
@@ -134,6 +170,11 @@ namespace HospitalBackend.Controllers
                     throw;
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PutPatient Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء تحديث بيانات المريض." });
+            }
 
             return NoContent();
         }
@@ -142,16 +183,24 @@ namespace HospitalBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var patient = await _context.Patients.FindAsync(id);
-            if (patient == null)
+            try
             {
-                return NotFound(new { message = "المريض غير موجود / Patient not found" });
+                var patient = await _context.Patients.FindAsync(id);
+                if (patient == null)
+                {
+                    return NotFound(new { message = "المريض غير موجود / Patient not found" });
+                }
+
+                _context.Patients.Remove(patient);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DeletePatient Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء حذف المريض." });
+            }
         }
 
         // دالة مساعدة لحساب العمر بدقة

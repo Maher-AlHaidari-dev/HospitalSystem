@@ -33,7 +33,10 @@ namespace HospitalBackend.Controllers
 
             try
             {
-                var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
+                var emailExists = await _context.Users
+                    .AsNoTracking()
+                    .AnyAsync(u => u.Email == dto.Email);
+                
                 if (emailExists)
                     return BadRequest(new { message = "البريد الإلكتروني مستخدم بالفعل" });
 
@@ -54,10 +57,9 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                // إظهار الخطأ التقني التفصيلي صراحةً لمعرفة سبب فشل حفظ البيانات في قاعدة البيانات
-                var detailedError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // [حماية أمنية]: تسجيل الخطأ بالكامل في الخادم وإرجاع رسالة عامة وآمنة للمستخدم
                 Console.WriteLine($"[Register Error Detailed] {ex}");
-                return StatusCode(500, new { message = $"خطأ قاعدة البيانات: {detailedError}" });
+                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء إنشاء الحساب، يرجى المحاولة لاحقاً." });
             }
         }
 
@@ -70,7 +72,10 @@ namespace HospitalBackend.Controllers
 
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                // [تحسين أداء]: استخدام AsNoTracking لأن عملية تسجيل الدخول تقرأ البيانات فقط
+                var user = await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Email == dto.Email);
                 
                 if (user == null || !VerifyPassword(dto.Password, user.PasswordHash))
                 {
@@ -94,9 +99,9 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                var detailedError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // [حماية أمنية]: تسجيل الخطأ بالكامل في الخادم وإرجاع رسالة عامة وآمنة للمستخدم
                 Console.WriteLine($"[Login Error Detailed] {ex}");
-                return StatusCode(500, new { message = $"خطأ تسجيل الدخول: {detailedError}" });
+                return StatusCode(500, new { message = "حدث خطأ داخلي أثناء تسجيل الدخول، يرجى المحاولة لاحقاً." });
             }
         }
 
@@ -104,8 +109,8 @@ namespace HospitalBackend.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var jwtKey = _configuration["Jwt:Key"] ?? "MediCore_Secret_Key_Super_Secure_2026_JWT";
-            var jwtIssuer = _configuration["Jwt:Issuer"] ?? "MediCoreHMS";
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _configuration["Jwt:Key"] ?? "MediCore_Secret_Key_Super_Secure_2026_JWT";
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _configuration["Jwt:Issuer"] ?? "MediCoreHMS";
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
