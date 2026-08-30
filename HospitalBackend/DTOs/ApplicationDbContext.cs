@@ -15,5 +15,17 @@ namespace HospitalBackend.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // تعيين أسماء الجداول بحروف صغيرة صراحة لضمان توافقها التام مع MySQL على لينكس (Railway)
+            modelBuilder.Entity<User>().ToTable("users");
+            modelBuilder.Entity<Patient>().ToTable("patients");
+            modelBuilder.Entity<Appointment>().ToTable("appointments");
+            modelBuilder.Entity<Invoice>().ToTable("invoices");
+            modelBuilder.Entity<MedicalRecord>().ToTable("medicalrecords");
+        }
     }
 }
