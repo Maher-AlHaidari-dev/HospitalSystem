@@ -118,7 +118,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// تطبيق الـ Migrations بشكل آمن تماماً (Try-Catch) لمنع انهيار الخادم
+// تطبيق الـ Migrations وإنشاء الجداول تلقائياً (مع Fallback بـ EnsureCreated لضمان عدم فقدان الجداول مثل Users)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -130,7 +130,17 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Railway Diagnostic Warning] Migration could not be applied immediately: {ex.Message}");
+        Console.WriteLine($"[Railway Diagnostic Warning] Migration failed: {ex.Message}. Trying EnsureCreated fallback...");
+        try
+        {
+            var dbContext = services.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.EnsureCreated();
+            Console.WriteLine("[Railway Diagnostic] Database tables created successfully via EnsureCreated fallback.");
+        }
+        catch (Exception innerEx)
+        {
+            Console.WriteLine($"[Railway Diagnostic Critical] EnsureCreated also failed: {innerEx.Message}");
+        }
     }
 }
 
