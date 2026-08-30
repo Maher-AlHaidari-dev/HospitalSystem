@@ -118,6 +118,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// تطبيق الـ Migrations وإنشاء الجداول تلقائياً في قاعدة البيانات عند بدء التشغيل
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // 5. معالجة الأخطاء العالمية (Global Exception Handling)
 app.UseExceptionHandler(errorApp =>
 {
