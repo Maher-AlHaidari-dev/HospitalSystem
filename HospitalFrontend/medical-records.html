@@ -4,70 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="medicalRecordsTitle">السجلات الطبية - MediCore HMS</title>
-    <link rel="stylesheet" href="assets/css/style.css"> <!-- استبدل بمسار ملف الـ CSS الخاص بك -->
+    <!-- استخدام Tailwind CSS ليطابق باقي صفحات النظام -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <div class="app-container">
-        <!-- Main Content Header -->
-        <header class="content-header">
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8">
+        
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-                <h1 data-i18n="recordsHeader">السجلات الطبية</h1>
-                <p data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900" data-i18n="recordsHeader">السجلات الطبية</h1>
+                <p class="text-sm text-gray-500 mt-1" data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
             </div>
-            <div class="header-actions">
-                <button id="btnOpenNewRecordModal" class="btn-primary" data-i18n="btnNewRecord">سجل جديد</button>
+            <div>
+                <button id="btnOpenNewRecordModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition duration-200 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <span data-i18n="btnNewRecord">سجل جديد</span>
+                </button>
             </div>
-        </header>
-
-        <!-- Search & Filter bar -->
-        <div class="filter-bar">
-            <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
         </div>
 
-        <!-- Records Table Section -->
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th data-i18n="thPatientName">اسم المريض</th>
-                        <th data-i18n="recordsDiagnosis">التشخيص</th>
-                        <th data-i18n="recordsPrescription">الوصفة الطبية</th>
-                        <th data-i18n="recordsNotes">ملاحظات</th>
-                        <th data-i18n="thActions">إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="medicalRecordsTableBody">
-                    <tr>
-                        <td colspan="5" style="text-align: center;" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Search & Filter Bar -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
+            <div class="relative">
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <input type="text" id="searchInput" class="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
+            </div>
         </div>
-    </div>
 
-    <!-- Modal for New Record (Hidden by default) -->
-    <div id="newRecordModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3 data-i18n="modalNewRecordTitle">إضافة سجل طبي جديد</h3>
-            <form id="newRecordForm">
-                <div class="form-group">
-                    <label data-i18n="lblPatientName">اسم المريض</label>
-                    <input type="text" id="recordPatientName" required>
+        <!-- Records Table Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/75 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                            <th class="py-4 px-6" data-i18n="thPatientName">اسم المريض</th>
+                            <th class="py-4 px-6" data-i18n="recordsDiagnosis">التشخيص</th>
+                            <th class="py-4 px-6" data-i18n="recordsPrescription">الوصفة الطبية</th>
+                            <th class="py-4 px-6" data-i18n="recordsNotes">ملاحظات</th>
+                            <th class="py-4 px-6 text-center" data-i18n="thActions">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medicalRecordsTableBody" class="divide-y divide-gray-100 text-sm">
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-400" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for New Record -->
+    <div id="newRecordModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900" data-i18n="modalNewRecordTitle">إضافة سجل طبي جديد</h3>
+                <button id="btnCloseModal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="newRecordForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="lblPatientName">اسم المريض</label>
+                    <input type="text" id="recordPatientName" required class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
-                <div class="form-group">
-                    <label data-i18n="recordsDiagnosis">التشخيص</label>
-                    <input type="text" id="recordDiagnosis" required>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsDiagnosis">التشخيص</label>
+                    <input type="text" id="recordDiagnosis" required class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
-                <div class="form-group">
-                    <label data-i18n="recordsPrescription">الوصفة الطبية</label>
-                    <textarea id="recordPrescription"></textarea>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsPrescription">الوصفة الطبية</label>
+                    <textarea id="recordPrescription" rows="3" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
                 </div>
-                <div class="form-group">
-                    <label data-i18n="recordsNotes">ملاحظات</label>
-                    <textarea id="recordNotes"></textarea>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsNotes">ملاحظات</label>
+                    <textarea id="recordNotes" rows="2" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
                 </div>
-                <button type="submit" class="btn-primary" data-i18n="btnSaveRecord">حفظ السجل</button>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="btnCancelModal" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 text-sm font-medium">إلغاء</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm" data-i18n="btnSaveRecord">حفظ السجل</button>
+                </div>
             </form>
         </div>
     </div>
@@ -75,5 +107,12 @@
     <!-- Scripts -->
     <script src="config.js"></script>
     <script src="medical-records.js"></script>
+    <script>
+        // إضافات بسيطة لإظهار وإخفاء الـ Modal بالتايلوند
+        const modal = document.getElementById('newRecordModal');
+        document.getElementById('btnOpenNewRecordModal').addEventListener('click', () => modal.classList.remove('hidden'));
+        document.getElementById('btnCloseModal').addEventListener('click', () => modal.classList.add('hidden'));
+        document.getElementById('btnCancelModal').addEventListener('click', () => modal.classList.add('hidden'));
+    </script>
 </body>
 </html>
