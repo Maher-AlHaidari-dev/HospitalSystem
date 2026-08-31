@@ -10,13 +10,12 @@ namespace HospitalBackend.Models
         public int Id { get; set; }
 
         public string InvoiceNumber { get; set; }
-
         public string PatientName { get; set; }
 
-        // الخصائص الأصلية والبديلة لضمان توافق الداشبورد والكنترولر معاً بدون أخطاء
         [Column("TotalAmount")]
         public decimal TotalAmount { get; set; }
 
+        // خاصية للتعامل المريح في الكود مع بقاء TotalAmount لقاعدة البيانات
         [NotMapped]
         public decimal Amount
         {
@@ -37,7 +36,6 @@ namespace HospitalBackend.Models
         }
 
         public DateTime DueDate { get; set; }
-
         public string Status { get; set; } // Paid, Partial, Pending, Unpaid
     }
 }

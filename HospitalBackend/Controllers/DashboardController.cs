@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HospitalBackend.Controllers
 {
-    [Authorize] // [حماية أمنية]: حماية لوحة التحكم ومنع الوصول للإحصائيات الحساسة دون مصادقة
+    [Authorize] // [حماية أمنية]
     [ApiController]
     [Route("api/[controller]")]
     public class DashboardController : ControllerBase
@@ -28,50 +28,38 @@ namespace HospitalBackend.Controllers
             {
                 var today = DateTime.Today;
 
-                // 1. إجمالي المرضى
                 var totalPatients = await _context.Patients.CountAsync();
 
-                // 2. مواعيد اليوم
                 var todaysAppointments = await _context.Appointments
                     .CountAsync(a => a.AppointmentDate.Date == today);
 
-                // 3. إجمالي المواعيد
                 var totalScheduled = await _context.Appointments.CountAsync();
 
-                // 4. جلب الفواتير المعلقة وحسابها في الذاكرة لتجنب أخطاء الترجمة في قاعدة البيانات
                 var pendingInvoicesQuery = _context.Invoices
                     .Where(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial");
 
                 var pendingBillsCount = await pendingInvoicesQuery.CountAsync();
                 
-                var pendingInvoicesList = await pendingInvoicesQuery.ToListAsync();
-                var pendingAmount = pendingInvoicesList.Sum(i => (decimal?)(i.Amount - i.PaidAmount)) ?? 0;
+                // [تم الإصلاح]: حساب المبالغ المتبقية مباشرة في قاعدة البيانات باستخدام الحقل الأصلي TotalAmount (أداء صاروخي)
+                var pendingAmount = await pendingInvoicesQuery
+                    .SumAsync(i => (decimal?)(i.TotalAmount - i.PaidAmount)) ?? 0;
                 
-                // الإيرادات المحصلة لهذا الشهر (مجموع المبالغ المدفوعة الفعلية PaidAmount)
                 var currentMonth = today.Month;
                 var currentYear = today.Year;
                 
+                // [تم الإصلاح]: استخدام IssuedDate المربوط بقاعدة البيانات لتجنب خطأ (LINQ Translation) الذي كان يسبب انهيار السيرفر
                 var totalRevenue = await _context.Invoices
-                    .Where(i => i.Date.Month == currentMonth && i.Date.Year == currentYear)
+                    .Where(i => i.IssuedDate.Month == currentMonth && i.IssuedDate.Year == currentYear)
                     .SumAsync(i => (decimal?)i.PaidAmount) ?? 0;
 
-                // 5. توزيع المواعيد حسب القسم
                 var deptStats = await _context.Appointments
                     .AsNoTracking()
                     .Where(a => !string.IsNullOrEmpty(a.Department))
                     .GroupBy(a => a.Department)
-                    .Select(g => new
-                    {
-                        Department = g.Key,
-                        Count = g.Count()
-                    })
+                    .Select(g => new { Department = g.Key, Count = g.Count() })
                     .ToListAsync();
 
-                // 6. حساب المرضى خلال آخر 7 أيام
-                var last7Days = Enumerable.Range(0, 7)
-                    .Select(i => today.AddDays(-6 + i))
-                    .ToList();
-
+                var last7Days = Enumerable.Range(0, 7).Select(i => today.AddDays(-6 + i)).ToList();
                 var startDate = today.AddDays(-6).Date;
 
                 var patientsList = await _context.Patients
@@ -80,10 +68,9 @@ namespace HospitalBackend.Controllers
                     .ToListAsync();
 
                 var intakeLabels = last7Days.Select(d => d.ToString("ddd")).ToArray();
-                var intakeCounts = last7Days
-                    .Select(d => patientsList.Count(p => p.CreatedAt.Date == d.Date))
-                    .ToArray();
+                var intakeCounts = last7Days.Select(d => patientsList.Count(p => p.CreatedAt.Date == d.Date)).ToArray();
 
+                // المتغيرات هنا تطابق تماماً ملف dashboard.js (CamelCase)
                 return Ok(new
                 {
                     TotalPatients = totalPatients,
@@ -93,17 +80,12 @@ namespace HospitalBackend.Controllers
                     PendingBillsCount = pendingBillsCount,
                     PendingAmount = pendingAmount,
                     TotalRevenue = totalRevenue,
-                    PatientIntakeData = new
-                    {
-                        Labels = intakeLabels,
-                        Counts = intakeCounts
-                    },
+                    PatientIntakeData = new { Labels = intakeLabels, Counts = intakeCounts },
                     AppointmentsByDept = deptStats
                 });
             }
             catch (Exception ex)
             {
-                // [حماية أمنية]: تسجيل الخطأ داخلياً وعدم تسريب تفاصيل قاعدة البيانات للعميل
                 Console.WriteLine($"[DashboardStats Error] {ex}");
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب إحصائيات لوحة التحكم." });
             }

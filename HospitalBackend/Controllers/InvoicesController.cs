@@ -5,10 +5,11 @@ using HospitalBackend.Data;
 using HospitalBackend.Models;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace HospitalBackend.Controllers
 {
-    [Authorize] // [حماية أمنية]: قفل الكنترولر المالي ومنع الوصول غير المصرح به للفواتير والمدفوعات
+    [Authorize] // [حماية أمنية]
     [ApiController]
     [Route("api/[controller]")]
     public class InvoicesController : ControllerBase
@@ -20,7 +21,6 @@ namespace HospitalBackend.Controllers
             _context = context;
         }
 
-        // 1. جلب كل الفواتير
         [HttpGet]
         public async Task<IActionResult> GetInvoices()
         {
@@ -40,16 +40,13 @@ namespace HospitalBackend.Controllers
             }
         }
 
-        // 2. إنشاء فاتورة جديدة
         [HttpPost]
         public async Task<IActionResult> CreateInvoice([FromBody] Invoice invoice)
         {
-            if (!ModelState.IsValid) 
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                // تصفير المعرف لضمان توليده تلقائياً بواسطة قاعدة البيانات (Auto-increment)
                 invoice.Id = 0;
 
                 if (string.IsNullOrEmpty(invoice.InvoiceNumber))
@@ -57,10 +54,10 @@ namespace HospitalBackend.Controllers
                     invoice.InvoiceNumber = $"INV-2026-{new Random().Next(1000, 9999)}";
                 }
 
-                // استخدام التوقيت العالمي الموحد UTC للموثوقية مع الداشبورد
-                if (invoice.Date == default)
+                // استخدمنا IssuedDate المربوطة بقاعدة البيانات لتجنب أي مشاكل
+                if (invoice.IssuedDate == default)
                 {
-                    invoice.Date = DateTime.UtcNow;
+                    invoice.IssuedDate = DateTime.UtcNow;
                 }
 
                 if (string.IsNullOrEmpty(invoice.Status))
@@ -80,26 +77,22 @@ namespace HospitalBackend.Controllers
             }
         }
 
-        // 3. تسجيل دفع (Record Payment)
         [HttpPost("{id}/pay")]
         public async Task<IActionResult> RecordPayment(int id, [FromBody] decimal amount)
         {
-            // [حماية أمنية]: منع إدخال مبالغ سالبة أو صفرية للتلاعب بالحسابات المالية
+            // [حماية أمنية]: منع المبالغ السالبة
             if (amount <= 0)
-            {
                 return BadRequest(new { message = "يجب أن يكون مبلغ الدفع أكبر من الصفر" });
-            }
 
             try
             {
                 var invoice = await _context.Invoices.FindAsync(id);
-                if (invoice == null) 
-                    return NotFound(new { message = "الفاتورة غير موجودة" });
+                if (invoice == null) return NotFound(new { message = "الفاتورة غير موجودة" });
 
                 invoice.PaidAmount += amount;
                 
-                // الاعتماد على الحقل Amount للمقارنة وتحديث الحالة بدقة
-                if (invoice.PaidAmount >= invoice.Amount)
+                // الاعتماد على الحقل الأصلي TotalAmount لضمان الدقة المطلقة
+                if (invoice.PaidAmount >= invoice.TotalAmount)
                 {
                     invoice.Status = "Paid";
                 }
