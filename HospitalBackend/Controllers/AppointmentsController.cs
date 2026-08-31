@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 using HospitalBackend.DTOs;
@@ -13,10 +14,12 @@ namespace HospitalBackend.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AppointmentsController> _logger;
 
-        public AppointmentsController(ApplicationDbContext context)
+        public AppointmentsController(ApplicationDbContext context, ILogger<AppointmentsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Appointments
@@ -32,7 +35,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetAppointments Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء جلب قائمة المواعيد.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب المواعيد." });
             }
         }
@@ -56,7 +59,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetAppointment Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء جلب بيانات الموعد رقم المعرف: {AppointmentId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب بيانات الموعد." });
             }
         }
@@ -90,7 +93,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PostAppointment Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء إنشاء موعد جديد.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء إنشاء الموعد." });
             }
         }
@@ -121,17 +124,18 @@ namespace HospitalBackend.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!AppointmentExists(id))
                 {
                     return NotFound(new { message = "الموعد غير موجود" });
                 }
+                _logger.LogError(ex, "حدث خطأ تزامن (Concurrency) أثناء تحديث الموعد رقم: {AppointmentId}", id);
                 throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PutAppointment Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء تحديث الموعد رقم: {AppointmentId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء تحديث الموعد." });
             }
 
@@ -157,7 +161,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DeleteAppointment Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء حذف الموعد رقم: {AppointmentId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء حذف الموعد." });
             }
         }
