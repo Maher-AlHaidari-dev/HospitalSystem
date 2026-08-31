@@ -27,40 +27,54 @@ namespace HospitalBackend.Controllers
             try
             {
                 var today = DateTime.Today;
+                var todayStart = today;
+                var todayEnd = today.AddDays(1);
 
+                // 1. إجمالي المرضى
                 var totalPatients = await _context.Patients.CountAsync();
 
-                var todaysAppointments = await _context.Appointments
-                    .CountAsync(a => a.AppointmentDate.Date == today);
+                // 2. جلب المواعيد والفواتير لمعالجتها بأمان تام
+                var allAppointments = await _context.Appointments.AsNoTracking().ToListAsync();
+                var allInvoices = await _context.Invoices.AsNoTracking().ToListAsync();
 
-                var totalScheduled = await _context.Appointments.CountAsync();
+                // حساب مواعيد اليوم بطريقة آمنة
+                var todaysAppointments = allAppointments
+                    .Count(a => a.AppointmentDate >= todayStart && a.AppointmentDate < todayEnd);
 
-                var pendingInvoicesQuery = _context.Invoices
-                    .Where(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial" || i.Status == "معلق");
+                var totalScheduled = allAppointments.Count;
 
-                var pendingBillsCount = await pendingInvoicesQuery.CountAsync();
+                // 3. الفواتير المعلقة والمتبقي (تحديدها بناءً على الحالة أو إذا كان المبلغ المتبقي أكبر من صفر)
+                var pendingInvoices = allInvoices.Where(i => 
+                    (i.Status != null && (
+                        i.Status.Contains("pend", StringComparison.OrdinalIgnoreCase) || 
+                        i.Status.Contains("معلق", StringComparison.OrdinalIgnoreCase) || 
+                        i.Status.Contains("unpaid", StringComparison.OrdinalIgnoreCase) ||
+                        i.Status.Contains("partial", StringComparison.OrdinalIgnoreCase)
+                    )) || 
+                    (i.TotalAmount > i.PaidAmount)
+                ).ToList();
+
+                var pendingBillsCount = pendingInvoices.Count;
+                var pendingAmount = pendingInvoices.Sum(i => i.TotalAmount - i.PaidAmount);
                 
-                // حساب إجمالي المبالغ المعلقة المتبقية
-                var pendingAmount = await pendingInvoicesQuery
-                    .SumAsync(i => (decimal?)(i.TotalAmount - i.PaidAmount)) ?? 0;
-                
+                // 4. إيرادات الشهر الحالي
                 var currentMonth = today.Month;
                 var currentYear = today.Year;
                 
-                // حساب الإيرادات المحصلة لهذا الشهر (بناءً على PaidAmount)
-                var totalRevenue = await _context.Invoices
+                var totalRevenue = allInvoices
                     .Where(i => i.IssuedDate.Month == currentMonth && i.IssuedDate.Year == currentYear)
-                    .SumAsync(i => (decimal?)i.PaidAmount) ?? 0;
+                    .Sum(i => i.PaidAmount);
 
-                var deptStats = await _context.Appointments
-                    .AsNoTracking()
+                // 5. احصائيات الأقسام للمواعيد
+                var deptStats = allAppointments
                     .Where(a => !string.IsNullOrEmpty(a.Department))
                     .GroupBy(a => a.Department)
                     .Select(g => new { department = g.Key, count = g.Count() })
-                    .ToListAsync();
+                    .ToList();
 
+                // 6. تسجيل المرضى خلال آخر 7 أيام
                 var last7Days = Enumerable.Range(0, 7).Select(i => today.AddDays(-6 + i)).ToList();
-                var startDate = today.AddDays(-6).Date;
+                var startDate = today.AddDays(-6);
 
                 var patientsList = await _context.Patients
                     .AsNoTracking()
@@ -70,7 +84,6 @@ namespace HospitalBackend.Controllers
                 var intakeLabels = last7Days.Select(d => d.ToString("ddd")).ToArray();
                 var intakeCounts = last7Days.Select(d => patientsList.Count(p => p.CreatedAt.Date == d.Date)).ToArray();
 
-                // إرجاع الأسماء بحالة تطابق 100% ما يطلبه ملف الـ JavaScript
                 return Ok(new
                 {
                     totalPatients = totalPatients,
@@ -86,8 +99,8 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DashboardStats Error] {ex}");
-                return StatusCode(500, new { message = "حدث خطأ أثناء جلب إحصائيات لوحة التحكم." });
+                Console.WriteLine($"[DashboardStats Error] {ex.Message}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء جلب إحصائيات لوحة التحكم.", details = ex.Message });
             }
         }
     }
