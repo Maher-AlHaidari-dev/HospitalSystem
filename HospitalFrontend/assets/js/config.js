@@ -341,8 +341,8 @@ const CONFIG = {
         const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
         let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-        // توجيه ذكي: إضافة /api للمسارات الخاصة بالفواتير والإعدادات
-        if ((cleanEndpoint.startsWith('/invoices') || cleanEndpoint.startsWith('/settings')) && !cleanEndpoint.startsWith('/api')) {
+        // توجيه ذكي: إضافة /api للمسارات الخاصة بالفواتير، الإعدادات، والسجلات الطبية
+        if ((cleanEndpoint.startsWith('/invoices') || cleanEndpoint.startsWith('/settings') || cleanEndpoint.startsWith('/medical-records') || cleanEndpoint.startsWith('/records')) && !cleanEndpoint.startsWith('/api')) {
             cleanEndpoint = `/api${cleanEndpoint}`;
         }
 

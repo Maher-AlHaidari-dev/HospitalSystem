@@ -3,162 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="medicalRecordsTitle">MediCore HMS - Medical Records</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title data-i18n="medicalRecordsTitle">السجلات الطبية - MediCore HMS</title>
+    <link rel="stylesheet" href="assets/css/style.css"> <!-- استبدل بمسار ملف الـ CSS الخاص بك -->
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
+<body>
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-[#0B2B38] text-slate-300 flex flex-col justify-between shrink-0">
+    <div class="app-container">
+        <!-- Main Content Header -->
+        <header class="content-header">
             <div>
-                <!-- Brand Header -->
-                <div class="h-16 flex items-center px-6 space-x-3 space-x-reverse border-b border-slate-700/50">
-                    <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center text-white font-bold">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                    </div>
-                    <span class="font-bold text-white text-lg tracking-wide">MediCore HMS</span>
-                </div>
-
-                <!-- Navigation Links -->
-                <nav class="p-4 space-y-1 text-sm font-medium">
-                    <a href="dashboard.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-border-all w-6 text-slate-400"></i>
-                        <span data-i18n="navDashboard">Dashboard</span>
-                    </a>
-                    <a href="patients.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-user-group w-6 text-slate-400"></i>
-                        <span data-i18n="navPatients">Patients</span>
-                    </a>
-                    <a href="appointments.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-calendar-check w-6 text-slate-400"></i>
-                        <span data-i18n="navAppointments">Appointments</span>
-                    </a>
-                    <a href="medical-records.html" class="flex items-center px-4 py-2.5 rounded-lg bg-teal-600/90 text-white font-semibold shadow-sm">
-                        <i class="fa-solid fa-file-medical w-6"></i>
-                        <span data-i18n="navMedicalRecords">Medical Records</span>
-                    </a>
-                    <a href="invoices.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-receipt w-6 text-slate-400"></i>
-                        <span data-i18n="navInvoices">Billing</span>
-                    </a>
-                    <a href="reports.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-chart-line w-6 text-slate-400"></i>
-                        <span data-i18n="navReports">Reports</span>
-                    </a>
-                    <a href="settings.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-gear w-6 text-slate-400"></i>
-                        <span data-i18n="navSettings">Settings</span>
-                    </a>
-                </nav>
+                <h1 data-i18n="recordsHeader">السجلات الطبية</h1>
+                <p data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
             </div>
-
-            <!-- User Profile Footer -->
-            <div class="p-4 border-t border-slate-700/50 flex items-center justify-between">
-                <div class="flex items-center space-x-3 space-x-reverse overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm shrink-0">
-                        A
-                    </div>
-                    <div class="truncate text-xs">
-                        <p class="font-semibold text-white truncate">Admin</p>
-                        <p class="text-slate-400 truncate" data-i18n="adminRole">Admin Staff</p>
-                    </div>
-                </div>
-                <button title="Logout" class="text-slate-400 hover:text-white transition p-1.5">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </button>
+            <div class="header-actions">
+                <button id="btnOpenNewRecordModal" class="btn-primary" data-i18n="btnNewRecord">سجل جديد</button>
             </div>
-        </aside>
+        </header>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col min-w-0">
-            <!-- Top Navbar -->
-            <header class="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between gap-4">
-                <!-- Search Bar -->
-                <div class="relative max-w-md w-full">
-                    <i class="fa-solid fa-magnifying-glass absolute rtl:right-3.5 ltr:left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="searchInput" onkeyup="filterRecords()" data-i18n-placeholder="searchPlaceholder" placeholder="Search patients, appointments..." class="w-full rtl:pr-10 rtl:pl-4 ltr:pl-10 ltr:pr-4 py-2 text-sm bg-slate-100/80 border border-transparent rounded-lg focus:bg-white focus:border-teal-500 focus:outline-none transition">
-                </div>
+        <!-- Search & Filter bar -->
+        <div class="filter-bar">
+            <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
+        </div>
 
-                <!-- Action Controls -->
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
-                        EN
-                    </button>
-                    <button class="relative p-2 text-slate-500 hover:text-slate-700 transition rounded-lg hover:bg-slate-100">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Page Body -->
-            <div class="p-8 max-w-7xl w-full mx-auto space-y-6">
-                <!-- Title & Add Button -->
-                <div class="flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                        <h1 class="text-2xl font-bold text-slate-900" data-i18n="recordsHeader">Medical Records</h1>
-                        <p class="text-xs text-slate-500 mt-1" data-i18n="recordsSubHeader">Centralized, versioned patient records with role-based access and full audit.</p>
-                    </div>
-                    <button onclick="toggleModal('newRecordModal')" class="inline-flex items-center space-x-2 space-x-reverse px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-lg shadow-sm transition">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span data-i18n="btnNewRecord">New record</span>
-                    </button>
-                </div>
-
-                <!-- Medical Records Grid -->
-                <div id="recordsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Cards injected dynamically via JS -->
-                </div>
-            </div>
-        </main>
+        <!-- Records Table Section -->
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th data-i18n="thPatientName">اسم المريض</th>
+                        <th data-i18n="recordsDiagnosis">التشخيص</th>
+                        <th data-i18n="recordsPrescription">الوصفة الطبية</th>
+                        <th data-i18n="recordsNotes">ملاحظات</th>
+                        <th data-i18n="thActions">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="medicalRecordsTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center;" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Modal: New Medical Record -->
-    <div id="newRecordModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-5">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h3 class="text-lg font-bold text-slate-800" data-i18n="modalNewRecordTitle">Add New Medical Record</h3>
-                <button onclick="toggleModal('newRecordModal')" class="text-slate-400 hover:text-slate-600 text-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <form id="createRecordForm" onsubmit="handleCreateRecord(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblPatientName">Patient Name</label>
-                    <input type="text" id="recPatientName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
+    <!-- Modal for New Record (Hidden by default) -->
+    <div id="newRecordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 data-i18n="modalNewRecordTitle">إضافة سجل طبي جديد</h3>
+            <form id="newRecordForm">
+                <div class="form-group">
+                    <label data-i18n="lblPatientName">اسم المريض</label>
+                    <input type="text" id="recordPatientName" required>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblDoctorName">Doctor Name</label>
-                    <input type="text" id="recDoctorName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
+                <div class="form-group">
+                    <label data-i18n="recordsDiagnosis">التشخيص</label>
+                    <input type="text" id="recordDiagnosis" required>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="recordsDiagnosis">Diagnosis</label>
-                    <input type="text" id="recDiagnosis" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
+                <div class="form-group">
+                    <label data-i18n="recordsPrescription">الوصفة الطبية</label>
+                    <textarea id="recordPrescription"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="recordsPrescription">Prescription</label>
-                    <textarea id="recPrescription" rows="2" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"></textarea>
+                <div class="form-group">
+                    <label data-i18n="recordsNotes">ملاحظات</label>
+                    <textarea id="recordNotes"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblNotes">Notes</label>
-                    <textarea id="recNotes" rows="2" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"></textarea>
-                </div>
-
-                <div class="flex items-center justify-end space-x-3 space-x-reverse pt-2">
-                    <button type="button" onclick="toggleModal('newRecordModal')" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition" data-i18n="btnCancelAppointment">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition" data-i18n="btnSaveRecord">Save Record</button>
-                </div>
+                <button type="submit" class="btn-primary" data-i18n="btnSaveRecord">حفظ السجل</button>
             </form>
         </div>
     </div>
 
-    <!-- Configuration & Page Logic Scripts -->
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/medical-records.js"></script>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="medical-records.js"></script>
 </body>
 </html>
