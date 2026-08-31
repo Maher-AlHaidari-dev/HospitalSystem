@@ -1,12 +1,12 @@
 const CONFIG = {
-    API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app/api',
+    // إرجاع الرابط الأساسي كما كان لتعمل صفحة تسجيل الدخول وباقي الصفحات بنجاح
+    API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app',
 
     // حالة اللغة الحالية
     LANG: localStorage.getItem('app_lang') || 'ar',
 
     translations: {
         ar: {
-            // الملاحة العامة والصفحات
             appointmentsTitle: "إدارة المواعيد - MediCore HMS",
             patientsTitle: "إدارة المرضى - MediCore HMS",
             invoicesTitle: "الفواتير والمدفوعات - MediCore HMS",
@@ -25,7 +25,6 @@ const CONFIG = {
             searchPlaceholder: "البحث عن مريض، موعد، أو طبيب...",
             filterPlaceholder: "تصفية العناصر حسب الاسم، القسم...",
             
-            // صفحة المرضى (Patients)
             patientsHeader: "إدارة المرضى",
             patientsSubHeader: "تسجيل، بحث، ومتابعة الملفات الشخصية والتاريخ الطبي للمرضى.",
             btnNewPatient: "مريض جديد",
@@ -42,7 +41,6 @@ const CONFIG = {
             genderMale: "ذكر",
             genderFemale: "أنثى",
 
-            // صفحة المواعيد
             appointmentsHeader: "المواعيد والحجوزات",
             appointmentsSubHeader: "جدولة، بحث، وإدارة مواعيد العيادات الخارجية والعمليات بشكل لحظي.",
             thPatient: "المريض",
@@ -70,7 +68,6 @@ const CONFIG = {
             statusCancelled: "ملغى",
             statusPending: "قيد الانتظار",
 
-            // صفحة لوحة التحكم
             welcomeBack: "مرحباً بعودتك",
             greetingAdmin: "مساء الخير، المدير.",
             greetingSub: "إليك نظرة عامة على ما يحدث في المستشفى اليوم.",
@@ -84,7 +81,6 @@ const CONFIG = {
             chartDeptTitle: "المواعيد حسب القسم",
             chartDeptSub: "التوزيع عبر التخصصات",
 
-            // صفحة الفواتير والمدفوعات
             invoicesHeader: "الفواتير والمدفوعات",
             invoicesSubHeader: "إنشاء الفواتير، تطبيق الضرائب والخصومات، ومتابعة المدفوعات.",
             btnNewInvoice: "فاتورة جديدة",
@@ -100,7 +96,6 @@ const CONFIG = {
             errorFetchInvoices: "فشل جلب الفواتير من السيرفر",
             noInvoicesFound: "لا توجد فواتير مسجلة حالياً",
 
-            // صفحة السجلات الطبية
             recordsHeader: "السجلات الطبية",
             recordsSubHeader: "سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.",
             btnNewRecord: "سجل جديد",
@@ -113,7 +108,6 @@ const CONFIG = {
             modalNewRecordTitle: "إضافة سجل طبي جديد",
             btnSaveRecord: "حفظ السجل",
 
-            // صفحة الإعدادات
             settingsHeader: "الإعدادات",
             settingsSubHeader: "إدارة الملف الشخصي، التنبيهات، وتفضيلات بيئة العمل.",
             sectionProfile: "الملف الشخصي",
@@ -126,7 +120,6 @@ const CONFIG = {
             subAppointmentReminders: "إرسال تذكيرات عبر البريد الإلكتروني و SMS للمرضى.",
             msgSaveSuccess: "تم حفظ التغييرات بنجاح!",
 
-            // صفحات الحسابات والأمان
             loginTitle: "تسجيل الدخول - MediCore HMS",
             registerTitle: "إنشاء حساب - MediCore HMS",
             authWelcomeBack: "مرحباً بعودتك",
@@ -346,7 +339,13 @@ const CONFIG = {
         };
 
         const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
-        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+        // توجيه ذكي: إضافة /api فقط إذا كان المسار خاص بالفواتير (Invoices)
+        if (cleanEndpoint.startsWith('/invoices') && !cleanEndpoint.startsWith('/api')) {
+            cleanEndpoint = `/api${cleanEndpoint}`;
+        }
+
         const url = `${baseUrl}${cleanEndpoint}`;
 
         try {
