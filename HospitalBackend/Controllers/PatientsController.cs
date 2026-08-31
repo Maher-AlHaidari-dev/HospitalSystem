@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 
@@ -12,10 +13,12 @@ namespace HospitalBackend.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<PatientsController> _logger;
 
-        public PatientsController(ApplicationDbContext context)
+        public PatientsController(ApplicationDbContext context, ILogger<PatientsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Patients
@@ -31,7 +34,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetPatients Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء جلب قائمة المرضى.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب قائمة المرضى." });
             }
         }
@@ -55,7 +58,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetPatient Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء جلب بيانات المريض برقم المعرف: {PatientId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب بيانات المريض." });
             }
         }
@@ -85,7 +88,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[SearchPatients Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء البحث عن المرضى باستخدام الاستعلام: {Query}", query);
                 return StatusCode(500, new { message = "حدث خطأ أثناء البحث عن المرضى." });
             }
         }
@@ -101,7 +104,7 @@ namespace HospitalBackend.Controllers
 
             try
             {
-                // حساب العمر تلقائياً بناءً على تاريخ الميلاد
+                // حساب العمر تلقائياً بناءً على تاريخ الميلاد إذا تم توفيره
                 if (patient.DateOfBirth.HasValue)
                 {
                     patient.Age = CalculateAge(patient.DateOfBirth.Value);
@@ -116,7 +119,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PostPatient Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء إضافة مريض جديد.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء إضافة المريض." });
             }
         }
@@ -159,7 +162,7 @@ namespace HospitalBackend.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!PatientExists(id))
                 {
@@ -167,12 +170,13 @@ namespace HospitalBackend.Controllers
                 }
                 else
                 {
+                    _logger.LogError(ex, "حدث خطأ تزامن (Concurrency) أثناء تحديث المريض رقم: {PatientId}", id);
                     throw;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PutPatient Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء تحديث بيانات المريض رقم: {PatientId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء تحديث بيانات المريض." });
             }
 
@@ -198,7 +202,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DeletePatient Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء حذف المريض رقم: {PatientId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء حذف المريض." });
             }
         }

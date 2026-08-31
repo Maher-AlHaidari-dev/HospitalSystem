@@ -201,11 +201,16 @@ async function handleAddPatient(e) {
         const birthDate = new Date(dateOfBirth);
         const today = new Date();
         age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        if (age < 0) age = 0;
     }
 
     const payload = {
         name: fullName,
-        dateOfBirth: dateOfBirth,
+        dateOfBirth: dateOfBirth ? dateOfBirth : null, // إرسال null إذا كان فارغاً لمنع خطأ السيرفر
         age: age,
         gender: gender,
         phoneNumber: contactNumber,
@@ -216,7 +221,8 @@ async function handleAddPatient(e) {
     };
 
     try {
-        await CONFIG.request('/Patients', {
+        // تم تصحيح المسار ليصبح مطابقاً للباك إند /api/Patients
+        await CONFIG.request('/api/Patients', {
             method: 'POST',
             body: JSON.stringify(payload)
         });
@@ -243,7 +249,8 @@ async function deletePatient(id) {
     if (!confirm(confirmMsg)) return;
 
     try {
-        await CONFIG.request(`/Patients/${id}`, { method: 'DELETE' });
+        // تم تصحيح مسار الحذف ليطابق /api/Patients/{id}
+        await CONFIG.request(`/api/Patients/${id}`, { method: 'DELETE' });
         await loadPatients();
     } catch (error) {
         const failMsg = isLangAr 
