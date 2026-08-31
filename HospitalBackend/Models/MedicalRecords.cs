@@ -1,6 +1,13 @@
 namespace HospitalBackend.Models
 {
-    public record CreateMedicalRecordDto(string PatientName, string DoctorName, string Diagnosis, string Prescription, string? Notes);
+    // تعريف الـ DTO مرة واحدة وبصيغة صحيحة
+    public record CreateMedicalRecordDto(
+        string PatientName, 
+        string DoctorName, 
+        string Diagnosis, 
+        string Prescription, 
+        string? Notes
+    );
 
     public class MedicalRecord
     {

@@ -15,7 +15,7 @@ namespace HospitalBackend.Controllers
             new MedicalRecord { Id = 2, Version = "v1", PatientName = "John Peterson", DoctorName = "Dr. James Miller", Date = DateTime.Now.AddDays(-25), Diagnosis = "Type 2 Diabetes - controlled", Prescription = "Metformin 500mg" }
         };
 
-        // [حماية برمجية]: كائن قفل لضمان سلامة البيانات ومنع أخطاء التزامن (Thread Safety) عند التعديل على القائمة
+        // [حماية برمجية]: كائن قفل لضمان سلامة البيانات ومنع أخطاء التزامن (Thread Safety)
         private static readonly object _lock = new();
 
         [HttpGet]
@@ -71,14 +71,28 @@ namespace HospitalBackend.Controllers
                 return StatusCode(500, new { message = "حدث خطأ أثناء إنشاء السجل الطبي." });
             }
         }
-    }
 
-    public class CreateMedicalRecordDto
-    {
-        public string PatientName { get; set; } = string.Empty;
-        public string DoctorName { get; set; } = string.Empty;
-        public string Diagnosis { get; set; } = string.Empty;
-        public string Prescription { get; set; } = string.Empty;
-        public string Notes { get; set; } = string.Empty;
+        // [إضافة جديدة ضرورية]: دالة حذف السجل الطبي لتتوافق مع زر الحذف في الواجهة الأمامية
+        [HttpDelete("{id}")]
+        public IActionResult DeleteRecord(int id)
+        {
+            try
+            {
+                lock (_lock)
+                {
+                    var record = Records.FirstOrDefault(r => r.Id == id);
+                    if (record == null)
+                        return NotFound(new { message = "السجل الطبي غير موجود." });
+
+                    Records.Remove(record);
+                    return NoContent(); // 204 No Content يشير إلى نجاح الحذف
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DeleteRecord Error] {ex}");
+                return StatusCode(500, new { message = "حدث خطأ أثناء حذف السجل الطبي." });
+            }
+        }
     }
 }
