@@ -1,0 +1,78 @@
+
+
+        /* =========================================================
+           RESPONSIVE DESIGN
+           هذه الأسطر مسؤولة عن جعل التصميم متجاوبًا مع جميع الشاشات
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .responsive-table {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .responsive-table table {
+            min-width: 760px;
+        }
+
+        @media (max-width: 767px) {
+
+            body {
+                display: block !important;
+            }
+
+            .desktop-sidebar {
+                width: 100% !important;
+                min-height: auto !important;
+            }
+
+            .desktop-sidebar nav {
+                display: flex;
+                overflow-x: auto;
+                gap: 6px;
+                padding: 8px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .desktop-sidebar nav a {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            .main-layout {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .responsive-header {
+                padding: 12px 16px !important;
+                flex-wrap: wrap;
+            }
+
+            .header-search {
+                width: 100% !important;
+                max-width: 100% !important;
+                order: 2;
+            }
+
+            .responsive-main {
+                padding: 16px !important;
+            }
+        }
