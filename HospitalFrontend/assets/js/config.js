@@ -1,5 +1,5 @@
 const CONFIG = {
-    API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app',
+    API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app/api',
 
     // حالة اللغة الحالية
     LANG: localStorage.getItem('app_lang') || 'ar',
