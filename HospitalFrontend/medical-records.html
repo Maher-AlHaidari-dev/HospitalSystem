@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="medicalRecordsTitle">السجلات الطبية - MediCore HMS</title>
-    <!-- استخدام Tailwind CSS ليطابق باقي صفحات النظام -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,57 +17,102 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-    <!-- Main Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8">
+    <div class="flex h-screen overflow-hidden">
         
-        <!-- Header Section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <!-- Sidebar Navigation (هوية النظام الموحدة) -->
+        <aside class="w-64 bg-white border-l border-gray-200 hidden md:flex md:flex-col justify-between">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900" data-i18n="recordsHeader">السجلات الطبية</h1>
-                <p class="text-sm text-gray-500 mt-1" data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
+                <!-- Brand Logo -->
+                <div class="h-16 flex items-center px-6 border-b border-gray-100">
+                    <span class="text-xl font-bold text-blue-600">MediCore <span class="text-gray-700 text-sm font-normal">HMS</span></span>
+                </div>
+                <!-- Nav Links -->
+                <nav class="p-4 space-y-1 text-sm">
+                    <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navDashboard">لوحة التحكم</a>
+                    <a href="patients.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navPatients">إدارة المرضى</a>
+                    <a href="appointments.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navAppointments">المواعيد</a>
+                    <a href="medical-records.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-medium transition" data-i18n="navMedicalRecords">السجلات الطبية</a>
+                    <a href="invoices.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navInvoices">الفواتير والمدفوعات</a>
+                    <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navSettings">الإعدادات</a>
+                </nav>
             </div>
-            <div>
-                <button id="btnOpenNewRecordModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition duration-200 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    <span data-i18n="btnNewRecord">سجل جديد</span>
-                </button>
+            <!-- Admin Profile Footer -->
+            <div class="p-4 border-t border-gray-100 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">أد</div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800">مدير النظام</p>
+                    <p class="text-[10px] text-gray-400" data-i18n="adminRole">إدارة النظام</p>
+                </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Search & Filter Bar -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <div class="relative">
-                <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </span>
-                <input type="text" id="searchInput" class="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
-            </div>
-        </div>
+        <!-- Main Wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+            
+            <!-- Top Navbar -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-lg font-bold text-gray-800" data-i18n="recordsHeader">السجلات الطبية</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="CONFIG.applyTranslations(CONFIG.LANG === 'ar' ? 'en' : 'ar')" class="px-3 py-1.5 border border-gray-200 text-xs font-semibold rounded-lg hover:bg-gray-50 transition">
+                        🌐 EN / AR
+                    </button>
+                </div>
+            </header>
 
-        <!-- Records Table Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50/75 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            <th class="py-4 px-6" data-i18n="thPatientName">اسم المريض</th>
-                            <th class="py-4 px-6" data-i18n="recordsDiagnosis">التشخيص</th>
-                            <th class="py-4 px-6" data-i18n="recordsPrescription">الوصفة الطبية</th>
-                            <th class="py-4 px-6" data-i18n="recordsNotes">ملاحظات</th>
-                            <th class="py-4 px-6 text-center" data-i18n="thActions">إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="medicalRecordsTableBody" class="divide-y divide-gray-100 text-sm">
-                        <tr>
-                            <td colspan="5" class="py-8 text-center text-gray-400" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Page Content -->
+            <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+                
+                <!-- Header Section & Action Button -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-500" data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
+                    </div>
+                    <div>
+                        <button id="btnOpenNewRecordModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition duration-200 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <span data-i18n="btnNewRecord">سجل جديد</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </span>
+                        <input type="text" id="searchInput" class="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
+                    </div>
+                </div>
+
+                <!-- Records Table Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50/75 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th class="py-4 px-6" data-i18n="thPatientName">اسم المريض</th>
+                                    <th class="py-4 px-6" data-i18n="recordsDiagnosis">التشخيص</th>
+                                    <th class="py-4 px-6" data-i18n="recordsPrescription">الوصفة الطبية</th>
+                                    <th class="py-4 px-6" data-i18n="recordsNotes">ملاحظات</th>
+                                    <th class="py-4 px-6 text-center" data-i18n="thActions">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="medicalRecordsTableBody" class="divide-y divide-gray-100 text-sm">
+                                <tr>
+                                    <td colspan="5" class="py-8 text-center text-gray-400" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
         </div>
-    </main>
+    </div>
 
     <!-- Modal for New Record -->
     <div id="newRecordModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -108,7 +152,6 @@
     <script src="config.js"></script>
     <script src="medical-records.js"></script>
     <script>
-        // إضافات بسيطة لإظهار وإخفاء الـ Modal بالتايلوند
         const modal = document.getElementById('newRecordModal');
         document.getElementById('btnOpenNewRecordModal').addEventListener('click', () => modal.classList.remove('hidden'));
         document.getElementById('btnCloseModal').addEventListener('click', () => modal.classList.add('hidden'));
