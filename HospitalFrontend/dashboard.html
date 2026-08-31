@@ -6,8 +6,8 @@
     <title data-i18n="dashboardTitle">لوحة التحكم - MediCore HMS</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FontAwesome Icons (Fixed CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -50,10 +50,10 @@
                     <i class="fa-solid fa-chart-column w-5"></i>
                     <span data-i18n="navReports">التقارير</span>
                 </a>
-                 <a href="settings.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                        <i class="fa-solid fa-gear w-6 text-slate-400"></i>
-                        <span data-i18n="navSettings">الاعدادات</span>
-                    </a>
+                <a href="settings.html" class="flex items-center px-4 py-2.5 gap-3 rounded-lg hover:bg-slate-800/60 transition text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-gear w-5"></i>
+                    <span data-i18n="navSettings">الإعدادات</span>
+                </a>
             </nav>
         </div>
     </aside>
@@ -80,7 +80,7 @@
                     <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
 
-                <!-- Welcome Notification (مع إضافة المعرفات لعرض بيانات الأدمن الحقيقية) -->
+                <!-- Welcome Notification -->
                 <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs flex items-center gap-2">
                     <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
                     <div>

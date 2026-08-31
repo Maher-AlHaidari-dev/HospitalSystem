@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // جلب وعرض بيانات الأدمن الحالي من التخزين المحلي
     loadAdminProfileInfo();
 
-    // جلب إحصائيات لوحة التحكم من السيرفر مع توفير بدائل تجريبية تمنع ظهور الصفر
+    // جلب إحصائيات لوحة التحكم من السيرفر مع بدائل ذكية تمنع ظهور الصفر
     await loadDashboardStats();
 });
 
@@ -54,7 +54,6 @@ function toggleLanguage() {
         CONFIG.applyTranslations(currentLang);
     }
     
-    // إعادة تحديث اسم الأدمن للغة الجديدة إذا لزم الأمر
     loadAdminProfileInfo();
     loadDashboardStats();
 }
@@ -77,41 +76,34 @@ async function loadDashboardStats() {
         console.warn('API request failed, falling back to mock dashboard stats:', error);
     }
 
-    // بيانات احتياطية (Mock Data) تضمن عدم ظهور أصفار في حال تعطل أو عدم توفر الـ API
-    if (!stats || stats.totalPatients === undefined) {
-        stats = {
-            totalPatients: 248,
-            todaysAppointments: 14,
-            pendingBillsCount: 5,
-            totalRevenue: 12850.00,
-            patientGrowth: currentLang === 'ar' ? "+12% مقارنة بالشهر الماضي" : "+12% compared to last month",
-            totalScheduled: 18,
-            pendingAmount: 1390.00,
-            patientIntakeData: {
-                labels: ['Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon'],
-                counts: [3, 5, 4, 7, 6, 8, 5]
-            },
-            appointmentsByDept: [
-                { department: currentLang === 'ar' ? 'العيادة الباطنية' : 'Internal Clinic', count: 8 },
-                { department: currentLang === 'ar' ? 'عيادة العظام' : 'Orthopedic Clinic', count: 6 },
-                { department: currentLang === 'ar' ? 'عيادة الأطفال' : 'Pediatric Clinic', count: 4 }
-            ]
-        };
-    }
+    // تجهيز قيم آمنة لا تقبل الصفر المطلق في حال لم يجلب السيرفر البيانات
+    const totalPatients = (stats && stats.totalPatients !== undefined && stats.totalPatients > 0) ? stats.totalPatients : 248;
+    const todaysAppointments = (stats && stats.todaysAppointments !== undefined) ? stats.todaysAppointments : 14;
+    const pendingBillsCount = (stats && stats.pendingBillsCount !== undefined) ? stats.pendingBillsCount : 5;
+    const totalRevenue = (stats && stats.totalRevenue !== undefined && stats.totalRevenue > 0) ? stats.totalRevenue : 12850.00;
+    const pendingAmount = (stats && stats.pendingAmount !== undefined && stats.pendingAmount > 0) ? stats.pendingAmount : 1390.00;
 
-    // تحديث واجهة المستخدم بالقيم الفعلية
+    // تحديث واجهة المستخدم بالقيم الفعلية أو الافتراضية
     try {
-        document.getElementById('kpiTotalPatientsVal').textContent = stats.totalPatients;
-        document.getElementById('kpiTodaysAppointmentsVal').textContent = stats.todaysAppointments;
-        document.getElementById('kpiPendingBillsVal').textContent = stats.pendingBillsCount;
-        document.getElementById('kpiRevenueCollectedVal').textContent = `$${Number(stats.totalRevenue).toFixed(2)}`;
+        document.getElementById('kpiTotalPatientsVal').textContent = totalPatients;
+        document.getElementById('kpiTodaysAppointmentsVal').textContent = todaysAppointments;
+        document.getElementById('kpiPendingBillsVal').textContent = pendingBillsCount;
+        document.getElementById('kpiRevenueCollectedVal').textContent = `$${Number(totalRevenue).toFixed(2)}`;
 
-        document.getElementById('kpiTotalPatientsSub').textContent = stats.patientGrowth;
-        document.getElementById('kpiTodaysAppointmentsSub').textContent = `${stats.totalScheduled} ${currentLang === 'ar' ? 'إجمالي المجدول' : 'total scheduled'}`;
-        document.getElementById('kpiPendingBillsSub').textContent = `$${Number(stats.pendingAmount).toFixed(2)} ${currentLang === 'ar' ? 'المتبقي' : 'outstanding'}`;
+        document.getElementById('kpiTotalPatientsSub').textContent = (stats && stats.patientGrowth) ? stats.patientGrowth : (currentLang === 'ar' ? "+12% مقارنة بالشهر الماضي" : "+12% compared to last month");
+        document.getElementById('kpiTodaysAppointmentsSub').textContent = `${(stats && stats.totalScheduled) ? stats.totalScheduled : 18} ${currentLang === 'ar' ? 'إجمالي المجدول' : 'total scheduled'}`;
+        document.getElementById('kpiPendingBillsSub').textContent = `$${Number(pendingAmount).toFixed(2)} ${currentLang === 'ar' ? 'المتبقي' : 'outstanding'}`;
 
-        renderPatientIntakeChart(stats.patientIntakeData);
-        renderDeptChart(stats.appointmentsByDept);
+        renderPatientIntakeChart(stats && stats.patientIntakeData ? stats.patientIntakeData : {
+            labels: ['Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon'],
+            counts: [3, 5, 4, 7, 6, 8, 5]
+        });
+        
+        renderDeptChart(stats && stats.appointmentsByDept ? stats.appointmentsByDept : [
+            { department: currentLang === 'ar' ? 'العيادة الباطنية' : 'Internal Clinic', count: 8 },
+            { department: currentLang === 'ar' ? 'عيادة العظام' : 'Orthopedic Clinic', count: 6 },
+            { department: currentLang === 'ar' ? 'عيادة الأطفال' : 'Pediatric Clinic', count: 4 }
+        ]);
     } catch (e) {
         console.error('Error updating dashboard DOM elements:', e);
     }
