@@ -341,8 +341,8 @@ const CONFIG = {
         const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
         let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-        // توجيه ذكي: إضافة /api فقط إذا كان المسار خاص بالفواتير (Invoices)
-        if (cleanEndpoint.startsWith('/invoices') && !cleanEndpoint.startsWith('/api')) {
+        // توجيه ذكي: إضافة /api للمسارات الخاصة بالفواتير والإعدادات
+        if ((cleanEndpoint.startsWith('/invoices') || cleanEndpoint.startsWith('/settings')) && !cleanEndpoint.startsWith('/api')) {
             cleanEndpoint = `/api${cleanEndpoint}`;
         }
 
