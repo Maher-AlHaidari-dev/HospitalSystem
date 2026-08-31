@@ -147,13 +147,12 @@ const CONFIG = {
             linkRegister: "إنشاء حساب جديد",
             linkLogin: "تسجيل الدخول",
             errPasswordMismatch: "كلمتا المرور غير متطابقتين",
-            errWeakPassword: "كلمة المرور يجب أن تحتوى على 8 خانات على الأقل وتتضمن حرفاً كبيراً ورقماً ورمزاً", // تم تصحيح كلمة ورشم إلى رقم
+            errWeakPassword: "كلمة المرور يجب أن تحتوى على 8 خانات على الأقل وتتضمن حرفاً كبيراً ورقماً ورمزاً",
             msgLoginSuccess: "تم تسجيل الدخول بنجاح!",
             msgRegisterSuccess: "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن."
         },
 
         en: {
-            // Navigation & General
             appointmentsTitle: "Appointments - MediCore HMS",
             patientsTitle: "Patients - MediCore HMS",
             invoicesTitle: "Billing & Payments - MediCore HMS",
@@ -172,7 +171,6 @@ const CONFIG = {
             searchPlaceholder: "Search patient, appointment, or doctor...",
             filterPlaceholder: "Filter items by name, department...",
             
-            // Patients Page
             patientsHeader: "Patient Management",
             patientsSubHeader: "Register, search, and manage patient profiles and medical history.",
             btnNewPatient: "New Patient",
@@ -189,7 +187,6 @@ const CONFIG = {
             genderMale: "Male",
             genderFemale: "Female",
 
-            // Appointments Page
             appointmentsHeader: "Appointments & Bookings",
             appointmentsSubHeader: "Real-time scheduling, search, and management for clinics and operations.",
             thPatient: "Patient",
@@ -217,7 +214,6 @@ const CONFIG = {
             statusCancelled: "Cancelled",
             statusPending: "Pending",
 
-            // Dashboard Page
             welcomeBack: "Welcome back",
             greetingAdmin: "Good evening, Admin.",
             greetingSub: "Here is what is happening across the hospital today.",
@@ -231,7 +227,6 @@ const CONFIG = {
             chartDeptTitle: "Appointments by Department",
             chartDeptSub: "Distribution across specialties",
 
-            // Billing & Invoices Page
             invoicesHeader: "Billing & Payments",
             invoicesSubHeader: "Generate invoices, apply taxes and discounts, and track payments.",
             btnNewInvoice: "New invoice",
@@ -247,7 +242,6 @@ const CONFIG = {
             errorFetchInvoices: "Failed to fetch invoices from server",
             noInvoicesFound: "No invoices recorded yet",
 
-            // Medical Records Page
             recordsHeader: "Medical Records",
             recordsSubHeader: "Centralized, versioned patient records with role-based access and full audit.",
             btnNewRecord: "New record",
@@ -260,7 +254,6 @@ const CONFIG = {
             modalNewRecordTitle: "Add New Medical Record",
             btnSaveRecord: "Save Record",
 
-            // Settings Page
             settingsHeader: "Settings",
             settingsSubHeader: "Manage your profile, notifications, and workspace preferences.",
             sectionProfile: "Profile",
@@ -273,7 +266,6 @@ const CONFIG = {
             subAppointmentReminders: "Send Email + SMS reminders to patients.",
             msgSaveSuccess: "Changes saved successfully!",
 
-            // Authentication Pages
             loginTitle: "Login - MediCore HMS",
             registerTitle: "Register - MediCore HMS",
             authWelcomeBack: "Welcome back",
@@ -300,13 +292,11 @@ const CONFIG = {
         }
     },
 
-    // دالة الحصول على ترجمة المفتاح مباشرة
     t(key) {
         const dictionary = this.translations[this.LANG] || this.translations['ar'];
         return dictionary[key] || key;
     },
 
-    // ميثود تطبيق الترجمة اللحظية وضبط الاتجاه
     applyTranslations(lang = this.LANG) {
         this.LANG = lang;
         localStorage.setItem('app_lang', lang);
@@ -331,7 +321,6 @@ const CONFIG = {
         });
     },
 
-    // إنشاء عناصر DOM بشكل آمن
     createSafeElement(tag, textContent, className = '') {
         const element = document.createElement(tag);
         if (textContent !== undefined && textContent !== null) {
@@ -343,7 +332,6 @@ const CONFIG = {
         return element;
     },
 
-    // ميثود الاتصال بالـ API مع تزويد التوكن التلقائي للطلبات المحمية وضبط المسارات بأمان
     async request(endpoint, options = {}) {
         const token = localStorage.getItem('auth_token') || 
                     localStorage.getItem('token') || 
@@ -357,20 +345,31 @@ const CONFIG = {
             ...options.headers
         };
 
-        // دمج الرابط الأساسي مع نقطة النهاية بشكل آمن لتجنب أخطاء الشرطة المائلة
         const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
         const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
         const url = `${baseUrl}${cleanEndpoint}`;
 
-        const response = await fetch(url, { ...options, headers });
-        
-        if (!response.ok) {
-            const err = await response.json().catch(() => ({}));
-            const errorObj = new Error(err.title || err.message || 'حدث خطأ في النظام');
-            errorObj.status = response.status;
-            throw errorObj;
-        }
+        try {
+            const response = await fetch(url, { ...options, headers });
+            
+            if (!response.ok) {
+                const errText = await response.text();
+                let err = {};
+                try {
+                    err = JSON.parse(errText);
+                } catch {
+                    err = { message: errText || 'حدث خطأ في النظام' };
+                }
+                const errorObj = new Error(err.title || err.message || `خطأ في الخادم (${response.status})`);
+                errorObj.status = response.status;
+                console.error(`API Error [${response.status}] at ${url}:`, err);
+                throw errorObj;
+            }
 
-        return response.status !== 204 ? await response.json() : null;
+            return response.status !== 204 ? await response.json() : null;
+        } catch (error) {
+            console.error(`Network or Server Request Failed for: ${url}`, error);
+            throw error;
+        }
     }
 };

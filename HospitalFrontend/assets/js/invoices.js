@@ -41,27 +41,26 @@ function toggleModal(modalId) {
     if (modal) modal.classList.toggle('hidden');
 }
 
-const defaultInvoices = [
-    { id: 1, invoiceNumber: 'INV-2026-001', patientName: 'أحمد علي عبد الله', issuedDate: '2026-08-20', dueDate: '2026-09-01', totalAmount: 350.00, paidAmount: 350.00, status: 'Paid' },
-    { id: 2, invoiceNumber: 'INV-2026-002', patientName: 'سارة محمد الحكيمي', issuedDate: '2026-08-22', dueDate: '2026-08-30', totalAmount: 1200.00, paidAmount: 600.00, status: 'Partial' },
-    { id: 3, invoiceNumber: 'INV-2026-003', patientName: 'خالد عمر الشميري', issuedDate: '2026-08-25', dueDate: '2026-09-05', totalAmount: 150.00, paidAmount: 0.00, status: 'Pending' }
-];
+// تم حذف بيانات demo_invoices الوهمية نهائياً لضمان التعامل الحصري مع السيرفر الحقيقي
 
 async function fetchInvoices() {
     const tableBody = document.getElementById('invoicesTableBody');
     if (!tableBody) return;
 
+    const isEn = CONFIG.LANG === 'en';
+
     try {
         const invoices = await CONFIG.request('/invoices');
         renderInvoices(invoices);
     } catch (error) {
-        console.warn('Backend Server offline. Fallback to storage:', error);
-        let localData = localStorage.getItem('demo_invoices');
-        if (!localData) {
-            localStorage.setItem('demo_invoices', JSON.stringify(defaultInvoices));
-            localData = JSON.stringify(defaultInvoices);
-        }
-        renderInvoices(JSON.parse(localData));
+        console.error('Failed to fetch invoices from server:', error);
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-6 text-rose-500 font-medium">
+                    ${isEn ? 'Failed to load invoices from server.' : 'فشل تحميل الفواتير من الخادم الحقيقي.'}
+                </td>
+            </tr>
+        `;
     }
 }
 
@@ -123,13 +122,14 @@ function renderInvoices(invoices) {
 
 async function handleCreateInvoice(event) {
     event.preventDefault();
+    const isEn = CONFIG.LANG === 'en';
     
     const patientNameInput = document.getElementById('invPatientName').value.trim();
     const totalAmountInput = parseFloat(document.getElementById('invTotalAmount').value);
     const dueDateInput = document.getElementById('invDueDate').value;
 
     if (!patientNameInput || isNaN(totalAmountInput) || totalAmountInput <= 0 || !dueDateInput) {
-        alert(CONFIG.LANG === 'en' ? 'Please fill all fields accurately' : 'يرجى إدخال بيانات صحيحة ومكتملة');
+        alert(isEn ? 'Please fill all fields accurately' : 'يرجى إدخال بيانات صحيحة ومكتملة');
         return;
     }
 
@@ -148,16 +148,13 @@ async function handleCreateInvoice(event) {
             method: 'POST',
             body: JSON.stringify(newInvoiceObj)
         });
+        toggleModal('newInvoiceModal');
+        document.getElementById('createInvoiceForm').reset();
+        fetchInvoices();
     } catch (error) {
-        let localData = JSON.parse(localStorage.getItem('demo_invoices') || JSON.stringify(defaultInvoices));
-        newInvoiceObj.id = Date.now();
-        localData.unshift(newInvoiceObj);
-        localStorage.setItem('demo_invoices', JSON.stringify(localData));
+        console.error('Failed to create invoice on server:', error);
+        alert(isEn ? 'Failed to save invoice to server.' : 'فشل حفظ الفاتورة في السيرفر.');
     }
-
-    toggleModal('newInvoiceModal');
-    document.getElementById('createInvoiceForm').reset();
-    fetchInvoices();
 }
 
 async function recordPayment(invoiceId) {
@@ -178,18 +175,7 @@ async function recordPayment(invoiceId) {
         });
         fetchInvoices();
     } catch (error) {
-        let localData = JSON.parse(localStorage.getItem('demo_invoices') || '[]');
-        const invIndex = localData.findIndex(i => i.id === invoiceId);
-        
-        if (invIndex !== -1) {
-            localData[invIndex].paidAmount += amount;
-            if (localData[invIndex].paidAmount >= localData[invIndex].totalAmount) {
-                localData[invIndex].status = 'Paid';
-            } else {
-                localData[invIndex].status = 'Partial';
-            }
-            localStorage.setItem('demo_invoices', JSON.stringify(localData));
-        }
-        fetchInvoices();
+        console.error('Failed to record payment on server:', error);
+        alert(isEn ? 'Failed to record payment on server.' : 'فشل تسجيل الدفعة في السيرفر.');
     }
 }
