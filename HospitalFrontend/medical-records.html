@@ -3,159 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="medicalRecordsTitle">السجلات الطبية - MediCore HMS</title>
+    <title data-i18n="medicalRecordsTitle">MediCore HMS - Medical Records</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
 
-    <div class="flex h-screen overflow-hidden">
-        
-        <!-- Sidebar Navigation (هوية النظام الموحدة) -->
-        <aside class="w-64 bg-white border-l border-gray-200 hidden md:flex md:flex-col justify-between">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-[#0B2B38] text-slate-300 flex flex-col justify-between shrink-0">
             <div>
-                <!-- Brand Logo -->
-                <div class="h-16 flex items-center px-6 border-b border-gray-100">
-                    <span class="text-xl font-bold text-blue-600">MediCore <span class="text-gray-700 text-sm font-normal">HMS</span></span>
+                <!-- Brand Header -->
+                <div class="h-16 flex items-center px-6 space-x-3 space-x-reverse border-b border-slate-700/50">
+                    <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center text-white font-bold shrink-0">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <span class="font-bold text-white text-lg tracking-wide truncate">MediCore HMS</span>
                 </div>
-                <!-- Nav Links -->
-                <nav class="p-4 space-y-1 text-sm">
-                    <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navDashboard">لوحة التحكم</a>
-                    <a href="patients.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navPatients">إدارة المرضى</a>
-                    <a href="appointments.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navAppointments">المواعيد</a>
-                    <a href="medical-records.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-medium transition" data-i18n="navMedicalRecords">السجلات الطبية</a>
-                    <a href="invoices.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navInvoices">الفواتير والمدفوعات</a>
-                    <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition" data-i18n="navSettings">الإعدادات</a>
+
+                <!-- Navigation Links -->
+                <nav class="p-4 space-y-1 text-sm font-medium">
+                    <a href="dashboard.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-border-all w-6 text-slate-400"></i>
+                        <span data-i18n="navDashboard">Dashboard</span>
+                    </a>
+                    <a href="patients.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-user-group w-6 text-slate-400"></i>
+                        <span data-i18n="navPatients">Patients</span>
+                    </a>
+                    <a href="appointments.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-calendar-check w-6 text-slate-400"></i>
+                        <span data-i18n="navAppointments">Appointments</span>
+                    </a>
+                    <a href="medical-records.html" class="flex items-center px-4 py-2.5 rounded-lg bg-teal-600/90 text-white font-semibold shadow-sm">
+                        <i class="fa-solid fa-file-medical w-6"></i>
+                        <span data-i18n="navMedicalRecords">Medical Records</span>
+                    </a>
+                    <a href="invoices.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-receipt w-6 text-slate-400"></i>
+                        <span data-i18n="navInvoices">Billing</span>
+                    </a>
+                    <a href="reports.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-chart-line w-6 text-slate-400"></i>
+                        <span data-i18n="navReports">Reports</span>
+                    </a>
+                    <a href="settings.html" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                        <i class="fa-solid fa-gear w-6 text-slate-400"></i>
+                        <span data-i18n="navSettings">Settings</span>
+                    </a>
                 </nav>
             </div>
-            <!-- Admin Profile Footer -->
-            <div class="p-4 border-t border-gray-100 flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">أد</div>
-                <div>
-                    <p class="text-xs font-bold text-gray-800">مدير النظام</p>
-                    <p class="text-[10px] text-gray-400" data-i18n="adminRole">إدارة النظام</p>
+
+            <!-- User Profile Footer -->
+            <div class="p-4 border-t border-slate-700/50 flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse overflow-hidden">
+                    <div class="w-9 h-9 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm shrink-0">
+                        A
+                    </div>
+                    <div class="truncate text-xs">
+                        <p class="font-semibold text-white truncate">Admin</p>
+                        <p class="text-slate-400 truncate" data-i18n="adminRole">Admin Staff</p>
+                    </div>
                 </div>
+                <button title="Logout" class="text-slate-400 hover:text-white transition p-1.5 shrink-0">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
             </div>
         </aside>
 
-        <!-- Main Wrapper -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-            
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col min-w-0">
             <!-- Top Navbar -->
-            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-                <div class="flex items-center gap-4">
-                    <h2 class="text-lg font-bold text-gray-800" data-i18n="recordsHeader">السجلات الطبية</h2>
+            <header class="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between gap-4 shrink-0">
+                <!-- Search Bar -->
+                <div class="relative max-w-md w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" onkeyup="filterRecords()" data-i18n-placeholder="searchPlaceholder" placeholder="Search patients, appointments..." class="w-full pr-10 pl-4 py-2 text-sm bg-slate-100/80 border border-transparent rounded-lg focus:bg-white focus:border-teal-500 focus:outline-none transition">
                 </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="CONFIG.applyTranslations(CONFIG.LANG === 'ar' ? 'en' : 'ar')" class="px-3 py-1.5 border border-gray-200 text-xs font-semibold rounded-lg hover:bg-gray-50 transition">
-                        🌐 EN / AR
+
+                <!-- Action Controls -->
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                        EN
+                    </button>
+                    <button class="relative p-2 text-slate-500 hover:text-slate-700 transition rounded-lg hover:bg-slate-100">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
                     </button>
                 </div>
             </header>
 
-            <!-- Page Content -->
-            <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
-                
-                <!-- Header Section & Action Button -->
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+            <!-- Page Body -->
+            <div class="p-8 max-w-7xl w-full mx-auto space-y-6">
+                <!-- Title & Add Button -->
+                <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <p class="text-sm text-gray-500" data-i18n="recordsSubHeader">سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.</p>
+                        <h1 class="text-2xl font-bold text-slate-900" data-i18n="recordsHeader">Medical Records</h1>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="recordsSubHeader">Centralized, versioned patient records with role-based access and full audit.</p>
                     </div>
-                    <div>
-                        <button id="btnOpenNewRecordModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition duration-200 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            <span data-i18n="btnNewRecord">سجل جديد</span>
-                        </button>
-                    </div>
+                    <button onclick="toggleModal('newRecordModal')" class="inline-flex items-center space-x-2 space-x-reverse px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-lg shadow-sm transition">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span data-i18n="btnNewRecord">New record</span>
+                    </button>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
-                    <div class="relative">
-                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </span>
-                        <input type="text" id="searchInput" class="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب...">
-                    </div>
+                <!-- Medical Records Grid -->
+                <div id="recordsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Cards injected dynamically via JS -->
                 </div>
-
-                <!-- Records Table Card -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50/75 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    <th class="py-4 px-6" data-i18n="thPatientName">اسم المريض</th>
-                                    <th class="py-4 px-6" data-i18n="recordsDiagnosis">التشخيص</th>
-                                    <th class="py-4 px-6" data-i18n="recordsPrescription">الوصفة الطبية</th>
-                                    <th class="py-4 px-6" data-i18n="recordsNotes">ملاحظات</th>
-                                    <th class="py-4 px-6 text-center" data-i18n="thActions">إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="medicalRecordsTableBody" class="divide-y divide-gray-100 text-sm">
-                                <tr>
-                                    <td colspan="5" class="py-8 text-center text-gray-400" data-i18n="loadingRecords">جاري تحميل السجلات الطبية...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Modal for New Record -->
-    <div id="newRecordModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 transform transition-all">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-900" data-i18n="modalNewRecordTitle">إضافة سجل طبي جديد</h3>
-                <button id="btnCloseModal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <!-- Modal: New Medical Record -->
+    <div id="newRecordModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 class="text-lg font-bold text-slate-800" data-i18n="modalNewRecordTitle">Add New Medical Record</h3>
+                <button onclick="toggleModal('newRecordModal')" class="text-slate-400 hover:text-slate-600 text-sm">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <form id="newRecordForm" class="space-y-4">
+
+            <form id="createRecordForm" onsubmit="handleCreateRecord(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="lblPatientName">اسم المريض</label>
-                    <input type="text" id="recordPatientName" required class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblPatientName">Patient Name</label>
+                    <input type="text" id="recPatientName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsDiagnosis">التشخيص</label>
-                    <input type="text" id="recordDiagnosis" required class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblDoctorName">Doctor Name</label>
+                    <input type="text" id="recDoctorName" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsPrescription">الوصفة الطبية</label>
-                    <textarea id="recordPrescription" rows="3" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="recordsDiagnosis">Diagnosis</label>
+                    <input type="text" id="recDiagnosis" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="recordsNotes">ملاحظات</label>
-                    <textarea id="recordNotes" rows="2" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="recordsPrescription">Prescription</label>
+                    <textarea id="recPrescription" rows="2" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"></textarea>
                 </div>
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" id="btnCancelModal" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 text-sm font-medium">إلغاء</button>
-                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm" data-i18n="btnSaveRecord">حفظ السجل</button>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="lblNotes">Notes</label>
+                    <textarea id="recNotes" rows="2" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 space-x-reverse pt-2">
+                    <button type="button" onclick="toggleModal('newRecordModal')" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition" data-i18n="btnCancelAppointment">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition" data-i18n="btnSaveRecord">Save Record</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="config.js"></script>
-    <script src="medical-records.js"></script>
-    <script>
-        const modal = document.getElementById('newRecordModal');
-        document.getElementById('btnOpenNewRecordModal').addEventListener('click', () => modal.classList.remove('hidden'));
-        document.getElementById('btnCloseModal').addEventListener('click', () => modal.classList.add('hidden'));
-        document.getElementById('btnCancelModal').addEventListener('click', () => modal.classList.add('hidden'));
-    </script>
+    <!-- Configuration & Page Logic Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/medical-records.js"></script>
 </body>
 </html>
