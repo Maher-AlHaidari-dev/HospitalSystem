@@ -38,14 +38,14 @@ namespace HospitalBackend.Controllers
                 // 3. إجمالي المواعيد
                 var totalScheduled = await _context.Appointments.CountAsync();
 
-                // 4. تحسين الأداء: حساب الفواتير والإيرادات مباشرة داخل قاعدة البيانات (Database-side aggregation)
+                // 4. جلب الفواتير المعلقة وحسابها في الذاكرة لتجنب أخطاء الترجمة في قاعدة البيانات
                 var pendingInvoicesQuery = _context.Invoices
                     .Where(i => i.Status == "Pending" || i.Status == "Unpaid" || i.Status == "Partial");
 
                 var pendingBillsCount = await pendingInvoicesQuery.CountAsync();
                 
-                var pendingAmount = await pendingInvoicesQuery
-                    .SumAsync(i => (decimal?)(i.Amount - i.PaidAmount)) ?? 0;
+                var pendingInvoicesList = await pendingInvoicesQuery.ToListAsync();
+                var pendingAmount = pendingInvoicesList.Sum(i => (decimal?)(i.Amount - i.PaidAmount)) ?? 0;
                 
                 // الإيرادات المحصلة لهذا الشهر (مجموع المبالغ المدفوعة الفعلية PaidAmount)
                 var currentMonth = today.Month;
