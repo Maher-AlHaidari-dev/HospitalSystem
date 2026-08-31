@@ -3,75 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title data-i18n="dashboardTitle">لوحة التحكم - MediCore HMS</title>
-    <!-- Tailwind CSS CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons (Fixed CDN) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <!-- Chart.js -->
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* =========================================================
+           RESPONSIVE DESIGN
+           هذه الأسطر مسؤولة عن جعل التصميم متجاوبًا مع جميع الشاشات
+           Desktop / Laptop / Tablet / Mobile
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* منع العناصر الكبيرة من إجبار الصفحة على تجاوز عرض الشاشة */
+        img,
+        canvas,
+        iframe,
+        video {
+            max-width: 100%;
+        }
+
+        /* تحسين الجداول على الشاشات الصغيرة */
+        .responsive-table {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* =========================================================
+           Responsive Sidebar
+           على الجوال يتحول الـ Sidebar إلى قائمة علوية
+           ========================================================= */
+
+        @media (max-width: 767px) {
+
+            body {
+                display: block !important;
+            }
+
+            .desktop-sidebar {
+                width: 100% !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+
+            .desktop-sidebar nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 8px;
+                gap: 6px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .desktop-sidebar nav a {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            .main-layout {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .responsive-header {
+                padding: 12px 16px !important;
+                flex-wrap: wrap;
+            }
+
+            .header-search {
+                width: 100% !important;
+                max-width: 100% !important;
+                order: 2;
+            }
+
+            .header-actions {
+                width: auto;
+            }
+
+            .responsive-main {
+                padding: 16px !important;
+            }
+
+            .kpi-card {
+                min-width: 0 !important;
+            }
+
+            .chart-card {
+                min-width: 0 !important;
+                width: 100%;
+            }
+
+            .chart-container {
+                height: 240px !important;
+            }
+        }
+
+        /* Tablet */
+        @media (min-width: 768px) and (max-width: 1023px) {
+
+            .responsive-header {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            .responsive-main {
+                padding: 20px !important;
+            }
+
+            .header-search {
+                width: 280px !important;
+            }
+        }
+
+        /* منع النصوص الطويلة من كسر التصميم */
+        .safe-text {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+    </style>
 </head>
+
 <body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex text-sm font-sans">
 
-    <!-- Sidebar Component -->
-    <aside class="w-64 bg-[#0a2533] text-slate-300 flex flex-col justify-between p-4 flex-shrink-0">
+    <!-- =========================================================
+         SIDEBAR
+         RESPONSIVE:
+         على الجوال يتحول إلى شريط علوي بعرض الشاشة
+         ========================================================= -->
+    <aside class="desktop-sidebar w-64 bg-[#0a2533] text-slate-300 flex flex-col justify-between p-4 flex-shrink-0">
+
         <div>
-            <!-- Brand Logo -->
+
+            <!-- Brand -->
             <div class="flex items-center gap-3 px-2 py-4 mb-6 border-b border-slate-800">
-                <div class="bg-teal-400 text-[#0a2533] p-2 rounded-lg font-bold text-xl flex items-center justify-center w-10 h-10">
+                <div class="bg-teal-400 text-[#0a2533] p-2 rounded-lg font-bold text-xl flex items-center justify-center w-10 h-10 shrink-0">
                     <i class="fa-solid fa-heart-pulse"></i>
                 </div>
-                <span class="font-bold text-lg text-white">MediCore HMS</span>
+
+                <span class="font-bold text-lg text-white whitespace-nowrap">
+                    MediCore HMS
+                </span>
             </div>
 
-            <!-- Navigation Links -->
+            <!-- Navigation -->
             <nav class="space-y-1">
-                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 bg-[#00A896] text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-table-cells-large w-5"></i>
+
+                <a href="dashboard.html"
+                   class="flex items-center gap-3 px-4 py-3 bg-[#00A896] text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-table-cells-large w-5 shrink-0"></i>
                     <span data-i18n="navDashboard">لوحة التحكم</span>
                 </a>
-                <a href="patients.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-user-group w-5"></i>
+
+                <a href="patients.html"
+                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-user-group w-5 shrink-0"></i>
                     <span data-i18n="navPatients">إدارة المرضى</span>
                 </a>
-                <a href="appointments.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-regular fa-calendar-check w-5"></i>
+
+                <a href="appointments.html"
+                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-regular fa-calendar-check w-5 shrink-0"></i>
                     <span data-i18n="navAppointments">المواعيد</span>
                 </a>
-                <a href="medical-records.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-file-medical w-5"></i>
+
+                <a href="medical-records.html"
+                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-file-medical w-5 shrink-0"></i>
                     <span data-i18n="navMedicalRecords">السجلات الطبية</span>
                 </a>
-                <a href="invoices.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+
+                <a href="invoices.html"
+                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 shrink-0"></i>
                     <span data-i18n="navInvoices">الفواتير</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-chart-column w-5"></i>
+
+                <a href="reports.html"
+                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-chart-column w-5 shrink-0"></i>
                     <span data-i18n="navReports">التقارير</span>
                 </a>
-                <a href="settings.html" class="flex items-center px-4 py-2.5 gap-3 rounded-lg hover:bg-slate-800/60 transition text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-gear w-5"></i>
+
+                <a href="settings.html"
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
+                    <i class="fa-solid fa-gear w-5 shrink-0"></i>
                     <span data-i18n="navSettings">الإعدادات</span>
                 </a>
+
             </nav>
         </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="flex items-center justify-between px-8 py-4 bg-white border-b border-slate-200">
-            <!-- Search Bar -->
-            <div class="relative w-96">
+
+    <!-- =========================================================
+         MAIN LAYOUT
+         min-w-0 مهم جدًا حتى لا يتجاوز المحتوى عرض الشاشة
+         ========================================================= -->
+    <div class="main-layout flex-1 flex flex-col min-w-0 w-full">
+
+        <!-- HEADER -->
+        <header class="responsive-header flex items-center justify-between px-8 py-4 bg-white border-b border-slate-200 gap-4 shrink-0">
+
+            <!-- Search -->
+            <div class="header-search relative w-96 max-w-full">
+
                 <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="البحث عن مريض، موعد، أو طبيب..." class="w-full pr-10 pl-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]">
+
+                <input
+                    type="text"
+                    data-i18n-placeholder="searchPlaceholder"
+                    placeholder="البحث عن مريض، موعد، أو طبيب..."
+                    class="w-full pr-10 pl-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]">
+
             </div>
 
-            <!-- Header Right Section -->
-            <div class="flex items-center gap-4">
-                <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
+            <!-- Header Actions -->
+            <div class="header-actions flex items-center gap-3 shrink-0">
+
+                <button
+                    id="langToggleBtn"
+                    onclick="toggleLanguage()"
+                    class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
                     EN
                 </button>
 
@@ -80,101 +254,225 @@
                     <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
 
-                <!-- Welcome Notification -->
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
-                    <div>
-                        <p class="font-semibold leading-tight" id="adminWelcomeText" data-i18n="welcomeBack">مرحباً بعودتك</p>
-                        <p class="text-[11px] text-slate-500 leading-tight" id="adminEmail">admin@medicore.io</p>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs flex items-center gap-2 max-w-[220px]">
+
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-sm shrink-0"></i>
+
+                    <div class="min-w-0">
+                        <p
+                            class="font-semibold leading-tight truncate"
+                            id="adminWelcomeText"
+                            data-i18n="welcomeBack">
+                            مرحباً بعودتك
+                        </p>
+
+                        <p
+                            class="text-[11px] text-slate-500 leading-tight truncate"
+                            id="adminEmail">
+                            admin@medicore.io
+                        </p>
                     </div>
+
                 </div>
+
             </div>
         </header>
 
-        <!-- Dashboard Content -->
-        <main class="p-8 space-y-6 overflow-y-auto">
-            <!-- Greeting Header -->
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900" id="adminGreetingTitle" data-i18n="greetingAdmin">مساء الخير، المدير.</h1>
-                <p class="text-slate-500 text-xs mt-1" data-i18n="greetingSub">إليك نظرة عامة على ما يحدث في المستشفى اليوم.</p>
+
+        <!-- =====================================================
+             MAIN CONTENT
+             RESPONSIVE:
+             padding يتغير حسب حجم الشاشة
+             ===================================================== -->
+        <main class="responsive-main p-8 space-y-6 overflow-y-auto min-w-0 w-full">
+
+            <!-- Greeting -->
+            <div class="safe-text">
+                <h1
+                    class="text-2xl sm:text-2xl text-xl font-bold text-slate-900"
+                    id="adminGreetingTitle"
+                    data-i18n="greetingAdmin">
+                    مساء الخير، المدير.
+                </h1>
+
+                <p
+                    class="text-slate-500 text-xs mt-1"
+                    data-i18n="greetingSub">
+                    إليك نظرة عامة على ما يحدث في المستشفى اليوم.
+                </p>
             </div>
 
-            <!-- KPI Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase" data-i18n="kpiTotalPatients">إجمالي المرضى</span>
-                        <div class="text-2xl font-bold text-slate-900 mt-2" id="kpiTotalPatientsVal">0</div>
-                        <span class="text-xs text-emerald-600 font-medium mt-1 inline-block" id="kpiTotalPatientsSub">+12% مقارنة بالشهر الماضي</span>
+
+            <!-- KPI CARDS -->
+            <!-- هذه الـ classes تجعل البطاقات تتجاوب تلقائيًا مع حجم الشاشة -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+
+                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+                            إجمالي المرضى
+                        </span>
+
+                        <div
+                            class="text-2xl font-bold text-slate-900 mt-2"
+                            id="kpiTotalPatientsVal">
+                            0
+                        </div>
+
+                        <span
+                            class="text-xs text-emerald-600 font-medium mt-1 inline-block safe-text"
+                            id="kpiTotalPatientsSub">
+                            +12% مقارنة بالشهر الماضي
+                        </span>
                     </div>
-                    <div class="p-3 bg-teal-50 text-[#00A896] rounded-xl">
+
+                    <div class="p-3 bg-teal-50 text-[#00A896] rounded-xl shrink-0">
                         <i class="fa-solid fa-users text-lg"></i>
                     </div>
+
                 </div>
 
-                <!-- Card 2 -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase" data-i18n="kpiTodaysAppointments">مواعيد اليوم</span>
-                        <div class="text-2xl font-bold text-slate-900 mt-2" id="kpiTodaysAppointmentsVal">0</div>
-                        <span class="text-xs text-slate-500 mt-1 inline-block" id="kpiTodaysAppointmentsSub">4 إجمالي المجدول</span>
+
+                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+                            مواعيد اليوم
+                        </span>
+
+                        <div
+                            class="text-2xl font-bold text-slate-900 mt-2"
+                            id="kpiTodaysAppointmentsVal">
+                            0
+                        </div>
+
+                        <span
+                            class="text-xs text-slate-500 mt-1 inline-block"
+                            id="kpiTodaysAppointmentsSub">
+                            4 إجمالي المجدول
+                        </span>
                     </div>
-                    <div class="p-3 bg-sky-50 text-sky-600 rounded-xl">
+
+                    <div class="p-3 bg-sky-50 text-sky-600 rounded-xl shrink-0">
                         <i class="fa-regular fa-calendar-plus text-lg"></i>
                     </div>
+
                 </div>
 
-                <!-- Card 3 -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase" data-i18n="kpiPendingBills">الفواتير المعلقة</span>
-                        <div class="text-2xl font-bold text-slate-900 mt-2" id="kpiPendingBillsVal">0</div>
-                        <span class="text-xs text-amber-600 font-medium mt-1 inline-block" id="kpiPendingBillsSub">$139.00 المتبقي</span>
+
+                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+                            الفواتير المعلقة
+                        </span>
+
+                        <div
+                            class="text-2xl font-bold text-slate-900 mt-2"
+                            id="kpiPendingBillsVal">
+                            0
+                        </div>
+
+                        <span
+                            class="text-xs text-amber-600 font-medium mt-1 inline-block"
+                            id="kpiPendingBillsSub">
+                            $139.00 المتبقي
+                        </span>
                     </div>
-                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
+
+                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl shrink-0">
                         <i class="fa-solid fa-receipt text-lg"></i>
                     </div>
+
                 </div>
 
-                <!-- Card 4 -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase" data-i18n="kpiRevenueCollected">الإيرادات المحصلة</span>
-                        <div class="text-2xl font-bold text-slate-900 mt-2" id="kpiRevenueCollectedVal">$0.00</div>
-                        <span class="text-xs text-slate-500 mt-1 inline-block" data-i18n="kpiRevenueSub">هذا الشهر</span>
+
+                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+                            الإيرادات المحصلة
+                        </span>
+
+                        <div
+                            class="text-2xl font-bold text-slate-900 mt-2"
+                            id="kpiRevenueCollectedVal">
+                            $0.00
+                        </div>
+
+                        <span class="text-xs text-slate-500 mt-1 inline-block">
+                            هذا الشهر
+                        </span>
                     </div>
-                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+
+                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
                         <i class="fa-solid fa-arrow-trend-up text-lg"></i>
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- =================================================
+                 CHARTS
+                 على الكمبيوتر 2 + 1
+                 على الجوال عمود واحد
+                 ================================================= -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 min-w-0">
+
                 <!-- Line Chart -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-900 text-sm" data-i18n="chartPatientIntakeTitle">تسجيل المرضى — آخر 7 أيام</h3>
-                    <p class="text-xs text-slate-400 mb-4" data-i18n="chartPatientIntakeSub">تسجيلات المرضى الجدد يومياً</p>
-                    <div class="h-64">
+                <div class="chart-card lg:col-span-2 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm min-w-0">
+
+                    <h3
+                        class="font-bold text-slate-900 text-sm"
+                        data-i18n="chartPatientIntakeTitle">
+                        تسجيل المرضى — آخر 7 أيام
+                    </h3>
+
+                    <p
+                        class="text-xs text-slate-400 mb-4"
+                        data-i18n="chartPatientIntakeSub">
+                        تسجيلات المرضى الجدد يومياً
+                    </p>
+
+                    <div class="chart-container h-64 w-full relative">
                         <canvas id="patientIntakeChart"></canvas>
                     </div>
+
                 </div>
 
+
                 <!-- Bar Chart -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-900 text-sm" data-i18n="chartDeptTitle">المواعيد حسب القسم</h3>
-                    <p class="text-xs text-slate-400 mb-4" data-i18n="chartDeptSub">التوزيع عبر التخصصات</p>
-                    <div class="h-64">
+                <div class="chart-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm min-w-0">
+
+                    <h3
+                        class="font-bold text-slate-900 text-sm"
+                        data-i18n="chartDeptTitle">
+                        المواعيد حسب القسم
+                    </h3>
+
+                    <p
+                        class="text-xs text-slate-400 mb-4"
+                        data-i18n="chartDeptSub">
+                        التوزيع عبر التخصصات
+                    </p>
+
+                    <div class="chart-container h-64 w-full relative">
                         <canvas id="deptChart"></canvas>
                     </div>
+
                 </div>
+
             </div>
+
         </main>
     </div>
 
-    <!-- Scripts -->
+
     <script src="assets/js/config.js"></script>
     <script src="assets/js/dashboard.js"></script>
+
 </body>
 </html>
