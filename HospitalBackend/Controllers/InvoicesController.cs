@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using HospitalBackend.Data;
 using HospitalBackend.Models;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ namespace HospitalBackend.Controllers
     public class InvoicesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<InvoicesController> _logger;
 
-        public InvoicesController(ApplicationDbContext context)
+        public InvoicesController(ApplicationDbContext context, ILogger<InvoicesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -35,7 +38,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetInvoices Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء جلب قائمة الفواتير.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء جلب الفواتير." });
             }
         }
@@ -54,7 +57,6 @@ namespace HospitalBackend.Controllers
                     invoice.InvoiceNumber = $"INV-2026-{new Random().Next(1000, 9999)}";
                 }
 
-                // استخدمنا IssuedDate المربوطة بقاعدة البيانات لتجنب أي مشاكل
                 if (invoice.IssuedDate == default)
                 {
                     invoice.IssuedDate = DateTime.UtcNow;
@@ -72,7 +74,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[CreateInvoice Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء إنشاء الفاتورة.");
                 return StatusCode(500, new { message = "حدث خطأ أثناء إنشاء الفاتورة." });
             }
         }
@@ -80,7 +82,6 @@ namespace HospitalBackend.Controllers
         [HttpPost("{id}/pay")]
         public async Task<IActionResult> RecordPayment(int id, [FromBody] decimal amount)
         {
-            // [حماية أمنية]: منع المبالغ السالبة
             if (amount <= 0)
                 return BadRequest(new { message = "يجب أن يكون مبلغ الدفع أكبر من الصفر" });
 
@@ -91,7 +92,6 @@ namespace HospitalBackend.Controllers
 
                 invoice.PaidAmount += amount;
                 
-                // الاعتماد على الحقل الأصلي TotalAmount لضمان الدقة المطلقة
                 if (invoice.PaidAmount >= invoice.TotalAmount)
                 {
                     invoice.Status = "Paid";
@@ -106,7 +106,7 @@ namespace HospitalBackend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[RecordPayment Error] {ex}");
+                _logger.LogError(ex, "حدث خطأ أثناء تسجيل عملية الدفع للفاتورة رقم: {InvoiceId}", id);
                 return StatusCode(500, new { message = "حدث خطأ أثناء تسجيل عملية الدفع." });
             }
         }
