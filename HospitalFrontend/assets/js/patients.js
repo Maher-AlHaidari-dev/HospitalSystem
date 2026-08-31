@@ -104,10 +104,7 @@ function renderPatientsTable(patients) {
         const row = createPatientRow(patient);
         tableBody.appendChild(row);
     });
-     const emailEl = document.getElementById('adminEmail');
-            if (emailEl && user.email) {
-                emailEl.textContent = user.email;
-            }
+    
 }
 
 // إنشاء صف المريض

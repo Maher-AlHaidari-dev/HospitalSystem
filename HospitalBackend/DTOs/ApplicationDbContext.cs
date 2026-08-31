@@ -20,7 +20,7 @@ namespace HospitalBackend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // تعيين أسماء الجداول بحروف صغيرة صراحة لضمان توافقها التام مع MySQL على لينكس (Railway)
+            
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<Patient>().ToTable("patients");
             modelBuilder.Entity<Appointment>().ToTable("appointments");
