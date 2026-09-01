@@ -12,7 +12,7 @@
        ========================================================= */
 
     const CONFIG = {
-
+      API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app',
         appName: "MediCore HMS",
 
         defaultLanguage: "ar",
