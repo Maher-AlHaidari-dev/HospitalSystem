@@ -1,374 +1,1379 @@
-const CONFIG = {
-    // إرجاع الرابط الأساسي كما كان لتعمل صفحة تسجيل الدخول وباقي الصفحات بنجاح
-    API_BASE_URL: 'https://hospitalsystem-production-80cc.up.railway.app',
+/* =========================================================
+   MediCore HMS
+   Global Configuration + Arabic / English Translation
+   ========================================================= */
 
-    // حالة اللغة الحالية
-    LANG: localStorage.getItem('app_lang') || 'ar',
+(function () {
+    "use strict";
 
-    translations: {
+
+    /* =========================================================
+       1. CONFIGURATION
+       ========================================================= */
+
+    const CONFIG = {
+
+        appName: "MediCore HMS",
+
+        defaultLanguage: "ar",
+
+        supportedLanguages: ["ar", "en"],
+
+        storageKey: "medicore_language"
+
+    };
+
+
+    /* =========================================================
+       2. TRANSLATIONS
+       ========================================================= */
+
+    const translations = {
+
+        /* =====================================================
+           ARABIC
+           ===================================================== */
+
         ar: {
-            appointmentsTitle: "إدارة المواعيد - MediCore HMS",
-            patientsTitle: "إدارة المرضى - MediCore HMS",
-            invoicesTitle: "الفواتير والمدفوعات - MediCore HMS",
-            medicalRecordsTitle: "السجلات الطبية - MediCore HMS",
-            dashboardTitle: "لوحة التحكم - MediCore HMS",
-            settingsTitle: "الإعدادات - MediCore HMS",
-            
+
+            /* -------------------------------------------------
+               General
+               ------------------------------------------------- */
+
+            appName: "MediCore HMS",
+
+            english: "English",
+            arabic: "العربية",
+
+            logout: "تسجيل الخروج",
+
+            search: "بحث",
+
+            cancel: "إلغاء",
+
+            save: "حفظ",
+
+            edit: "تعديل",
+
+            delete: "حذف",
+
+            view: "عرض",
+
+            close: "إغلاق",
+
+            actions: "إجراءات",
+
+            status: "الحالة",
+
+            loading: "جاري التحميل...",
+
+            noData: "لا توجد بيانات",
+
+            confirm: "تأكيد",
+
+            yes: "نعم",
+
+            no: "لا",
+
+
+            /* -------------------------------------------------
+               Navigation
+               ------------------------------------------------- */
+
+            nav: {
+
+                dashboard: "لوحة التحكم",
+
+                patients: "إدارة المرضى",
+
+                appointments: "المواعيد",
+
+                medicalRecords: "السجلات الطبية",
+
+                invoices: "الفواتير",
+
+                reports: "التقارير",
+
+                settings: "الإعدادات"
+
+            },
+
+
+            /* -------------------------------------------------
+               Alternative navigation keys
+               لدعم الصفحات القديمة
+               ------------------------------------------------- */
+
             navDashboard: "لوحة التحكم",
+
             navPatients: "إدارة المرضى",
+
             navAppointments: "المواعيد",
-            navInvoices: "الفواتير والمدفوعات",
-            navReports: "التقارير",
-            navSettings: "الإعدادات",
+
             navMedicalRecords: "السجلات الطبية",
-            adminRole: "إدارة النظام",
-            searchPlaceholder: "البحث عن مريض، موعد، أو طبيب...",
-            filterPlaceholder: "تصفية العناصر حسب الاسم، القسم...",
-            
-            patientsHeader: "إدارة المرضى",
-            patientsSubHeader: "تسجيل، بحث، ومتابعة الملفات الشخصية والتاريخ الطبي للمرضى.",
-            btnNewPatient: "مريض جديد",
-            thPatientName: "اسم المريض",
-            thPhone: "رقم الهاتف",
-            thAge: "العمر",
-            thGender: "الجنس",
-            thBloodGroup: "فصيلة الدم",
-            loadingPatients: "جاري تحميل بيانات المرضى...",
-            errorFetchPatients: "فشل جلب بيانات المرضى من السيرفر",
-            noPatientsFound: "لا توجد ملفات مرضى مسجلة حالياً",
-            modalNewPatientTitle: "تسجيل مريض جديد",
-            btnSavePatient: "حفظ بيانات المريض",
-            genderMale: "ذكر",
-            genderFemale: "أنثى",
 
-            appointmentsHeader: "المواعيد والحجوزات",
-            appointmentsSubHeader: "جدولة، بحث، وإدارة مواعيد العيادات الخارجية والعمليات بشكل لحظي.",
-            thPatient: "المريض",
-            thDoctor: "الطبيب",
-            thDepartment: "القسم",
-            thAppointmentDate: "الموعد",
-            thStatus: "الحالة",
-            thActions: "إجراءات",
-            newAppointmentTitle: "حجز موعد جديد",
-            lblPatientName: "اسم المريض",
-            lblDoctorName: "الطبيب المعالج",
-            lblDepartment: "القسم / العيادة",
-            lblAppointmentDate: "تاريخ ووقت الموعد",
-            lblNotes: "ملاحظات إضافية",
-            btnSubmitAppointment: "تأكيد وحفظ الموعد",
-            deptInternal: "العيادة الباطنية",
-            deptOrtho: "عيادة العظام",
-            deptPediatrics: "عيادة الأطفال",
-            deptDental: "عيادة الأسنان",
-            loadingAppointments: "جاري تحميل المواعيد...",
-            errorFetchAppointments: "فشل جلب المواعيد من السيرفر",
-            noAppointmentsFound: "لا توجد مواعيد مسجلة حالياً",
-            btnCancelAppointment: "إلغاء",
-            statusConfirmed: "مؤكد",
-            statusCancelled: "ملغى",
-            statusPending: "قيد الانتظار",
+            navInvoices: "الفواتير",
 
-            welcomeBack: "مرحباً بعودتك",
-            greetingAdmin: "مساء الخير، المدير.",
-            greetingSub: "إليك نظرة عامة على ما يحدث في المستشفى اليوم.",
-            kpiTotalPatients: "إجمالي المرضى",
-            kpiTodaysAppointments: "مواعيد اليوم",
-            kpiPendingBills: "الفواتير المعلقة",
-            kpiRevenueCollected: "الإيرادات المحصلة",
-            kpiRevenueSub: "هذا الشهر",
-            chartPatientIntakeTitle: "تسجيل المرضى — آخر 7 أيام",
-            chartPatientIntakeSub: "تسجيلات المرضى الجدد يومياً",
-            chartDeptTitle: "المواعيد حسب القسم",
-            chartDeptSub: "التوزيع عبر التخصصات",
+            navReports: "التقارير",
 
-            invoicesHeader: "الفواتير والمدفوعات",
-            invoicesSubHeader: "إنشاء الفواتير، تطبيق الضرائب والخصومات، ومتابعة المدفوعات.",
-            btnNewInvoice: "فاتورة جديدة",
-            thInvoiceId: "معرف الفاتورة",
-            thIssuedDate: "تاريخ الإصدار",
-            thDueDate: "تاريخ الاستحقاق",
-            thTotalAmount: "الإجمالي",
-            thPaidAmount: "المدفوع",
-            statusPaid: "مدفوع",
-            statusPartial: "جزئي",
-            btnRecordPayment: "تسجيل دفعة",
-            loadingInvoices: "جاري تحميل الفواتير...",
-            errorFetchInvoices: "فشل جلب الفواتير من السيرفر",
-            noInvoicesFound: "لا توجد فواتير مسجلة حالياً",
+            navSettings: "الإعدادات",
 
-            recordsHeader: "السجلات الطبية",
-            recordsSubHeader: "سجلات المرضى المركزية والمؤرخة مع صلاحيات الوصول والتدقيق الشامل.",
-            btnNewRecord: "سجل جديد",
-            recordsDiagnosis: "التشخيص",
-            recordsPrescription: "الوصفة الطبية",
-            recordsNotes: "ملاحظات",
-            loadingRecords: "جاري تحميل السجلات الطبية...",
-            errorFetchRecords: "فشل جلب السجلات الطبية من السيرفر",
-            noRecordsFound: "لا توجد سجلات طبية مسجلة حالياً",
-            modalNewRecordTitle: "إضافة سجل طبي جديد",
-            btnSaveRecord: "حفظ السجل",
 
-            settingsHeader: "الإعدادات",
-            settingsSubHeader: "إدارة الملف الشخصي، التنبيهات، وتفضيلات بيئة العمل.",
-            sectionProfile: "الملف الشخصي",
-            lblName: "الاسم الكامل",
-            lblEmail: "البريد الإلكتروني",
-            lblRole: "الدور الوظيفي",
-            btnSave: "حفظ التغييرات",
-            sectionNotifications: "التنبيهات",
-            lblAppointmentReminders: "تذكيرات المواعيد",
-            subAppointmentReminders: "إرسال تذكيرات عبر البريد الإلكتروني و SMS للمرضى.",
-            msgSaveSuccess: "تم حفظ التغييرات بنجاح!",
+            /* -------------------------------------------------
+               User
+               ------------------------------------------------- */
 
-            loginTitle: "تسجيل الدخول - MediCore HMS",
-            registerTitle: "إنشاء حساب - MediCore HMS",
-            authWelcomeBack: "مرحباً بعودتك",
-            authLoginSub: "أدخل بياناتك للوصول إلى نظام إدارة المستشفى.",
-            authRegisterHeader: "إنشاء حساب جديد",
-            authRegisterSub: "قم بتعبئة البيانات للتسجيل في النظام.",
-            lblFullName: "الاسم الكامل",
-            lblPassword: "كلمة المرور",
-            lblConfirmPassword: "تأكيد كلمة المرور",
-            lblRoleSelect: "نوع الحساب",
-            roleAdmin: "إدارة النظام (System Admin)",
-            roleDoctor: "طبيب (Doctor)",
-            roleReceptionist: "موظف استقبال (Receptionist)",
-            btnLoginSubmit: "تسجيل الدخول",
-            btnRegisterSubmit: "إنشاء الحساب",
-            noAccount: "ليس لديك حساب؟",
-            hasAccount: "لديك حساب بالفعل؟",
-            linkRegister: "إنشاء حساب جديد",
-            linkLogin: "تسجيل الدخول",
-            errPasswordMismatch: "كلمتا المرور غير متطابقتين",
-            errWeakPassword: "كلمة المرور يجب أن تحتوى على 8 خانات على الأقل وتتضمن حرفاً كبيراً ورقماً ورمزاً",
-            msgLoginSuccess: "تم تسجيل الدخول بنجاح!",
-            msgRegisterSuccess: "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن."
+            user: {
+
+                role: "إدارة النظام"
+
+            },
+
+
+            /* -------------------------------------------------
+               Header
+               ------------------------------------------------- */
+
+            header: {
+
+                searchPlaceholder:
+                    "البحث عن مريض بالاسم، البريد أو المعرّف (PID)..."
+
+            },
+
+
+            searchPlaceholder:
+                "البحث عن مريض، موعد، أو طبيب...",
+
+
+            /* -------------------------------------------------
+               Dashboard
+               ------------------------------------------------- */
+
+            dashboard: {
+
+                title: "لوحة التحكم",
+
+                subtitle:
+                    "نظرة عامة على أداء وإحصائيات النظام.",
+
+                totalPatients: "إجمالي المرضى",
+
+                appointments: "المواعيد",
+
+                doctors: "الأطباء",
+
+                revenue: "الإيرادات",
+
+                recentAppointments: "أحدث المواعيد",
+
+                recentPatients: "أحدث المرضى",
+
+                statistics: "الإحصائيات"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patients
+               ------------------------------------------------- */
+
+            patients: {
+
+                title: "سجلات المرضى",
+
+                subtitle:
+                    "تسجيل، تصفية، ومتابعة الملفات الطبية الشاملة لكافة المرضى.",
+
+                btnRegister:
+                    "تسجيل مريض جديد"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patient Form
+               ------------------------------------------------- */
+
+            form: {
+
+                header:
+                    "نموذج تسجيل مريض جديد",
+
+                fullName:
+                    "الاسم الكامل *",
+
+                fullNamePlaceholder:
+                    "مثال: أحمد السيد",
+
+                dob:
+                    "تاريخ الميلاد *",
+
+                gender:
+                    "الجنس *",
+
+                contact:
+                    "رقم التواصل *",
+
+                contactPlaceholder:
+                    "+967 7XX XXX XXX",
+
+                email:
+                    "البريد الإلكتروني",
+
+                emailPlaceholder:
+                    "patient@example.com",
+
+                status:
+                    "الحالة",
+
+                address:
+                    "العنوان",
+
+                addressPlaceholder:
+                    "المدينة، الدولة",
+
+                medicalHistory:
+                    "السجل الطبي",
+
+                historyPlaceholder:
+                    "الحساسية، الأمراض المزمنة، العمليات السابقة...",
+
+                cancel:
+                    "إلغاء",
+
+                save:
+                    "حفظ بيانات المريض"
+
+            },
+
+
+            /* -------------------------------------------------
+               Gender
+               ------------------------------------------------- */
+
+            gender: {
+
+                male: "ذكر",
+
+                female: "أنثى"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patient Status
+               ------------------------------------------------- */
+
+            status: {
+
+                active: "نشط",
+
+                inactive: "غير نشط"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patients Table
+               ------------------------------------------------- */
+
+            table: {
+
+                pid: "معرّف المريض",
+
+                name: "اسم المريض",
+
+                ageGender: "العمر / الجنس",
+
+                contact: "رقم التواصل",
+
+                registered: "تاريخ التسجيل",
+
+                status: "الحالة",
+
+                actions: "إجراءات",
+
+                filterPlaceholder:
+                    "البحث باسم المريض، PID، أو رقم التواصل..."
+
+            },
+
+
+            /* -------------------------------------------------
+               Appointments
+               ------------------------------------------------- */
+
+            appointmentsTitle:
+                "إدارة المواعيد - MediCore HMS",
+
+            appointmentsHeader:
+                "المواعيد والحجوزات",
+
+            appointmentsSubHeader:
+                "جدولة، بحث، وإدارة مواعيد العيادات الخارجية والعمليات بشكل لحظي.",
+
+            newAppointmentTitle:
+                "حجز موعد جديد",
+
+            btnSubmitAppointment:
+                "تأكيد وحفظ الموعد",
+
+            filterPlaceholder:
+                "تصفية المواعيد حسب الاسم، القسم...",
+
+            appointment: {
+
+                patient:
+                    "المريض",
+
+                doctor:
+                    "الطبيب",
+
+                department:
+                    "القسم",
+
+                date:
+                    "الموعد",
+
+                status:
+                    "الحالة",
+
+                actions:
+                    "إجراءات"
+
+            },
+
+
+            /* -------------------------------------------------
+               Appointment Form
+               ------------------------------------------------- */
+
+            appointmentForm: {
+
+                patientName:
+                    "اسم المريض",
+
+                doctorName:
+                    "الطبيب المعالج",
+
+                department:
+                    "القسم / العيادة",
+
+                date:
+                    "تاريخ ووقت الموعد",
+
+                notes:
+                    "ملاحظات إضافية",
+
+                notesPlaceholder:
+                    "أدخل أي ملاحظات إضافية..."
+
+            },
+
+
+            /* -------------------------------------------------
+               Departments
+               ------------------------------------------------- */
+
+            departments: {
+
+                internal:
+                    "العيادة الباطنية",
+
+                orthopedics:
+                    "عيادة العظام",
+
+                pediatrics:
+                    "عيادة الأطفال",
+
+                dental:
+                    "عيادة الأسنان"
+
+            },
+
+
+            /* -------------------------------------------------
+               Medical Records
+               ------------------------------------------------- */
+
+            medicalRecords: {
+
+                title:
+                    "السجلات الطبية",
+
+                subtitle:
+                    "إدارة ومتابعة السجلات الطبية للمرضى.",
+
+                patient:
+                    "المريض",
+
+                diagnosis:
+                    "التشخيص",
+
+                doctor:
+                    "الطبيب",
+
+                date:
+                    "التاريخ",
+
+                actions:
+                    "إجراءات"
+
+            },
+
+
+            /* -------------------------------------------------
+               Invoices
+               ------------------------------------------------- */
+
+            invoices: {
+
+                title:
+                    "الفواتير",
+
+                subtitle:
+                    "إدارة الفواتير والمدفوعات.",
+
+                invoiceNumber:
+                    "رقم الفاتورة",
+
+                patient:
+                    "المريض",
+
+                amount:
+                    "المبلغ",
+
+                date:
+                    "التاريخ",
+
+                status:
+                    "الحالة",
+
+                actions:
+                    "إجراءات"
+
+            },
+
+
+            /* -------------------------------------------------
+               Reports
+               ------------------------------------------------- */
+
+            reports: {
+
+                title:
+                    "التقارير",
+
+                subtitle:
+                    "عرض وتحليل تقارير النظام.",
+
+                patients:
+                    "تقارير المرضى",
+
+                appointments:
+                    "تقارير المواعيد",
+
+                financial:
+                    "التقارير المالية"
+
+            },
+
+
+            /* -------------------------------------------------
+               Settings
+               ------------------------------------------------- */
+
+            settings: {
+
+                title:
+                    "الإعدادات",
+
+                subtitle:
+                    "إدارة إعدادات النظام والتفضيلات.",
+
+                language:
+                    "لغة النظام",
+
+                notifications:
+                    "الإشعارات",
+
+                security:
+                    "الأمان",
+
+                save:
+                    "حفظ الإعدادات"
+
+            }
+
         },
 
+
+        /* =====================================================
+           ENGLISH
+           ===================================================== */
+
         en: {
-            appointmentsTitle: "Appointments - MediCore HMS",
-            patientsTitle: "Patients - MediCore HMS",
-            invoicesTitle: "Billing & Payments - MediCore HMS",
-            medicalRecordsTitle: "Medical Records - MediCore HMS",
-            dashboardTitle: "Dashboard - MediCore HMS",
-            settingsTitle: "Settings - MediCore HMS",
+
+            /* -------------------------------------------------
+               General
+               ------------------------------------------------- */
+
+            appName: "MediCore HMS",
+
+            english: "English",
+
+            arabic: "العربية",
+
+            logout: "Logout",
+
+            search: "Search",
+
+            cancel: "Cancel",
+
+            save: "Save",
+
+            edit: "Edit",
+
+            delete: "Delete",
+
+            view: "View",
+
+            close: "Close",
+
+            actions: "Actions",
+
+            status: "Status",
+
+            loading: "Loading...",
+
+            noData: "No data available",
+
+            confirm: "Confirm",
+
+            yes: "Yes",
+
+            no: "No",
+
+
+            /* -------------------------------------------------
+               Navigation
+               ------------------------------------------------- */
+
+            nav: {
+
+                dashboard: "Dashboard",
+
+                patients: "Patients",
+
+                appointments: "Appointments",
+
+                medicalRecords: "Medical Records",
+
+                invoices: "Invoices",
+
+                reports: "Reports",
+
+                settings: "Settings"
+
+            },
+
+
+            /* -------------------------------------------------
+               Alternative navigation keys
+               ------------------------------------------------- */
 
             navDashboard: "Dashboard",
+
             navPatients: "Patients",
+
             navAppointments: "Appointments",
-            navInvoices: "Billing & Payments",
-            navReports: "Reports",
-            navSettings: "Settings",
+
             navMedicalRecords: "Medical Records",
-            adminRole: "System Admin",
-            searchPlaceholder: "Search patient, appointment, or doctor...",
-            filterPlaceholder: "Filter items by name, department...",
-            
-            patientsHeader: "Patient Management",
-            patientsSubHeader: "Register, search, and manage patient profiles and medical history.",
-            btnNewPatient: "New Patient",
-            thPatientName: "Patient Name",
-            thPhone: "Phone Number",
-            thAge: "Age",
-            thGender: "Gender",
-            thBloodGroup: "Blood Group",
-            loadingPatients: "Loading patients...",
-            errorFetchPatients: "Failed to fetch patients from server",
-            noPatientsFound: "No patient records found",
-            modalNewPatientTitle: "Register New Patient",
-            btnSavePatient: "Save Patient",
-            genderMale: "Male",
-            genderFemale: "Female",
 
-            appointmentsHeader: "Appointments & Bookings",
-            appointmentsSubHeader: "Real-time scheduling, search, and management for clinics and operations.",
-            thPatient: "Patient",
-            thDoctor: "Doctor",
-            thDepartment: "Department",
-            thAppointmentDate: "Date & Time",
-            thStatus: "Status",
-            thActions: "Actions",
-            newAppointmentTitle: "Book New Appointment",
-            lblPatientName: "Patient Name",
-            lblDoctorName: "Doctor Name",
-            lblDepartment: "Department / Clinic",
-            lblAppointmentDate: "Appointment Date & Time",
-            lblNotes: "Additional Notes",
-            btnSubmitAppointment: "Confirm & Save",
-            deptInternal: "Internal Medicine",
-            deptOrtho: "Orthopedics",
-            deptPediatrics: "Pediatrics",
-            deptDental: "Dental Clinic",
-            loadingAppointments: "Loading appointments...",
-            errorFetchAppointments: "Failed to fetch appointments from server",
-            noAppointmentsFound: "No appointments recorded yet",
-            btnCancelAppointment: "Cancel",
-            statusConfirmed: "Confirmed",
-            statusCancelled: "Cancelled",
-            statusPending: "Pending",
+            navInvoices: "Invoices",
 
-            welcomeBack: "Welcome back",
-            greetingAdmin: "Good evening, Admin.",
-            greetingSub: "Here is what is happening across the hospital today.",
-            kpiTotalPatients: "TOTAL PATIENTS",
-            kpiTodaysAppointments: "TODAY'S APPOINTMENTS",
-            kpiPendingBills: "PENDING BILLS",
-            kpiRevenueCollected: "REVENUE COLLECTED",
-            kpiRevenueSub: "This month",
-            chartPatientIntakeTitle: "Patient intake — last 7 days",
-            chartPatientIntakeSub: "New patient registrations per day",
-            chartDeptTitle: "Appointments by Department",
-            chartDeptSub: "Distribution across specialties",
+            navReports: "Reports",
 
-            invoicesHeader: "Billing & Payments",
-            invoicesSubHeader: "Generate invoices, apply taxes and discounts, and track payments.",
-            btnNewInvoice: "New invoice",
-            thInvoiceId: "Invoice ID",
-            thIssuedDate: "Issued",
-            thDueDate: "Due",
-            thTotalAmount: "Total",
-            thPaidAmount: "Paid",
-            statusPaid: "Paid",
-            statusPartial: "Partial",
-            btnRecordPayment: "Record payment",
-            loadingInvoices: "Loading invoices...",
-            errorFetchInvoices: "Failed to fetch invoices from server",
-            noInvoicesFound: "No invoices recorded yet",
+            navSettings: "Settings",
 
-            recordsHeader: "Medical Records",
-            recordsSubHeader: "Centralized, versioned patient records with role-based access and full audit.",
-            btnNewRecord: "New record",
-            recordsDiagnosis: "DIAGNOSIS",
-            recordsPrescription: "PRESCRIPTION",
-            recordsNotes: "NOTES",
-            loadingRecords: "Loading medical records...",
-            errorFetchRecords: "Failed to fetch medical records from server",
-            noRecordsFound: "No medical records recorded yet",
-            modalNewRecordTitle: "Add New Medical Record",
-            btnSaveRecord: "Save Record",
 
-            settingsHeader: "Settings",
-            settingsSubHeader: "Manage your profile, notifications, and workspace preferences.",
-            sectionProfile: "Profile",
-            lblName: "Full Name",
-            lblEmail: "Email Address",
-            lblRole: "Role",
-            btnSave: "Save changes",
-            sectionNotifications: "Notifications",
-            lblAppointmentReminders: "Appointment reminders",
-            subAppointmentReminders: "Send Email + SMS reminders to patients.",
-            msgSaveSuccess: "Changes saved successfully!",
+            /* -------------------------------------------------
+               User
+               ------------------------------------------------- */
 
-            loginTitle: "Login - MediCore HMS",
-            registerTitle: "Register - MediCore HMS",
-            authWelcomeBack: "Welcome back",
-            authLoginSub: "Enter your credentials to access the hospital management system.",
-            authRegisterHeader: "Create an Account",
-            authRegisterSub: "Fill in the details below to register.",
-            lblFullName: "Full Name",
-            lblPassword: "Password",
-            lblConfirmPassword: "Confirm Password",
-            lblRoleSelect: "Account Role",
-            roleAdmin: "System Admin",
-            roleDoctor: "Doctor",
-            roleReceptionist: "Receptionist",
-            btnLoginSubmit: "Sign In",
-            btnRegisterSubmit: "Create Account",
-            noAccount: "Don't have an account?",
-            hasAccount: "Already have an account?",
-            linkRegister: "Sign up",
-            linkLogin: "Sign in",
-            errPasswordMismatch: "Passwords do not match",
-            errWeakPassword: "Password must be at least 8 characters, include uppercase, number, and special character",
-            msgLoginSuccess: "Login successful!",
-            msgRegisterSuccess: "Account created successfully! You can now log in."
-        }
-    },
+            user: {
 
-    t(key) {
-        const dictionary = this.translations[this.LANG] || this.translations['ar'];
-        return dictionary[key] || key;
-    },
+                role: "System Administration"
 
-    applyTranslations(lang = this.LANG) {
-        this.LANG = lang;
-        localStorage.setItem('app_lang', lang);
+            },
 
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-        document.documentElement.lang = lang;
 
-        const dictionary = this.translations[lang] || this.translations['ar'];
-        
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (dictionary[key]) {
-                el.textContent = dictionary[key];
+            /* -------------------------------------------------
+               Header
+               ------------------------------------------------- */
+
+            header: {
+
+                searchPlaceholder:
+                    "Search by patient name, email or PID..."
+
+            },
+
+
+            searchPlaceholder:
+                "Search for a patient, appointment, or doctor...",
+
+
+            /* -------------------------------------------------
+               Dashboard
+               ------------------------------------------------- */
+
+            dashboard: {
+
+                title: "Dashboard",
+
+                subtitle:
+                    "Overview of system performance and statistics.",
+
+                totalPatients: "Total Patients",
+
+                appointments: "Appointments",
+
+                doctors: "Doctors",
+
+                revenue: "Revenue",
+
+                recentAppointments:
+                    "Recent Appointments",
+
+                recentPatients:
+                    "Recent Patients",
+
+                statistics:
+                    "Statistics"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patients
+               ------------------------------------------------- */
+
+            patients: {
+
+                title: "Patient Records",
+
+                subtitle:
+                    "Register, filter, and manage comprehensive medical records for all patients.",
+
+                btnRegister:
+                    "Register New Patient"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patient Form
+               ------------------------------------------------- */
+
+            form: {
+
+                header:
+                    "New Patient Registration Form",
+
+                fullName:
+                    "Full Name *",
+
+                fullNamePlaceholder:
+                    "Example: Ahmed Al-Sayed",
+
+                dob:
+                    "Date of Birth *",
+
+                gender:
+                    "Gender *",
+
+                contact:
+                    "Contact Number *",
+
+                contactPlaceholder:
+                    "+967 7XX XXX XXX",
+
+                email:
+                    "Email Address",
+
+                emailPlaceholder:
+                    "patient@example.com",
+
+                status:
+                    "Status",
+
+                address:
+                    "Address",
+
+                addressPlaceholder:
+                    "City, Country",
+
+                medicalHistory:
+                    "Medical History",
+
+                historyPlaceholder:
+                    "Allergies, chronic diseases, previous surgeries...",
+
+                cancel:
+                    "Cancel",
+
+                save:
+                    "Save Patient Data"
+
+            },
+
+
+            /* -------------------------------------------------
+               Gender
+               ------------------------------------------------- */
+
+            gender: {
+
+                male: "Male",
+
+                female: "Female"
+
+            },
+
+
+            /* -------------------------------------------------
+               Status
+               ------------------------------------------------- */
+
+            status: {
+
+                active: "Active",
+
+                inactive: "Inactive"
+
+            },
+
+
+            /* -------------------------------------------------
+               Patients Table
+               ------------------------------------------------- */
+
+            table: {
+
+                pid: "Patient ID",
+
+                name: "Name",
+
+                ageGender: "Age / Gender",
+
+                contact: "Contact",
+
+                registered: "Registered",
+
+                status: "Status",
+
+                actions: "Actions",
+
+                filterPlaceholder:
+                    "Search by patient name, PID, or contact number..."
+
+            },
+
+
+            /* -------------------------------------------------
+               Appointments
+               ------------------------------------------------- */
+
+            appointmentsTitle:
+                "Appointment Management - MediCore HMS",
+
+            appointmentsHeader:
+                "Appointments & Bookings",
+
+            appointmentsSubHeader:
+                "Schedule, search, and manage outpatient and procedure appointments in real time.",
+
+            newAppointmentTitle:
+                "Book New Appointment",
+
+            btnSubmitAppointment:
+                "Confirm & Save Appointment",
+
+            filterPlaceholder:
+                "Filter appointments by name, department...",
+
+            appointment: {
+
+                patient:
+                    "Patient",
+
+                doctor:
+                    "Doctor",
+
+                department:
+                    "Department",
+
+                date:
+                    "Appointment",
+
+                status:
+                    "Status",
+
+                actions:
+                    "Actions"
+
+            },
+
+
+            /* -------------------------------------------------
+               Appointment Form
+               ------------------------------------------------- */
+
+            appointmentForm: {
+
+                patientName:
+                    "Patient Name",
+
+                doctorName:
+                    "Attending Doctor",
+
+                department:
+                    "Department / Clinic",
+
+                date:
+                    "Appointment Date & Time",
+
+                notes:
+                    "Additional Notes",
+
+                notesPlaceholder:
+                    "Enter any additional notes..."
+
+            },
+
+
+            /* -------------------------------------------------
+               Departments
+               ------------------------------------------------- */
+
+            departments: {
+
+                internal:
+                    "Internal Medicine",
+
+                orthopedics:
+                    "Orthopedics Clinic",
+
+                pediatrics:
+                    "Pediatrics Clinic",
+
+                dental:
+                    "Dental Clinic"
+
+            },
+
+
+            /* -------------------------------------------------
+               Medical Records
+               ------------------------------------------------- */
+
+            medicalRecords: {
+
+                title:
+                    "Medical Records",
+
+                subtitle:
+                    "Manage and review patient medical records.",
+
+                patient:
+                    "Patient",
+
+                diagnosis:
+                    "Diagnosis",
+
+                doctor:
+                    "Doctor",
+
+                date:
+                    "Date",
+
+                actions:
+                    "Actions"
+
+            },
+
+
+            /* -------------------------------------------------
+               Invoices
+               ------------------------------------------------- */
+
+            invoices: {
+
+                title:
+                    "Invoices",
+
+                subtitle:
+                    "Manage invoices and payments.",
+
+                invoiceNumber:
+                    "Invoice Number",
+
+                patient:
+                    "Patient",
+
+                amount:
+                    "Amount",
+
+                date:
+                    "Date",
+
+                status:
+                    "Status",
+
+                actions:
+                    "Actions"
+
+            },
+
+
+            /* -------------------------------------------------
+               Reports
+               ------------------------------------------------- */
+
+            reports: {
+
+                title:
+                    "Reports",
+
+                subtitle:
+                    "View and analyze system reports.",
+
+                patients:
+                    "Patient Reports",
+
+                appointments:
+                    "Appointment Reports",
+
+                financial:
+                    "Financial Reports"
+
+            },
+
+
+            /* -------------------------------------------------
+               Settings
+               ------------------------------------------------- */
+
+            settings: {
+
+                title:
+                    "Settings",
+
+                subtitle:
+                    "Manage system settings and preferences.",
+
+                language:
+                    "System Language",
+
+                notifications:
+                    "Notifications",
+
+                security:
+                    "Security",
+
+                save:
+                    "Save Settings"
+
             }
-        });
 
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if (dictionary[key]) {
-                el.placeholder = dictionary[key];
-            }
-        });
-    },
-
-    createSafeElement(tag, textContent, className = '') {
-        const element = document.createElement(tag);
-        if (textContent !== undefined && textContent !== null) {
-            element.textContent = textContent;
-        }
-        if (className) {
-            element.className = className;
-        }
-        return element;
-    },
-
-    async request(endpoint, options = {}) {
-        const token = localStorage.getItem('auth_token') || 
-                    localStorage.getItem('token') || 
-                    localStorage.getItem('authToken') || 
-                    localStorage.getItem('jwt');
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            ...options.headers
-        };
-
-        const baseUrl = this.API_BASE_URL.replace(/\/+$/, '');
-        let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-
-        // توجيه ذكي: إضافة /api للمسارات الخاصة بالفواتير، الإعدادات، والسجلات الطبية
-        if ((cleanEndpoint.startsWith('/invoices') || cleanEndpoint.startsWith('/settings') || cleanEndpoint.startsWith('/medical-records') || cleanEndpoint.startsWith('/records')) && !cleanEndpoint.startsWith('/api')) {
-            cleanEndpoint = `/api${cleanEndpoint}`;
         }
 
-        const url = `${baseUrl}${cleanEndpoint}`;
+    };
 
-        try {
-            const response = await fetch(url, { ...options, headers });
-            
-            if (!response.ok) {
-                const errText = await response.text();
-                let err = {};
-                try {
-                    err = JSON.parse(errText);
-                } catch {
-                    err = { message: errText || 'حدث خطأ في النظام' };
-                }
-                const errorObj = new Error(err.title || err.message || `خطأ في الخادم (${response.status})`);
-                errorObj.status = response.status;
-                console.error(`API Error [${response.status}] at ${url}:`, err);
-                throw errorObj;
-            }
 
-            return response.status !== 204 ? await response.json() : null;
-        } catch (error) {
-            console.error(`Network or Server Request Failed for: ${url}`, error);
-            throw error;
+    /* =========================================================
+       3. GET CURRENT LANGUAGE
+       ========================================================= */
+
+    function getCurrentLanguage() {
+
+        const savedLanguage =
+            localStorage.getItem(CONFIG.storageKey);
+
+        if (
+            savedLanguage &&
+            CONFIG.supportedLanguages.includes(savedLanguage)
+        ) {
+            return savedLanguage;
         }
+
+        return CONFIG.defaultLanguage;
     }
-};
+
+
+    /* =========================================================
+       4. GET TRANSLATION BY KEY
+       يدعم:
+       nav.dashboard
+       patients.title
+       navDashboard
+       appointmentsTitle
+       ========================================================= */
+
+    function getTranslation(key, language) {
+
+        const lang =
+            language || getCurrentLanguage();
+
+        const dictionary =
+            translations[lang];
+
+        if (!dictionary) {
+            return key;
+        }
+
+        const parts =
+            key.split(".");
+
+        let value =
+            dictionary;
+
+        for (const part of parts) {
+
+            if (
+                value &&
+                Object.prototype.hasOwnProperty.call(value, part)
+            ) {
+                value = value[part];
+            } else {
+                return key;
+            }
+
+        }
+
+        return typeof value === "string"
+            ? value
+            : key;
+    }
+
+
+    /* =========================================================
+       5. TRANSLATE PAGE
+       ========================================================= */
+
+    function applyTranslations(language) {
+
+        const lang =
+            language || getCurrentLanguage();
+
+        const dictionary =
+            translations[lang];
+
+        if (!dictionary) {
+            return;
+        }
+
+
+        /* ---------------------------------------------
+           Text
+           --------------------------------------------- */
+
+        document
+            .querySelectorAll("[data-i18n]")
+            .forEach(element => {
+
+                const key =
+                    element.getAttribute("data-i18n");
+
+                const translated =
+                    getTranslation(key, lang);
+
+                if (translated !== key) {
+
+                    element.textContent =
+                        translated;
+
+                }
+
+            });
+
+
+        /* ---------------------------------------------
+           Placeholder
+           --------------------------------------------- */
+
+        document
+            .querySelectorAll("[data-i18n-placeholder]")
+            .forEach(element => {
+
+                const key =
+                    element.getAttribute(
+                        "data-i18n-placeholder"
+                    );
+
+                const translated =
+                    getTranslation(key, lang);
+
+                if (translated !== key) {
+
+                    element.placeholder =
+                        translated;
+
+                }
+
+            });
+
+
+        /* ---------------------------------------------
+           Title attribute
+           --------------------------------------------- */
+
+        document
+            .querySelectorAll("[data-i18n-title]")
+            .forEach(element => {
+
+                const key =
+                    element.getAttribute(
+                        "data-i18n-title"
+                    );
+
+                const translated =
+                    getTranslation(key, lang);
+
+                if (translated !== key) {
+
+                    element.title =
+                        translated;
+
+                }
+
+            });
+
+
+        /* ---------------------------------------------
+           HTML direction
+           --------------------------------------------- */
+
+        const html =
+            document.documentElement;
+
+        if (lang === "ar") {
+
+            html.lang = "ar";
+
+            html.dir = "rtl";
+
+        } else {
+
+            html.lang = "en";
+
+            html.dir = "ltr";
+
+        }
+
+
+        /* ---------------------------------------------
+           Language button
+           --------------------------------------------- */
+
+        updateLanguageButton(lang);
+
+
+        /* ---------------------------------------------
+           Page title
+           --------------------------------------------- */
+
+        updatePageTitle(lang);
+
+
+        /* ---------------------------------------------
+           Custom event
+           --------------------------------------------- */
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "languageChanged",
+                {
+                    detail: {
+                        language: lang
+                    }
+                }
+            )
+        );
+
+    }
+
+
+    /* =========================================================
+       6. UPDATE LANGUAGE BUTTON
+       ========================================================= */
+
+    function updateLanguageButton(language) {
+
+        const buttonText =
+            document.getElementById("currentLangLabel");
+
+        const oldButtonText =
+            document.getElementById("langBtnText");
+
+
+        /*
+         * عند عرض العربية:
+         * الزر يعرض English
+         *
+         * عند عرض الإنجليزية:
+         * الزر يعرض العربية
+         */
+
+        const text =
+            language === "ar"
+                ? "English"
+                : "العربية";
+
+
+        if (buttonText) {
+
+            buttonText.textContent =
+                text;
+
+        }
+
+
+        if (oldButtonText) {
+
+            oldButtonText.textContent =
+                text;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       7. UPDATE PAGE TITLE
+       ========================================================= */
+
+    function updatePageTitle(language) {
+
+        const title =
+            document.querySelector("title[data-i18n]");
+
+        if (!title) {
+            return;
+        }
+
+        const key =
+            title.getAttribute("data-i18n");
+
+        const translated =
+            getTranslation(key, language);
+
+        if (translated !== key) {
+
+            document.title =
+                translated;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       8. SWITCH LANGUAGE
+       ========================================================= */
+
+    function switchLanguage() {
+
+        const current =
+            getCurrentLanguage();
+
+        const next =
+            current === "ar"
+                ? "en"
+                : "ar";
+
+        localStorage.setItem(
+            CONFIG.storageKey,
+            next
+        );
+
+        applyTranslations(next);
+
+    }
+
+
+    /* =========================================================
+       9. TOGGLE LANGUAGE
+       يدعم الصفحات التي تستخدم:
+       toggleLanguage()
+       والصفحات التي تستخدم:
+       switchLanguage()
+       ========================================================= */
+
+    function toggleLanguage() {
+
+        switchLanguage();
+
+    }
+
+
+    /* =========================================================
+       10. INITIALIZE
+       ========================================================= */
+
+    function initializeLanguage() {
+
+        const language =
+            getCurrentLanguage();
+
+        applyTranslations(language);
+
+    }
+
+
+    /* =========================================================
+       11. GLOBAL API
+       ========================================================= */
+
+    window.MediCoreConfig = CONFIG;
+
+    window.translations =
+        translations;
+
+    window.getCurrentLanguage =
+        getCurrentLanguage;
+
+    window.getTranslation =
+        getTranslation;
+
+    window.applyTranslations =
+        applyTranslations;
+
+    window.switchLanguage =
+        switchLanguage;
+
+    window.toggleLanguage =
+        toggleLanguage;
+
+
+    /* =========================================================
+       12. START AFTER DOM READY
+       ========================================================= */
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeLanguage
+        );
+
+    } else {
+
+        initializeLanguage();
+
+    }
+
+
+})();

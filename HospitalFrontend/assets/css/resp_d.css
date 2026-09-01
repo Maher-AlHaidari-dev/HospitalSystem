@@ -1,0 +1,326 @@
+/* =========================================================
+   MediCore HMS
+   Global Responsive Design
+   يستخدم مع جميع الصفحات
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   Base
+   --------------------------------------------------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* ---------------------------------------------------------
+   Main Layout
+   --------------------------------------------------------- */
+
+.main-layout {
+    width: 100%;
+    min-width: 0;
+}
+
+.responsive-main {
+    width: 100%;
+    min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   Tables
+   --------------------------------------------------------- */
+
+.responsive-table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.responsive-table table {
+    min-width: 760px;
+}
+
+
+/* ---------------------------------------------------------
+   Header
+   --------------------------------------------------------- */
+
+.responsive-header {
+    width: 100%;
+    min-width: 0;
+}
+
+.header-search {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   Tablet
+   ========================================================= */
+
+@media (max-width: 1023px) {
+
+    .responsive-main {
+        padding: 24px !important;
+    }
+
+    .responsive-header {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+
+    .desktop-sidebar {
+        width: 220px !important;
+    }
+
+}
+
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    body {
+        display: block !important;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+
+    /* Sidebar يتحول إلى شريط أفقي */
+
+    .desktop-sidebar {
+        width: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
+        display: block !important;
+        overflow: hidden;
+    }
+
+
+    /* Logo */
+
+    .desktop-sidebar > div:first-child > div:first-child {
+        padding: 12px 16px !important;
+    }
+
+
+    /* Navigation */
+
+    .desktop-sidebar nav {
+        display: flex !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 6px;
+        padding: 8px !important;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+
+    .desktop-sidebar nav a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 10px 14px !important;
+    }
+
+
+    /* إخفاء User Profile في الشاشات الصغيرة */
+
+    .desktop-sidebar > div:last-child {
+        display: none !important;
+    }
+
+
+    /* Main */
+
+    .main-layout {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+
+    /* Header */
+
+    .responsive-header {
+        padding: 12px 16px !important;
+        flex-wrap: wrap;
+        gap: 10px !important;
+    }
+
+
+    .header-search {
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1;
+    }
+
+
+    .responsive-header > .flex {
+        width: 100%;
+        justify-content: flex-end;
+        order: 2;
+    }
+
+
+    /* Main content */
+
+    .responsive-main {
+        padding: 16px !important;
+        width: 100% !important;
+    }
+
+
+    /* Page title */
+
+    .responsive-main h1 {
+        font-size: 20px !important;
+        line-height: 1.5;
+    }
+
+
+    /* Cards */
+
+    .responsive-main .bg-white {
+        max-width: 100%;
+    }
+
+
+    /* Form */
+
+    #patientFormCard {
+        padding: 16px !important;
+    }
+
+
+    /* Search */
+
+    #tableSearchInput {
+        width: 100%;
+        max-width: 100%;
+    }
+
+
+    /* Table */
+
+    .responsive-table {
+        margin-left: -1px;
+        margin-right: -1px;
+    }
+
+
+    .responsive-table table {
+        min-width: 760px;
+    }
+
+}
+
+
+/* =========================================================
+   Small Mobile
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .responsive-main {
+        padding: 12px !important;
+    }
+
+
+    .responsive-header {
+        padding: 10px 12px !important;
+    }
+
+
+    .desktop-sidebar nav a {
+        padding: 9px 12px !important;
+        font-size: 11px;
+    }
+
+
+    .desktop-sidebar nav a i {
+        width: auto !important;
+    }
+
+
+    /* عنوان الصفحة */
+
+    .responsive-main h1 {
+        font-size: 18px !important;
+    }
+
+
+    /* زر إضافة مريض */
+
+    #toggleFormBtn {
+        width: 100%;
+    }
+
+
+    /* أزرار النموذج */
+
+    #patientFormCard form > div:last-child {
+        flex-direction: column;
+        width: 100%;
+    }
+
+
+    #patientFormCard form > div:last-child button {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   Touch Devices
+   ========================================================= */
+
+@media (hover: none) {
+
+    .desktop-sidebar nav a:hover {
+        background: transparent;
+    }
+
+}
+
+
+/* =========================================================
+   Prevent horizontal overflow
+   ========================================================= */
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
