@@ -1,15 +1,16 @@
 /* =========================================================
    MediCore HMS
-   Global Responsive Design
-   يستخدم مع جميع الصفحات
+   GLOBAL RESPONSIVE DESIGN
    ========================================================= */
 
 
-/* ---------------------------------------------------------
-   Base
-   --------------------------------------------------------- */
+/* =========================================================
+   1. GLOBAL BASE
+   ========================================================= */
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -21,66 +22,254 @@ body {
     padding: 0;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
+    min-width: 0;
     overflow-x: hidden;
 }
 
 
-/* ---------------------------------------------------------
-   Main Layout
-   --------------------------------------------------------- */
+/* Media */
 
-.main-layout {
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+}
+
+
+/* Form controls */
+
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+
+/* Long text */
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+
+
+/* =========================================================
+   2. GLOBAL LAYOUT
+   ========================================================= */
+
+.responsive-layout {
     width: 100%;
+    max-width: 100%;
     min-width: 0;
 }
 
 .responsive-main {
     width: 100%;
+    max-width: 100%;
     min-width: 0;
 }
 
-
-/* ---------------------------------------------------------
-   Tables
-   --------------------------------------------------------- */
-
-.responsive-table {
+.page-content {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-}
-
-.responsive-table table {
-    min-width: 760px;
-}
-
-
-/* ---------------------------------------------------------
-   Header
-   --------------------------------------------------------- */
-
-.responsive-header {
-    width: 100%;
     min-width: 0;
 }
 
-.header-search {
+.responsive-main > *,
+.page-content > * {
     min-width: 0;
 }
 
 
 /* =========================================================
-   Tablet
+   3. SIDEBAR
+   ========================================================= */
+
+.desktop-sidebar {
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.desktop-sidebar nav a {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   4. MOBILE MENU BUTTON
+   مخفي افتراضيًا على الكمبيوتر
+   ========================================================= */
+
+.mobile-menu-button {
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #334155;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #f8fafc;
+    color: #0f766e;
+}
+
+.mobile-menu-button i {
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   5. MOBILE MENU OVERLAY
+   ========================================================= */
+
+.mobile-menu-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    z-index: 9998;
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+}
+
+
+/* =========================================================
+   6. MOBILE SIDEBAR
+   ========================================================= */
+
+.mobile-menu {
+    display: none;
+}
+
+
+/* =========================================================
+   7. HEADER
+   ========================================================= */
+
+.responsive-header {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.header-search {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.header-search input {
+    width: 100%;
+    min-width: 0;
+}
+
+.header-actions {
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   8. TABLES
+   ========================================================= */
+
+.responsive-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+}
+
+.responsive-table table {
+    width: 100%;
+    min-width: 760px;
+}
+
+.responsive-table th,
+.responsive-table td {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   9. MODALS
+   ========================================================= */
+
+.fixed.inset-0 {
+    max-width: 100vw;
+}
+
+.fixed.inset-0 > div {
+    max-width: calc(100vw - 32px);
+}
+
+
+/* =========================================================
+   10. GRID / CARDS
+   ========================================================= */
+
+.grid {
+    min-width: 0;
+}
+
+.grid > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.bg-white {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   11. TABLET
    ========================================================= */
 
 @media (max-width: 1023px) {
 
-    .responsive-main {
-        padding: 24px !important;
+    .desktop-sidebar {
+        width: 220px !important;
     }
 
     .responsive-header {
@@ -88,148 +277,592 @@ body {
         padding-right: 24px !important;
     }
 
-    .desktop-sidebar {
-        width: 220px !important;
+    .page-content {
+        padding: 24px !important;
     }
 
+    .responsive-main {
+        min-width: 0 !important;
+    }
+
+    .header-search {
+        max-width: 420px;
+    }
 }
 
 
 /* =========================================================
-   Mobile
+   12. MOBILE
    ========================================================= */
 
 @media (max-width: 767px) {
 
+    html,
     body {
-        display: block !important;
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
         overflow-x: hidden;
     }
 
-
-    /* Sidebar يتحول إلى شريط أفقي */
-
-    .desktop-sidebar {
-        width: 100% !important;
-        min-height: auto !important;
-        height: auto !important;
+    body {
         display: block !important;
-        overflow: hidden;
     }
 
 
-    /* Logo */
+    /* =====================================================
+       GLOBAL LAYOUT
+       ===================================================== */
 
-    .desktop-sidebar > div:first-child > div:first-child {
-        padding: 12px 16px !important;
-    }
+    .responsive-layout {
+        display: block !important;
 
-
-    /* Navigation */
-
-    .desktop-sidebar nav {
-        display: flex !important;
-        overflow-x: auto;
-        overflow-y: hidden;
-        gap: 6px;
-        padding: 8px !important;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-    }
-
-
-    .desktop-sidebar nav a {
-        flex: 0 0 auto;
-        white-space: nowrap;
-        padding: 10px 14px !important;
-    }
-
-
-    /* إخفاء User Profile في الشاشات الصغيرة */
-
-    .desktop-sidebar > div:last-child {
-        display: none !important;
-    }
-
-
-    /* Main */
-
-    .main-layout {
         width: 100% !important;
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+    }
+
+    .responsive-main {
+        display: flex !important;
+        flex-direction: column !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
         min-width: 0 !important;
     }
 
 
-    /* Header */
+    /* =====================================================
+       DESKTOP SIDEBAR
+       إخفاؤه على الجوال
+       ===================================================== */
+
+    .desktop-sidebar {
+        display: none !important;
+    }
+
+
+    /* =====================================================
+       MOBILE MENU BUTTON
+       ===================================================== */
+
+    .mobile-menu-button {
+        display: inline-flex !important;
+    }
+
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    .mobile-menu {
+        display: flex;
+
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        width: min(300px, 86vw);
+        height: 100vh;
+
+        z-index: 9999;
+
+        flex-direction: column;
+
+        background: #091e25;
+
+        color: #cbd5e1;
+
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
+
+        transform: translateX(-105%);
+
+        transition: transform 0.25s ease;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+
+
+    /* =====================================================
+       MOBILE MENU HEADER
+       ===================================================== */
+
+    .mobile-menu-header {
+        min-height: 64px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 12px 16px;
+
+        border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .mobile-menu-brand {
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        min-width: 0;
+    }
+
+    .mobile-menu-brand-icon {
+        width: 34px;
+        height: 34px;
+
+        border-radius: 9px;
+
+        background: #14b8a6;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: white;
+
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-brand span {
+        color: white;
+
+        font-size: 16px;
+
+        font-weight: 700;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       CLOSE BUTTON
+       ===================================================== */
+
+    .mobile-menu-close {
+        width: 36px;
+        height: 36px;
+
+        border: 0;
+
+        background: transparent;
+
+        color: #94a3b8;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        border-radius: 8px;
+
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-close:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+
+    /* =====================================================
+       MOBILE NAVIGATION
+       ===================================================== */
+
+    .mobile-menu nav {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 4px;
+
+        padding: 14px;
+    }
+
+    .mobile-menu nav a {
+        display: flex;
+
+        align-items: center;
+
+        width: 100%;
+
+        min-height: 44px;
+
+        padding: 11px 13px;
+
+        border-radius: 9px;
+
+        color: #cbd5e1;
+
+        text-decoration: none;
+
+        gap: 10px;
+
+        font-size: 13px;
+
+        font-weight: 500;
+
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .mobile-menu nav a:hover {
+        background: rgba(255, 255, 255, 0.07);
+
+        color: white;
+    }
+
+    .mobile-menu nav a.active {
+        background: rgba(13, 148, 136, 0.95);
+
+        color: white;
+
+        font-weight: 600;
+    }
+
+    .mobile-menu nav a i {
+        width: 22px;
+
+        min-width: 22px;
+
+        text-align: center;
+
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       MOBILE MENU USER
+       ===================================================== */
+
+    .mobile-menu-user {
+        margin-top: auto;
+
+        padding: 14px 16px;
+
+        border-top: 1px solid rgba(148, 163, 184, 0.18);
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    .mobile-menu-user-avatar {
+        width: 36px;
+        height: 36px;
+
+        border-radius: 50%;
+
+        background: rgba(20, 184, 166, 0.18);
+
+        color: #2dd4bf;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-weight: 700;
+
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-user-info {
+        min-width: 0;
+    }
+
+    .mobile-menu-user-info strong {
+        display: block;
+
+        color: white;
+
+        font-size: 12px;
+    }
+
+    .mobile-menu-user-info span {
+        display: block;
+
+        color: #94a3b8;
+
+        font-size: 10px;
+
+        margin-top: 2px;
+    }
+
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
     .responsive-header {
-        padding: 12px 16px !important;
-        flex-wrap: wrap;
+        width: 100% !important;
+        max-width: 100% !important;
+
+        height: auto !important;
+        min-height: 64px;
+
+        padding: 10px 16px !important;
+
+        display: flex !important;
+
+        flex-wrap: wrap !important;
+
+        align-items: center;
+
         gap: 10px !important;
     }
 
 
+    /*
+       الصف العلوي في Header
+    */
+
+    .mobile-header-top {
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+        order: 0;
+    }
+
+
+    /*
+       Search
+    */
+
     .header-search {
         width: 100% !important;
         max-width: 100% !important;
-        order: 1;
-    }
 
+        flex: 1 1 100% !important;
 
-    .responsive-header > .flex {
-        width: 100%;
-        justify-content: flex-end;
         order: 2;
     }
 
-
-    /* Main content */
-
-    .responsive-main {
-        padding: 16px !important;
+    .header-search input {
         width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
     }
 
 
-    /* Page title */
+    /*
+       Header Actions
+    */
 
-    .responsive-main h1 {
-        font-size: 20px !important;
-        line-height: 1.5;
+    .header-actions {
+        width: auto !important;
+
+        display: flex !important;
+
+        align-items: center;
+
+        justify-content: flex-end !important;
+
+        order: 1;
+
+        flex-shrink: 0;
     }
 
 
-    /* Cards */
+    /* =====================================================
+       PAGE CONTENT
+       ===================================================== */
 
-    .responsive-main .bg-white {
-        max-width: 100%;
-    }
+    .page-content {
+        width: 100% !important;
 
+        max-width: 100% !important;
 
-    /* Form */
+        min-width: 0 !important;
 
-    #patientFormCard {
         padding: 16px !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .responsive-main .page-content {
+        max-width: 100% !important;
     }
 
 
-    /* Search */
+    /* =====================================================
+       TITLE
+       ===================================================== */
 
-    #tableSearchInput {
-        width: 100%;
+    .page-content h1,
+    .responsive-main h1 {
+        max-width: 100%;
+
+        font-size: 20px !important;
+
+        line-height: 1.5;
+
+        overflow-wrap: break-word;
+    }
+
+    .page-content h2,
+    .responsive-main h2 {
+        overflow-wrap: break-word;
+    }
+
+    .page-content p {
+        max-width: 100%;
+
+        overflow-wrap: break-word;
+    }
+
+
+    /* =====================================================
+       BUTTONS
+       ===================================================== */
+
+    .page-content button {
         max-width: 100%;
     }
 
 
-    /* Table */
+    /* =====================================================
+       FORMS
+       ===================================================== */
+
+    .page-content form {
+        width: 100%;
+
+        max-width: 100%;
+
+        min-width: 0;
+    }
+
+    .page-content input,
+    .page-content select,
+    .page-content textarea {
+        width: 100%;
+
+        max-width: 100%;
+
+        min-width: 0;
+    }
+
+
+    /* =====================================================
+       GRID
+       ===================================================== */
+
+    .page-content .grid {
+        width: 100%;
+
+        max-width: 100%;
+    }
+
+
+    /* =====================================================
+       SETTINGS
+       ===================================================== */
+
+    .settings-notification-row {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    .settings-notification-row > div:first-child {
+        min-width: 0;
+
+        flex: 1 1 auto;
+    }
+
+    .settings-notification-row p {
+        overflow-wrap: break-word;
+    }
+
+    .settings-form-actions {
+        width: 100%;
+    }
+
+
+    /* =====================================================
+       RECORDS GRID
+       ===================================================== */
+
+    #recordsGrid {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #recordsGrid > * {
+        min-width: 0 !important;
+
+        max-width: 100% !important;
+    }
+
+
+    /* =====================================================
+       MODAL
+       ===================================================== */
+
+    #newRecordModal {
+        padding: 12px !important;
+    }
+
+    #newRecordModal > div {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        max-height: calc(100vh - 24px);
+
+        overflow-x: hidden;
+
+        overflow-y: auto;
+    }
+
+
+    /* =====================================================
+       TABLE
+       ===================================================== */
 
     .responsive-table {
-        margin-left: -1px;
-        margin-right: -1px;
-    }
+        width: 100% !important;
 
+        max-width: 100% !important;
+
+        margin-left: 0 !important;
+
+        margin-right: 0 !important;
+    }
 
     .responsive-table table {
         min-width: 760px;
@@ -239,55 +872,58 @@ body {
 
 
 /* =========================================================
-   Small Mobile
+   13. SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 480px) {
 
-    .responsive-main {
+    .page-content {
         padding: 12px !important;
     }
-
 
     .responsive-header {
         padding: 10px 12px !important;
     }
 
-
-    .desktop-sidebar nav a {
-        padding: 9px 12px !important;
-        font-size: 11px;
+    .mobile-menu-button {
+        width: 40px;
+        height: 40px;
     }
 
-
-    .desktop-sidebar nav a i {
-        width: auto !important;
-    }
-
-
-    /* عنوان الصفحة */
-
+    .page-content h1,
     .responsive-main h1 {
         font-size: 18px !important;
     }
 
+    .settings-notification-row {
+        align-items: flex-start !important;
+    }
 
-    /* زر إضافة مريض */
+    .settings-notification-row > div:first-child {
+        flex: 1 1 auto;
 
-    #toggleFormBtn {
+        min-width: 0;
+    }
+
+    #newRecordModal {
+        padding: 8px !important;
+    }
+
+    #newRecordModal > div {
+        max-width: calc(100vw - 16px) !important;
+
+        max-height: calc(100vh - 16px) !important;
+
+        padding: 16px !important;
+    }
+
+    #newRecordModal form > div:last-child {
+        flex-direction: column !important;
+
         width: 100%;
     }
 
-
-    /* أزرار النموذج */
-
-    #patientFormCard form > div:last-child {
-        flex-direction: column;
-        width: 100%;
-    }
-
-
-    #patientFormCard form > div:last-child button {
+    #newRecordModal form > div:last-child button {
         width: 100%;
     }
 
@@ -295,12 +931,38 @@ body {
 
 
 /* =========================================================
-   Touch Devices
+   14. VERY SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .page-content {
+        padding: 10px !important;
+    }
+
+    .responsive-header {
+        padding: 8px 10px !important;
+    }
+
+    .mobile-menu {
+        width: 88vw;
+    }
+
+    .page-content h1,
+    .responsive-main h1 {
+        font-size: 17px !important;
+    }
+
+}
+
+
+/* =========================================================
+   15. TOUCH DEVICES
    ========================================================= */
 
 @media (hover: none) {
 
-    .desktop-sidebar nav a:hover {
+    .mobile-menu nav a:hover {
         background: transparent;
     }
 
@@ -308,19 +970,13 @@ body {
 
 
 /* =========================================================
-   Prevent horizontal overflow
+   16. REDUCED MOTION
    ========================================================= */
 
-img,
-svg,
-video,
-canvas {
-    max-width: 100%;
-}
+@media (prefers-reduced-motion: reduce) {
 
-input,
-select,
-textarea,
-button {
-    max-width: 100%;
+    .mobile-menu {
+        transition: none;
+    }
+
 }

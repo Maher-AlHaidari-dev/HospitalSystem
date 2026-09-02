@@ -30,7 +30,7 @@
 
         <!-- SIDEBAR -->
 
-        <aside class="desktop-sidebar w-64 bg-[#0B2B38] text-slate-300 flex flex-col justify-between shrink-0">
+        <aside >
 
             <div>
 
@@ -147,17 +147,7 @@
                         A
                     </div>
 
-                    <div class="truncate text-xs">
-
-                        <p class="font-semibold text-white truncate">
-                            Admin
-                        </p>
-
-                        <p class="text-slate-400 truncate">
-                            Admin Staff
-                        </p>
-
-                    </div>
+        
 
                 </div>
 
@@ -170,50 +160,217 @@
         </aside>
 
 
-        <!-- MAIN -->
+        <!-- =====================================================
+     MOBILE MENU OVERLAY
+     ===================================================== -->
+
+<div
+    id="mobileMenuOverlay"
+    class="mobile-menu-overlay"
+    onclick="closeMobileMenu()">
+</div>
+
+
+<!-- =====================================================
+     MOBILE MENU
+     ===================================================== -->
+
+<aside
+    id="mobileMenu"
+    class="mobile-menu"
+    aria-hidden="true">
+
+    <div class="mobile-menu-header">
+
+        <div class="mobile-menu-brand">
+
+            <div class="mobile-menu-brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+
+            <span>
+                MediCore HMS
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="mobile-menu-close"
+            onclick="closeMobileMenu()"
+            aria-label="Close menu">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+
+    <nav>
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-border-all"></i>
+            <span data-i18n="navDashboard">
+                Dashboard
+            </span>
+        </a>
+
+
+        <a href="patients.html">
+            <i class="fa-solid fa-user-group"></i>
+            <span data-i18n="navPatients">
+                Patients
+            </span>
+        </a>
+
+
+        <a href="appointments.html">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span data-i18n="navAppointments">
+                Appointments
+            </span>
+        </a>
+
+
+        <a
+            href="medical-records.html"
+            class="active">
+
+            <i class="fa-solid fa-file-medical"></i>
+
+            <span data-i18n="navMedicalRecords">
+                Medical Records
+            </span>
+
+        </a>
+
+
+        <a href="invoices.html">
+            <i class="fa-solid fa-receipt"></i>
+
+            <span data-i18n="navInvoices">
+                Billing
+            </span>
+
+        </a>
+
+
+        <a href="reports.html">
+            <i class="fa-solid fa-chart-line"></i>
+
+            <span data-i18n="navReports">
+                Reports
+            </span>
+        </a>
+
+
+        <a href="settings.html">
+            <i class="fa-solid fa-gear"></i>
+
+            <span data-i18n="navSettings">
+                Settings
+            </span>
+        </a>
+
+    </nav>
+
+
+    <div class="mobile-menu-user">
+
+        <div class="mobile-menu-user-avatar">
+            A
+        </div>
+
+        <div class="mobile-menu-user-info">
+
+            <strong>
+                Admin
+            </strong>
+
+            <span>
+                Admin Staff
+            </span>
+
+        </div>
+
+    </div>
+
+</aside>
 
         <main class="responsive-main flex-1 flex flex-col min-w-0">
 
 
             <!-- HEADER -->
 
-            <header class="responsive-header h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between gap-4">
+            <header lass="responsive-header h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between gap-4">
 
-                <div class="header-search relative max-w-md w-full">
+    <!-- Mobile Header Top -->
 
-                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+    <div class="mobile-header-top">
 
-                    <input
-                        type="text"
-                        id="searchInput"
-                        onkeyup="filterRecords()"
-                        data-i18n-placeholder="searchPlaceholder"
-                        placeholder="Search patients, appointments..."
-                        class="w-full pr-10 pl-4 py-2 text-sm bg-slate-100/80 border border-transparent rounded-lg">
+        <button
+            type="button"
+            id="mobileMenuButton"
+            class="mobile-menu-button"
+            onclick="toggleMobileMenu()"
+            aria-label="Open menu"
+            aria-expanded="false">
 
-                </div>
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
 
 
-                <div class="flex items-center gap-3 shrink-0">
+        <div class="header-actions">
 
-                    <button
-                        id="langToggleBtn"
-                        onclick="toggleLanguage()"
-                        class="px-3 py-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg">
-                        EN
-                    </button>
+            <button
+                id="langToggleBtn"
+                onclick="toggleLanguage()"
+                class="px-3 py-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg">
 
-                    <button class="relative p-2 text-slate-500">
+                EN
 
-                        <i class="fa-regular fa-bell"></i>
+            </button>
 
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
 
-                    </button>
+            <button
+                class="relative p-2 text-slate-500">
 
-                </div>
+                <i class="fa-regular fa-bell"></i>
 
-            </header>
+                <span
+                    class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full">
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div
+        class="header-search relative max-w-md w-full">
+
+        <i
+            class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+        </i>
+
+        <input
+            type="text"
+            id="searchInput"
+            onkeyup="filterRecords()"
+            data-i18n-placeholder="searchPlaceholder"
+            placeholder="Search patients, appointments..."
+            class="w-full pr-10 pl-4 py-2 text-sm bg-slate-100/80 border border-transparent rounded-lg">
+
+    </div>
+
+</header>
 
 
             <!-- PAGE BODY -->
@@ -408,6 +565,7 @@
 
 
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/mobile-menu.js"></script>
     <script src="assets/js/medical-records.js"></script>
 
 </body>
