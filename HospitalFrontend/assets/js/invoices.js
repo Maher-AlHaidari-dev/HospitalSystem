@@ -1,181 +1,768 @@
-document.addEventListener('DOMContentLoaded', () => {
-    applyCurrentLanguage();
+"use strict";
+
+/* =========================================================
+   MediCore HMS
+   INVOICES PAGE
+   Real API + Responsive + Translation Safe
+   ========================================================= */
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
     fetchInvoices();
+
 });
 
-function toggleLanguage() {
-    const currentLang = CONFIG.LANG || 'ar';
-    CONFIG.LANG = currentLang === 'ar' ? 'en' : 'ar';
-    
-    applyCurrentLanguage();
-    fetchInvoices();
-}
 
-function applyCurrentLanguage() {
-    const isEn = CONFIG.LANG === 'en';
-    document.documentElement.dir = isEn ? 'ltr' : 'rtl';
-    document.documentElement.lang = CONFIG.LANG || 'ar';
+/* =========================================================
+   LANGUAGE HELPER
+   ========================================================= */
 
-    if (typeof CONFIG.applyTranslations === 'function') {
-        CONFIG.applyTranslations(CONFIG.LANG);
+function getInvoicesLanguage() {
+
+    if (
+        typeof CONFIG !== "undefined" &&
+        (CONFIG.LANG === "ar" || CONFIG.LANG === "en")
+    ) {
+        return CONFIG.LANG;
     }
 
-    const langBtn = document.getElementById('langToggleBtn');
-    if (langBtn) {
-        langBtn.textContent = isEn ? 'عربي' : 'EN';
-    }
+
+    const savedLang =
+        localStorage.getItem("app_lang");
+
+
+    return savedLang === "en"
+        ? "en"
+        : "ar";
 }
 
-function escapeHTML(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+
+/* =========================================================
+   HTML ESCAPE
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+        return "";
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
 }
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 function toggleModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.toggle('hidden');
+
+    const modal =
+        document.getElementById(modalId);
+
+
+    if (!modal) return;
+
+
+    modal.classList.toggle("hidden");
+
+
+    const isHidden =
+        modal.classList.contains("hidden");
+
+
+    if (!isHidden) {
+
+        document.body.style.overflow =
+            "hidden";
+
+    } else {
+
+        document.body.style.overflow =
+            "";
+
+    }
+
 }
 
-// تم حذف بيانات demo_invoices الوهمية نهائياً لضمان التعامل الحصري مع السيرفر الحقيقي
+
+/* =========================================================
+   FETCH INVOICES
+   ========================================================= */
 
 async function fetchInvoices() {
-    const tableBody = document.getElementById('invoicesTableBody');
+
+    const tableBody =
+        document.getElementById(
+            "invoicesTableBody"
+        );
+
+
     if (!tableBody) return;
 
-    const isEn = CONFIG.LANG === 'en';
+
+    const lang =
+        getInvoicesLanguage();
+
+    const isEn =
+        lang === "en";
+
+
+    tableBody.innerHTML = `
+        <tr>
+            <td
+                colspan="8"
+                class="text-center py-10 text-slate-400"
+            >
+                <div class="flex flex-col items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-[#00A896] text-lg"></i>
+                    <span>
+                        ${
+                            isEn
+                                ? "Loading invoices..."
+                                : "جاري تحميل الفواتير..."
+                        }
+                    </span>
+                </div>
+            </td>
+        </tr>
+    `;
+
 
     try {
-        const invoices = await CONFIG.request('/invoices');
-        renderInvoices(invoices);
+
+        const invoices =
+            await CONFIG.request(
+                "/invoices"
+            );
+
+
+        renderInvoices(
+            Array.isArray(invoices)
+                ? invoices
+                : []
+        );
+
+
     } catch (error) {
-        console.error('Failed to fetch invoices from server:', error);
+
+        console.error(
+            "Failed to fetch invoices from server:",
+            error
+        );
+
+
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-6 text-rose-500 font-medium">
-                    ${isEn ? 'Failed to load invoices from server.' : 'فشل تحميل الفواتير من الخادم الحقيقي.'}
+                <td
+                    colspan="8"
+                    class="text-center py-10"
+                >
+                    <div class="flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-xl"></i>
+
+                        <span class="text-rose-500 font-medium">
+                            ${
+                                isEn
+                                    ? "Failed to load invoices from server."
+                                    : "فشل تحميل الفواتير من الخادم."
+                            }
+                        </span>
+                    </div>
                 </td>
             </tr>
         `;
+
     }
+
 }
+
+
+/* =========================================================
+   RENDER INVOICES
+   ========================================================= */
 
 function renderInvoices(invoices) {
-    const tableBody = document.getElementById('invoicesTableBody');
-    tableBody.innerHTML = '';
 
-    const isEn = CONFIG.LANG === 'en';
+    const tableBody =
+        document.getElementById(
+            "invoicesTableBody"
+        );
 
-    if (!invoices || invoices.length === 0) {
+
+    if (!tableBody) return;
+
+
+    tableBody.innerHTML = "";
+
+
+    const lang =
+        getInvoicesLanguage();
+
+    const isEn =
+        lang === "en";
+
+
+    /* ---------------------------------------------------------
+       Empty state
+       --------------------------------------------------------- */
+
+    if (
+        !Array.isArray(invoices) ||
+        invoices.length === 0
+    ) {
+
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-6 text-slate-400">
-                    ${isEn ? 'No invoices found' : 'لا توجد فواتير حالياً'}
+                <td
+                    colspan="8"
+                    class="text-center py-12 text-slate-400"
+                >
+                    <div class="flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-file-invoice text-slate-300 text-2xl"></i>
+
+                        <span>
+                            ${
+                                isEn
+                                    ? "No invoices found"
+                                    : "لا توجد فواتير حالياً"
+                            }
+                        </span>
+                    </div>
                 </td>
             </tr>
         `;
+
         return;
+
     }
 
-    const locale = isEn ? 'en-US' : 'ar-YE';
 
-    invoices.forEach(inv => {
-        let statusBadgeClass = '';
-        let statusLabel = '';
+    const locale =
+        isEn
+            ? "en-US"
+            : "ar-YE";
 
-        if (inv.status === 'Paid') {
-            statusBadgeClass = 'bg-emerald-100 text-emerald-700';
-            statusLabel = isEn ? 'Paid' : 'مدفوع';
-        } else if (inv.status === 'Partial') {
-            statusBadgeClass = 'bg-amber-100 text-amber-700';
-            statusLabel = isEn ? 'Partially Paid' : 'مدفوع جزئياً';
-        } else {
-            statusBadgeClass = 'bg-rose-100 text-rose-700';
-            statusLabel = isEn ? 'Pending' : 'معلق';
+
+    invoices.forEach(
+        (invoice) => {
+
+            if (!invoice) return;
+
+
+            /* -------------------------------------------------
+               Status
+               ------------------------------------------------- */
+
+            let statusBadgeClass =
+                "bg-rose-100 text-rose-700";
+
+            let statusLabel =
+                isEn
+                    ? "Pending"
+                    : "معلق";
+
+
+            if (
+                invoice.status === "Paid"
+            ) {
+
+                statusBadgeClass =
+                    "bg-emerald-100 text-emerald-700";
+
+                statusLabel =
+                    isEn
+                        ? "Paid"
+                        : "مدفوع";
+
+            } else if (
+                invoice.status === "Partial"
+            ) {
+
+                statusBadgeClass =
+                    "bg-amber-100 text-amber-700";
+
+                statusLabel =
+                    isEn
+                        ? "Partially Paid"
+                        : "مدفوع جزئياً";
+
+            }
+
+
+            /* -------------------------------------------------
+               Safe values
+               ------------------------------------------------- */
+
+            const safePatientName =
+                escapeHTML(
+                    invoice.patientName
+                );
+
+
+            const safeInvoiceNumber =
+                escapeHTML(
+                    invoice.invoiceNumber
+                );
+
+
+            const totalAmount =
+                Number(
+                    invoice.totalAmount
+                ) || 0;
+
+
+            const paidAmount =
+                Number(
+                    invoice.paidAmount
+                ) || 0;
+
+
+            /* -------------------------------------------------
+               Dates
+               ------------------------------------------------- */
+
+            let issuedDate = "—";
+            let dueDate = "—";
+
+
+            try {
+
+                if (invoice.issuedDate) {
+
+                    issuedDate =
+                        new Date(
+                            invoice.issuedDate
+                        ).toLocaleDateString(
+                            locale,
+                            {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric"
+                            }
+                        );
+
+                }
+
+            } catch (error) {
+
+                issuedDate = "—";
+
+            }
+
+
+            try {
+
+                if (invoice.dueDate) {
+
+                    dueDate =
+                        new Date(
+                            invoice.dueDate
+                        ).toLocaleDateString(
+                            locale,
+                            {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric"
+                            }
+                        );
+
+                }
+
+            } catch (error) {
+
+                dueDate = "—";
+
+            }
+
+
+            /* -------------------------------------------------
+               Row
+               ------------------------------------------------- */
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.className =
+                "border-b border-slate-100 hover:bg-slate-50 transition";
+
+
+            row.innerHTML = `
+
+                <td class="py-4 px-6 font-mono font-medium text-slate-700">
+                    ${safeInvoiceNumber}
+                </td>
+
+
+                <td class="py-4 px-6 font-semibold text-slate-800">
+                    ${safePatientName}
+                </td>
+
+
+                <td class="py-4 px-6 text-slate-500">
+                    ${issuedDate}
+                </td>
+
+
+                <td class="py-4 px-6 text-slate-500">
+                    ${dueDate}
+                </td>
+
+
+                <td class="py-4 px-6 font-bold text-slate-800">
+                    $${totalAmount.toFixed(2)}
+                </td>
+
+
+                <td class="py-4 px-6 text-slate-600">
+                    $${paidAmount.toFixed(2)}
+                </td>
+
+
+                <td class="py-4 px-6">
+
+                    <span
+                        class="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold ${statusBadgeClass} rounded-full"
+                    >
+                        ${statusLabel}
+                    </span>
+
+                </td>
+
+
+                <td class="py-4 px-6 text-center">
+
+                    ${
+                        invoice.status !== "Paid"
+                            ? `
+                                <button
+                                    type="button"
+                                    onclick="recordPayment(${Number(invoice.id)})"
+                                    class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs border border-slate-200 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition"
+                                >
+                                    <i class="fa-solid fa-money-bill-transfer text-[10px]"></i>
+
+                                    ${
+                                        isEn
+                                            ? "Record Payment"
+                                            : "تسجيل دفعة"
+                                    }
+                                </button>
+                              `
+                            : `
+                                <span class="text-slate-300">
+                                    —
+                                </span>
+                              `
+                    }
+
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(
+                row
+            );
+
         }
+    );
 
-        const safePatientName = escapeHTML(inv.patientName);
-        const safeInvNumber = escapeHTML(inv.invoiceNumber);
-
-        const row = document.createElement('tr');
-        row.className = 'border-b border-slate-100 hover:bg-slate-50 transition';
-        row.innerHTML = `
-            <td class="py-3.5 px-6 font-mono font-medium text-slate-700">${safeInvNumber}</td>
-            <td class="py-3.5 px-6 font-semibold text-slate-800">${safePatientName}</td>
-            <td class="py-3.5 px-6 text-slate-500">${new Date(inv.issuedDate).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-            <td class="py-3.5 px-6 text-slate-500">${new Date(inv.dueDate).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-            <td class="py-3.5 px-6 font-bold text-slate-800">$${Number(inv.totalAmount).toFixed(2)}</td>
-            <td class="py-3.5 px-6 text-slate-600">$${Number(inv.paidAmount).toFixed(2)}</td>
-            <td class="py-3.5 px-6"><span class="px-2.5 py-1 text-[11px] font-semibold ${statusBadgeClass} rounded-full">${statusLabel}</span></td>
-            <td class="py-3.5 px-6 text-center">
-                ${inv.status !== 'Paid' ? `<button onclick="recordPayment(${inv.id})" class="px-3 py-1 text-xs border border-slate-200 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition">${isEn ? 'Record Payment' : 'تسجيل دفع'}</button>` : ''}
-            </td>
-        `;
-
-        tableBody.appendChild(row);
-    });
 }
+
+
+/* =========================================================
+   CREATE INVOICE
+   ========================================================= */
 
 async function handleCreateInvoice(event) {
-    event.preventDefault();
-    const isEn = CONFIG.LANG === 'en';
-    
-    const patientNameInput = document.getElementById('invPatientName').value.trim();
-    const totalAmountInput = parseFloat(document.getElementById('invTotalAmount').value);
-    const dueDateInput = document.getElementById('invDueDate').value;
 
-    if (!patientNameInput || isNaN(totalAmountInput) || totalAmountInput <= 0 || !dueDateInput) {
-        alert(isEn ? 'Please fill all fields accurately' : 'يرجى إدخال بيانات صحيحة ومكتملة');
+    event.preventDefault();
+
+
+    const isEn =
+        getInvoicesLanguage() === "en";
+
+
+    const patientInput =
+        document.getElementById(
+            "invPatientName"
+        );
+
+
+    const totalInput =
+        document.getElementById(
+            "invTotalAmount"
+        );
+
+
+    const dueDateInput =
+        document.getElementById(
+            "invDueDate"
+        );
+
+
+    const patientName =
+        patientInput
+            ? patientInput.value.trim()
+            : "";
+
+
+    const totalAmount =
+        totalInput
+            ? parseFloat(
+                totalInput.value
+            )
+            : NaN;
+
+
+    const dueDate =
+        dueDateInput
+            ? dueDateInput.value
+            : "";
+
+
+    if (
+        !patientName ||
+        Number.isNaN(totalAmount) ||
+        totalAmount <= 0 ||
+        !dueDate
+    ) {
+
+        alert(
+            isEn
+                ? "Please fill all fields accurately."
+                : "يرجى إدخال جميع البيانات بشكل صحيح."
+        );
+
         return;
+
     }
+
 
     const newInvoiceObj = {
-        invoiceNumber: `INV-2026-${Math.floor(100 + Math.random() * 900)}`,
-        patientName: patientNameInput,
-        totalAmount: totalAmountInput,
-        paidAmount: 0,
-        dueDate: dueDateInput,
-        issuedDate: new Date().toISOString().split('T')[0],
-        status: 'Pending'
+
+        invoiceNumber:
+            `INV-2026-${Math.floor(
+                100 +
+                Math.random() *
+                900
+            )}`,
+
+        patientName:
+            patientName,
+
+        totalAmount:
+            totalAmount,
+
+        paidAmount:
+            0,
+
+        dueDate:
+            dueDate,
+
+        issuedDate:
+            new Date()
+                .toISOString()
+                .split("T")[0],
+
+        status:
+            "Pending"
+
     };
 
+
+    const submitButton =
+        event.submitter ||
+        document.querySelector(
+            "#createInvoiceForm button[type='submit']"
+        );
+
+
     try {
-        await CONFIG.request('/invoices', {
-            method: 'POST',
-            body: JSON.stringify(newInvoiceObj)
-        });
-        toggleModal('newInvoiceModal');
-        document.getElementById('createInvoiceForm').reset();
-        fetchInvoices();
+
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+
+
+        await CONFIG.request(
+            "/invoices",
+            {
+                method: "POST",
+
+                body:
+                    JSON.stringify(
+                        newInvoiceObj
+                    )
+            }
+        );
+
+
+        const modal =
+            document.getElementById(
+                "newInvoiceModal"
+            );
+
+
+        if (modal) {
+            modal.classList.add("hidden");
+        }
+
+
+        document.body.style.overflow =
+            "";
+
+
+        const form =
+            document.getElementById(
+                "createInvoiceForm"
+            );
+
+
+        if (form) {
+            form.reset();
+        }
+
+
+        await fetchInvoices();
+
+
     } catch (error) {
-        console.error('Failed to create invoice on server:', error);
-        alert(isEn ? 'Failed to save invoice to server.' : 'فشل حفظ الفاتورة في السيرفر.');
+
+        console.error(
+            "Failed to create invoice on server:",
+            error
+        );
+
+
+        alert(
+            isEn
+                ? "Failed to save invoice to server."
+                : "فشل حفظ الفاتورة في السيرفر."
+        );
+
+
+    } finally {
+
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
+
     }
+
 }
 
-async function recordPayment(invoiceId) {
-    const isEn = CONFIG.LANG === 'en';
-    const amountStr = prompt(isEn ? 'Enter paid amount:' : 'أدخل المبلغ المالي المدفوع:');
-    if (!amountStr) return;
 
-    const amount = parseFloat(amountStr);
-    if (isNaN(amount) || amount <= 0) {
-        alert(isEn ? 'Please enter a valid amount' : 'يرجى إدخال مبلغ صحيح');
+/* =========================================================
+   RECORD PAYMENT
+   ========================================================= */
+
+async function recordPayment(invoiceId) {
+
+    const isEn =
+        getInvoicesLanguage() === "en";
+
+
+    if (
+        invoiceId === undefined ||
+        invoiceId === null ||
+        Number.isNaN(
+            Number(invoiceId)
+        )
+    ) {
         return;
     }
 
-    try {
-        await CONFIG.request(`/invoices/${invoiceId}/pay`, {
-            method: 'POST',
-            body: JSON.stringify(amount)
-        });
-        fetchInvoices();
-    } catch (error) {
-        console.error('Failed to record payment on server:', error);
-        alert(isEn ? 'Failed to record payment on server.' : 'فشل تسجيل الدفعة في السيرفر.');
+
+    const amountStr =
+        prompt(
+            isEn
+                ? "Enter paid amount:"
+                : "أدخل المبلغ المالي المدفوع:"
+        );
+
+
+    if (
+        amountStr === null ||
+        amountStr.trim() === ""
+    ) {
+        return;
     }
+
+
+    const amount =
+        parseFloat(
+            amountStr
+        );
+
+
+    if (
+        Number.isNaN(amount) ||
+        amount <= 0
+    ) {
+
+        alert(
+            isEn
+                ? "Please enter a valid amount."
+                : "يرجى إدخال مبلغ صحيح."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        await CONFIG.request(
+            `/invoices/${Number(invoiceId)}/pay`,
+            {
+                method: "POST",
+
+                body:
+                    JSON.stringify(
+                        amount
+                    )
+            }
+        );
+
+
+        await fetchInvoices();
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to record payment on server:",
+            error
+        );
+
+
+        alert(
+            isEn
+                ? "Failed to record payment on server."
+                : "فشل تسجيل الدفعة في السيرفر."
+        );
+
+    }
+
 }
