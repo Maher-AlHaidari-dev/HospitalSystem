@@ -39,6 +39,58 @@
         body {
             font-family: 'Cairo', 'Inter', sans-serif;
         }
+
+        /*
+         * =======================================================
+         * PATIENTS MOBILE HEADER SAFETY
+         * =======================================================
+         * هذا الجزء يضمن ظهور زر الثلاثة خطوط على الجوال
+         * حتى مع وجود Tailwind و resp_d.css.
+         */
+
+        .patients-mobile-header {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+
+            .patients-mobile-header {
+                display: flex !important;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .patients-mobile-header-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
+            }
+
+            #mobileMenuButton {
+                display: inline-flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                flex-shrink: 0;
+            }
+
+            .patients-mobile-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+            }
+
+            .patients-mobile-title-text {
+                min-width: 0;
+                max-width: 180px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 
@@ -91,7 +143,7 @@
                 </a>
 
 
-                <!-- Patients - Active -->
+                <!-- Patients -->
 
                 <a
                     href="patients.html"
@@ -194,12 +246,14 @@
                 </div>
 
                 <div>
+
                     <p
                         class="text-[10px] text-slate-400"
                         data-i18n="user.role"
                     >
                         إدارة النظام
                     </p>
+
                 </div>
 
             </div>
@@ -386,12 +440,12 @@
 
 
             <!-- =================================================
-                 MOBILE HEADER TOP
+                 MOBILE HEADER
                  ================================================= -->
 
-            <div class="mobile-header-top hidden">
+            <div class="patients-mobile-header">
 
-                <div class="flex items-center gap-2 min-w-0">
+                <div class="patients-mobile-header-left">
 
                     <!-- Hamburger -->
 
@@ -408,9 +462,9 @@
                     </button>
 
 
-                    <!-- Mobile Brand -->
+                    <!-- Mobile Page Brand -->
 
-                    <div class="flex items-center gap-2 min-w-0">
+                    <div class="patients-mobile-title">
 
                         <div
                             class="w-9 h-9 rounded-xl bg-[#00A896]/10 text-[#00A896] flex items-center justify-center shrink-0"
@@ -418,16 +472,12 @@
                             <i class="fa-solid fa-user-group"></i>
                         </div>
 
-                        <div class="min-w-0">
-
-                            <p
-                                class="font-bold text-slate-800 text-sm truncate"
-                                data-i18n="patients.title"
-                            >
-                                إدارة المرضى
-                            </p>
-
-                        </div>
+                        <p
+                            class="patients-mobile-title-text font-bold text-slate-800 text-sm"
+                            data-i18n="patients.title"
+                        >
+                            إدارة المرضى
+                        </p>
 
                     </div>
 
@@ -441,7 +491,9 @@
                  GLOBAL SEARCH
                  ================================================= -->
 
-            <div class="header-search relative w-96 max-w-full">
+            <div
+                class="header-search relative w-96 max-w-full"
+            >
 
                 <input
                     type="text"
@@ -472,6 +524,7 @@
                 <button
                     id="langToggleBtn"
                     type="button"
+                    onclick="toggleLanguage()"
                     class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition"
                 >
 
@@ -535,7 +588,6 @@
                         >
                             سجلات المرضى
                         </h1>
-
 
                         <p
                             class="text-xs text-slate-500 mt-1"
@@ -894,11 +946,13 @@
                         <div class="min-w-0">
 
                             <h2 class="text-sm font-bold text-slate-800">
+
                                 <i class="fa-solid fa-users text-[#00A896] ml-1"></i>
 
                                 <span data-i18n="patients.title">
                                     سجلات المرضى
                                 </span>
+
                             </h2>
 
                         </div>
@@ -906,7 +960,9 @@
 
                         <!-- Search -->
 
-                        <div class="relative w-full sm:max-w-md min-w-0">
+                        <div
+                            class="relative w-full sm:max-w-md min-w-0"
+                        >
 
                             <input
                                 type="text"
@@ -1002,12 +1058,7 @@
                                 id="patientsTableBody"
                                 class="text-xs divide-y divide-slate-100"
                             >
-
-                                <!--
-                                    يتم إنشاء الصفوف ديناميكياً
-                                    بواسطة patients.js
-                                -->
-
+                                <!-- يتم إنشاء الصفوف بواسطة patients.js -->
                             </tbody>
 
                         </table>
@@ -1028,31 +1079,15 @@
          JAVASCRIPT
          ========================================================= -->
 
-    <!-- Global Config / Translation / API -->
+    <!-- Global Config / API / Translation -->
     <script src="assets/js/config.js"></script>
 
     <!-- Mobile Navigation -->
     <script src="assets/js/mobile-menu.js"></script>
 
-    <!-- Patients Page Logic -->
+    <!-- Patients Logic -->
     <script src="assets/js/patients.js"></script>
 
-
-    <!-- =========================================================
-         PATIENTS LANGUAGE BUTTON
-         ========================================================= -->
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            const langToggleBtn = document.getElementById('langToggleBtn');
-
-            if (langToggleBtn && typeof toggleLanguage === 'function') {
-                langToggleBtn.addEventListener('click', toggleLanguage);
-            }
-
-        });
-    </script>
 
 </body>
 </html>
