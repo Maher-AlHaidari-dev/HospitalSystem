@@ -9,18 +9,30 @@
         إدارة المرضى - MediCore HMS
     </title>
 
-    <!-- Tailwind CSS -->
+    <!-- =========================================================
+         TAILWIND CSS
+         ========================================================= -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- =========================================================
+         FONTAWESOME
+         ========================================================= -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+    >
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+    <!-- =========================================================
+         GOOGLE FONTS
+         ========================================================= -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <!-- Responsive CSS المشترك لجميع الصفحات -->
+    <!-- =========================================================
+         GLOBAL RESPONSIVE CSS
+         ========================================================= -->
     <link rel="stylesheet" href="assets/css/resp_d.css">
 
     <style>
@@ -35,10 +47,12 @@
 
 
     <!-- =========================================================
-         SIDEBAR
+         DESKTOP SIDEBAR
          ========================================================= -->
 
-    <aside class="desktop-sidebar w-64 bg-[#091E25] text-slate-300 flex flex-col justify-between shrink-0 min-h-screen">
+    <aside
+        class="desktop-sidebar w-64 bg-[#091E25] text-slate-300 flex flex-col justify-between shrink-0 min-h-screen"
+    >
 
         <div>
 
@@ -46,7 +60,9 @@
 
             <div class="p-5 flex items-center gap-3 border-b border-slate-800/60">
 
-                <div class="w-8 h-8 bg-[#00A896] rounded-lg flex items-center justify-center text-white font-bold shrink-0">
+                <div
+                    class="w-8 h-8 bg-[#00A896] rounded-lg flex items-center justify-center text-white font-bold shrink-0"
+                >
                     <i class="fa-solid fa-heart-pulse"></i>
                 </div>
 
@@ -63,99 +79,99 @@
 
                 <!-- Dashboard -->
 
-                <a href="dashboard.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="dashboard.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-solid fa-chart-pie w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.dashboard">
                         لوحة التحكم
                     </span>
-
                 </a>
 
 
                 <!-- Patients - Active -->
 
-                <a href="patients.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00A896] text-white font-semibold shadow-lg shadow-[#00A896]/20">
-
+                <a
+                    href="patients.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00A896] text-white font-semibold shadow-lg shadow-[#00A896]/20"
+                >
                     <i class="fa-solid fa-user-group w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.patients">
                         إدارة المرضى
                     </span>
-
                 </a>
 
 
                 <!-- Appointments -->
 
-                <a href="appointments.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="appointments.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-regular fa-calendar-check w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.appointments">
                         المواعيد
                     </span>
-
                 </a>
 
 
                 <!-- Medical Records -->
 
-                <a href="medical-records.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="medical-records.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-solid fa-file-medical w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.medicalRecords">
                         السجلات الطبية
                     </span>
-
                 </a>
 
 
                 <!-- Invoices -->
 
-                <a href="invoices.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="invoices.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-solid fa-receipt w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.invoices">
                         الفواتير
                     </span>
-
                 </a>
 
 
                 <!-- Reports -->
 
-                <a href="reports.html"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="reports.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-solid fa-chart-line w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.reports">
                         التقارير
                     </span>
-
                 </a>
 
 
                 <!-- Settings -->
 
-                <a href="settings.html"
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
-
+                <a
+                    href="settings.html"
+                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
                     <i class="fa-solid fa-gear w-5 text-center shrink-0"></i>
 
                     <span data-i18n="nav.settings">
                         الإعدادات
                     </span>
-
                 </a>
 
             </nav>
@@ -165,21 +181,25 @@
 
         <!-- User Profile -->
 
-        <div class="p-4 border-t border-slate-800/60 flex items-center justify-between">
+        <div
+            class="p-4 border-t border-slate-800/60 flex items-center justify-between"
+        >
 
             <div class="flex items-center gap-3">
 
-                <div class="w-9 h-9 rounded-full bg-[#00A896]/20 border border-[#00A896]/40 text-[#00A896] flex items-center justify-center font-bold">
+                <div
+                    class="w-9 h-9 rounded-full bg-[#00A896]/20 border border-[#00A896]/40 text-[#00A896] flex items-center justify-center font-bold"
+                >
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
 
                 <div>
-
-                    <p class="text-[10px] text-slate-400"
-                       data-i18n="user.role">
+                    <p
+                        class="text-[10px] text-slate-400"
+                        data-i18n="user.role"
+                    >
                         إدارة النظام
                     </p>
-
                 </div>
 
             </div>
@@ -189,11 +209,157 @@
                 type="button"
                 class="text-slate-400 hover:text-red-400 transition"
                 title="تسجيل الخروج"
-                data-i18n-title="logout">
-
+                data-i18n-title="logout"
+            >
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
             </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MOBILE MENU OVERLAY
+         ========================================================= -->
+
+    <div
+        id="mobileMenuOverlay"
+        class="mobile-menu-overlay"
+        aria-hidden="true"
+        onclick="closeMobileMenu()"
+    ></div>
+
+
+
+    <!-- =========================================================
+         MOBILE SIDEBAR
+         ========================================================= -->
+
+    <aside
+        id="mobileMenu"
+        class="mobile-menu"
+        aria-hidden="true"
+    >
+
+        <!-- Mobile Menu Header -->
+
+        <div class="mobile-menu-header">
+
+            <div class="mobile-menu-brand">
+
+                <div class="mobile-menu-brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <span>
+                    MediCore HMS
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="mobile-menu-close"
+                aria-label="Close menu"
+                onclick="closeMobileMenu()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- Mobile Navigation -->
+
+        <nav>
+
+            <a href="dashboard.html">
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span data-i18n="nav.dashboard">
+                    لوحة التحكم
+                </span>
+            </a>
+
+
+            <a href="patients.html" class="active">
+                <i class="fa-solid fa-user-group"></i>
+
+                <span data-i18n="nav.patients">
+                    إدارة المرضى
+                </span>
+            </a>
+
+
+            <a href="appointments.html">
+                <i class="fa-regular fa-calendar-check"></i>
+
+                <span data-i18n="nav.appointments">
+                    المواعيد
+                </span>
+            </a>
+
+
+            <a href="medical-records.html">
+                <i class="fa-solid fa-file-medical"></i>
+
+                <span data-i18n="nav.medicalRecords">
+                    السجلات الطبية
+                </span>
+            </a>
+
+
+            <a href="invoices.html">
+                <i class="fa-solid fa-receipt"></i>
+
+                <span data-i18n="nav.invoices">
+                    الفواتير
+                </span>
+            </a>
+
+
+            <a href="reports.html">
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span data-i18n="nav.reports">
+                    التقارير
+                </span>
+            </a>
+
+
+            <a href="settings.html">
+                <i class="fa-solid fa-gear"></i>
+
+                <span data-i18n="nav.settings">
+                    الإعدادات
+                </span>
+            </a>
+
+        </nav>
+
+
+        <!-- Mobile User -->
+
+        <div class="mobile-menu-user">
+
+            <div class="mobile-menu-user-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+            <div class="mobile-menu-user-info">
+
+                <strong>
+                    MediCore HMS
+                </strong>
+
+                <span data-i18n="user.role">
+                    إدارة النظام
+                </span>
+
+            </div>
 
         </div>
 
@@ -205,17 +371,75 @@
          MAIN LAYOUT
          ========================================================= -->
 
-    <div class="main-layout flex-1 flex flex-col min-w-0 w-full">
+    <div
+        class="responsive-layout flex-1 flex flex-col min-w-0 w-full"
+    >
 
 
         <!-- =====================================================
              HEADER
              ===================================================== -->
 
-        <header class="responsive-header bg-white border-b border-slate-200/80 px-8 py-3.5 flex items-center justify-between gap-4">
+        <header
+            class="responsive-header bg-white border-b border-slate-200/80 px-8 py-3.5 flex items-center justify-between gap-4"
+        >
 
 
-            <!-- Global Search -->
+            <!-- =================================================
+                 MOBILE HEADER TOP
+                 ================================================= -->
+
+            <div class="mobile-header-top hidden">
+
+                <div class="flex items-center gap-2 min-w-0">
+
+                    <!-- Hamburger -->
+
+                    <button
+                        id="mobileMenuButton"
+                        type="button"
+                        class="mobile-menu-button"
+                        aria-label="Open menu"
+                        aria-expanded="false"
+                        aria-controls="mobileMenu"
+                        onclick="toggleMobileMenu()"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+
+                    <!-- Mobile Brand -->
+
+                    <div class="flex items-center gap-2 min-w-0">
+
+                        <div
+                            class="w-9 h-9 rounded-xl bg-[#00A896]/10 text-[#00A896] flex items-center justify-center shrink-0"
+                        >
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p
+                                class="font-bold text-slate-800 text-sm truncate"
+                                data-i18n="patients.title"
+                            >
+                                إدارة المرضى
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 GLOBAL SEARCH
+                 ================================================= -->
 
             <div class="header-search relative w-96 max-w-full">
 
@@ -224,25 +448,32 @@
                     id="globalSearchInput"
                     data-i18n-placeholder="header.searchPlaceholder"
                     placeholder="البحث عن مريض بالاسم، البريد أو المعرّف (PID)..."
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/30 focus:border-[#00A896] transition">
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/30 focus:border-[#00A896] transition"
+                >
 
-                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                <i
+                    class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+                ></i>
 
             </div>
 
 
-            <!-- Header Actions -->
 
-            <div class="flex items-center gap-3 shrink-0">
+            <!-- =================================================
+                 HEADER ACTIONS
+                 ================================================= -->
 
+            <div
+                class="header-actions flex items-center gap-3 shrink-0"
+            >
 
                 <!-- Language -->
 
                 <button
                     id="langToggleBtn"
                     type="button"
-                    onclick="toggleLanguage()"
-                    class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">
+                    class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition"
+                >
 
                     <i class="fa-solid fa-globe text-[#00A896]"></i>
 
@@ -257,11 +488,15 @@
 
                 <button
                     type="button"
-                    class="w-9 h-9 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 relative transition">
+                    class="w-9 h-9 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 relative transition"
+                    aria-label="Notifications"
+                >
 
                     <i class="fa-regular fa-bell text-sm"></i>
 
-                    <span class="w-2 h-2 bg-rose-500 rounded-full absolute top-2 left-2"></span>
+                    <span
+                        class="w-2 h-2 bg-rose-500 rounded-full absolute top-2 left-2"
+                    ></span>
 
                 </button>
 
@@ -275,418 +510,509 @@
              MAIN CONTENT
              ===================================================== -->
 
-        <main class="responsive-main p-8 space-y-6 overflow-y-auto min-w-0 w-full">
-
-
-            <!-- Page Title + Action -->
-
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                <div>
-
-                    <h1
-                        class="text-2xl font-bold text-slate-900"
-                        data-i18n="patients.title">
-
-                        سجلات المرضى
-
-                    </h1>
-
-
-                    <p
-                        class="text-xs text-slate-500 mt-1"
-                        data-i18n="patients.subtitle">
-
-                        تسجيل، تصفية، ومتابعة الملفات الطبية الشاملة لكافة المرضى.
-
-                    </p>
-
-                </div>
-
-
-                <!-- Register Patient -->
-
-                <button
-                    id="toggleFormBtn"
-                    type="button"
-                    class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer">
-
-                    <i class="fa-solid fa-user-plus text-[11px]"></i>
-
-                    <span
-                        id="toggleBtnText"
-                        data-i18n="patients.btnRegister">
-
-                        تسجيل مريض جديد
-
-                    </span>
-
-                </button>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 NEW PATIENT FORM
-                 ================================================= -->
+        <main
+            class="responsive-main flex-1 overflow-y-auto min-w-0 w-full"
+        >
 
             <div
-                id="patientFormCard"
-                class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm hidden space-y-5 transition-all">
+                class="page-content p-8 space-y-6"
+            >
 
 
-                <!-- Form Header -->
+                <!-- =================================================
+                     PAGE TITLE
+                     ================================================= -->
 
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div
+                    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                >
 
-                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                    <div class="min-w-0">
 
-                        <i class="fa-solid fa-address-card text-[#00A896]"></i>
+                        <h1
+                            class="text-2xl font-bold text-slate-900"
+                            data-i18n="patients.title"
+                        >
+                            سجلات المرضى
+                        </h1>
 
-                        <span data-i18n="form.header">
-                            نموذج تسجيل مريض جديد
+
+                        <p
+                            class="text-xs text-slate-500 mt-1"
+                            data-i18n="patients.subtitle"
+                        >
+                            تسجيل، تصفية، ومتابعة الملفات الطبية الشاملة لكافة المرضى.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Register Patient -->
+
+                    <button
+                        id="toggleFormBtn"
+                        type="button"
+                        class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                    >
+
+                        <i class="fa-solid fa-user-plus text-[11px]"></i>
+
+                        <span
+                            id="toggleBtnText"
+                            data-i18n="patients.btnRegister"
+                        >
+                            تسجيل مريض جديد
                         </span>
 
-                    </h3>
-
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#00A896]"></span>
+                    </button>
 
                 </div>
 
 
 
-                <form id="patientForm" class="space-y-4">
+                <!-- =================================================
+                     NEW PATIENT FORM
+                     ================================================= -->
+
+                <div
+                    id="patientFormCard"
+                    class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm hidden space-y-5 transition-all min-w-0"
+                >
 
 
-                    <!-- Name + DOB -->
+                    <!-- Form Header -->
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div
+                        class="flex items-center justify-between border-b border-slate-100 pb-3 gap-3"
+                    >
 
-                        <div>
+                        <h3
+                            class="font-bold text-slate-800 text-sm flex items-center gap-2 min-w-0"
+                        >
+
+                            <i class="fa-solid fa-address-card text-[#00A896] shrink-0"></i>
+
+                            <span
+                                data-i18n="form.header"
+                                class="break-words"
+                            >
+                                نموذج تسجيل مريض جديد
+                            </span>
+
+                        </h3>
+
+                        <span
+                            class="w-2.5 h-2.5 rounded-full bg-[#00A896] shrink-0"
+                        ></span>
+
+                    </div>
+
+
+
+                    <!-- Form -->
+
+                    <form
+                        id="patientForm"
+                        class="space-y-4 w-full"
+                    >
+
+
+                        <!-- Name + DOB -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="fullName"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.fullName"
+                                >
+                                    الاسم الكامل *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="fullName"
+                                    required
+                                    data-i18n-placeholder="form.fullNamePlaceholder"
+                                    placeholder="مثال: أحمد السيد"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="dateOfBirth"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.dob"
+                                >
+                                    تاريخ الميلاد *
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="dateOfBirth"
+                                    required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Gender + Contact -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="gender"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.gender"
+                                >
+                                    الجنس *
+                                </label>
+
+                                <select
+                                    id="gender"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                                    <option
+                                        value="ذكر"
+                                        data-i18n="gender.male"
+                                    >
+                                        ذكر
+                                    </option>
+
+                                    <option
+                                        value="أنثى"
+                                        data-i18n="gender.female"
+                                    >
+                                        أنثى
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="contactNumber"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.contact"
+                                >
+                                    رقم التواصل *
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="contactNumber"
+                                    required
+                                    data-i18n-placeholder="form.contactPlaceholder"
+                                    placeholder="+967 7XX XXX XXX"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Email + Status -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="email"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.email"
+                                >
+                                    البريد الإلكتروني
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    data-i18n-placeholder="form.emailPlaceholder"
+                                    placeholder="patient@example.com"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="status"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.status"
+                                >
+                                    الحالة
+                                </label>
+
+                                <select
+                                    id="status"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                                    <option
+                                        value="نشط"
+                                        data-i18n="status.active"
+                                    >
+                                        نشط
+                                    </option>
+
+                                    <option
+                                        value="غير نشط"
+                                        data-i18n="status.inactive"
+                                    >
+                                        غير نشط
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Address -->
+
+                        <div class="min-w-0">
 
                             <label
-                                for="fullName"
+                                for="address"
                                 class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.fullName">
-
-                                الاسم الكامل *
-
+                                data-i18n="form.address"
+                            >
+                                العنوان
                             </label>
 
                             <input
                                 type="text"
-                                id="fullName"
-                                required
-                                data-i18n-placeholder="form.fullNamePlaceholder"
-                                placeholder="مثال: أحمد السيد"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                                id="address"
+                                data-i18n-placeholder="form.addressPlaceholder"
+                                placeholder="المدينة، الدولة"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                            >
 
                         </div>
 
 
-                        <div>
+
+                        <!-- Medical History -->
+
+                        <div class="min-w-0">
 
                             <label
-                                for="dateOfBirth"
+                                for="medicalHistory"
                                 class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.dob">
-
-                                تاريخ الميلاد *
-
+                                data-i18n="form.medicalHistory"
+                            >
+                                السجل الطبي
                             </label>
 
-                            <input
-                                type="date"
-                                id="dateOfBirth"
-                                required
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Gender + Contact -->
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                        <div>
-
-                            <label
-                                for="gender"
-                                class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.gender">
-
-                                الجنس *
-
-                            </label>
-
-                            <select
-                                id="gender"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                                <option value="ذكر" data-i18n="gender.male">
-                                    ذكر
-                                </option>
-
-                                <option value="أنثى" data-i18n="gender.female">
-                                    أنثى
-                                </option>
-
-                            </select>
+                            <textarea
+                                id="medicalHistory"
+                                rows="2"
+                                data-i18n-placeholder="form.historyPlaceholder"
+                                placeholder="الحساسية، الأمراض المزمنة، العمليات السابقة..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition resize-y"
+                            ></textarea>
 
                         </div>
 
 
-                        <div>
 
-                            <label
-                                for="contactNumber"
-                                class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.contact">
+                        <!-- Form Actions -->
 
-                                رقم التواصل *
+                        <div
+                            class="settings-form-actions pt-2 flex items-center justify-end gap-3"
+                        >
 
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="contactNumber"
-                                required
-                                data-i18n-placeholder="form.contactPlaceholder"
-                                placeholder="+967 7XX XXX XXX"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                        </div>
-
-                    </div>
+                            <button
+                                type="button"
+                                id="cancelFormBtn"
+                                class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer"
+                                data-i18n="form.cancel"
+                            >
+                                إلغاء
+                            </button>
 
 
+                            <button
+                                type="submit"
+                                class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-6 py-2 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer"
+                            >
 
-                    <!-- Email + Status -->
+                                <i class="fa-solid fa-check text-[10px]"></i>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <span data-i18n="form.save">
+                                    حفظ بيانات المريض
+                                </span>
 
-                        <div>
-
-                            <label
-                                for="email"
-                                class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.email">
-
-                                البريد الإلكتروني
-
-                            </label>
-
-                            <input
-                                type="email"
-                                id="email"
-                                data-i18n-placeholder="form.emailPlaceholder"
-                                placeholder="patient@example.com"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
+                            </button>
 
                         </div>
 
-
-                        <div>
-
-                            <label
-                                for="status"
-                                class="block text-xs font-bold text-slate-700 mb-1"
-                                data-i18n="form.status">
-
-                                الحالة
-
-                            </label>
-
-                            <select
-                                id="status"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                                <option value="نشط" data-i18n="status.active">
-                                    نشط
-                                </option>
-
-                                <option value="غير نشط" data-i18n="status.inactive">
-                                    غير نشط
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Address -->
-
-                    <div>
-
-                        <label
-                            for="address"
-                            class="block text-xs font-bold text-slate-700 mb-1"
-                            data-i18n="form.address">
-
-                            العنوان
-
-                        </label>
-
-                        <input
-                            type="text"
-                            id="address"
-                            data-i18n-placeholder="form.addressPlaceholder"
-                            placeholder="المدينة، الدولة"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                    </div>
-
-
-
-                    <!-- Medical History -->
-
-                    <div>
-
-                        <label
-                            for="medicalHistory"
-                            class="block text-xs font-bold text-slate-700 mb-1"
-                            data-i18n="form.medicalHistory">
-
-                            السجل الطبي
-
-                        </label>
-
-                        <textarea
-                            id="medicalHistory"
-                            rows="2"
-                            data-i18n-placeholder="form.historyPlaceholder"
-                            placeholder="الحساسية، الأمراض المزمنة، العمليات السابقة..."
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"></textarea>
-
-                    </div>
-
-
-
-                    <!-- Form Actions -->
-
-                    <div class="pt-2 flex items-center justify-end gap-3">
-
-                        <button
-                            type="button"
-                            id="cancelFormBtn"
-                            class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer"
-                            data-i18n="form.cancel">
-
-                            إلغاء
-
-                        </button>
-
-
-                        <button
-                            type="submit"
-                            class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-6 py-2 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center gap-2 cursor-pointer">
-
-                            <i class="fa-solid fa-check text-[10px]"></i>
-
-                            <span data-i18n="form.save">
-                                حفظ بيانات المريض
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 PATIENTS TABLE
-                 ================================================= -->
-
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4 min-w-0">
-
-
-                <!-- Search -->
-
-                <div class="relative max-w-md w-full">
-
-                    <input
-                        type="text"
-                        id="tableSearchInput"
-                        data-i18n-placeholder="table.filterPlaceholder"
-                        placeholder="البحث باسم المريض، PID، أو رقم التواصل..."
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition">
-
-                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                    </form>
 
                 </div>
 
 
 
-                <!-- Responsive Table -->
+                <!-- =================================================
+                     PATIENTS TABLE CARD
+                     ================================================= -->
 
-                <div class="responsive-table">
-
-                    <table class="w-full border-collapse text-xs">
-
-                        <thead>
-
-                            <tr class="text-[11px] font-bold text-slate-400 border-b border-slate-100">
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.pid">
-                                    Patient ID
-                                </th>
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.name">
-                                    Name
-                                </th>
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.ageGender">
-                                    Age / Gender
-                                </th>
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.contact">
-                                    Contact
-                                </th>
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.registered">
-                                    Registered
-                                </th>
-
-                                <th class="pb-3 px-3 whitespace-nowrap"
-                                    data-i18n="table.status">
-                                    Status
-                                </th>
-
-                                <th class="pb-3 px-3 text-center whitespace-nowrap"
-                                    data-i18n="table.actions">
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
+                <div
+                    class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4 min-w-0 max-w-full"
+                >
 
 
-                        <tbody
-                            id="patientsTableBody"
-                            class="text-xs divide-y divide-slate-100">
+                    <!-- Table Header -->
 
-                            <!-- يتم توليد المرضى بواسطة patients.js -->
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 min-w-0"
+                    >
 
-                        </tbody>
+                        <div class="min-w-0">
 
-                    </table>
+                            <h2 class="text-sm font-bold text-slate-800">
+                                <i class="fa-solid fa-users text-[#00A896] ml-1"></i>
+
+                                <span data-i18n="patients.title">
+                                    سجلات المرضى
+                                </span>
+                            </h2>
+
+                        </div>
+
+
+                        <!-- Search -->
+
+                        <div class="relative w-full sm:max-w-md min-w-0">
+
+                            <input
+                                type="text"
+                                id="tableSearchInput"
+                                data-i18n-placeholder="table.filterPlaceholder"
+                                placeholder="البحث باسم المريض، PID، أو رقم التواصل..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                            >
+
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Responsive Table -->
+
+                    <div class="responsive-table">
+
+                        <table class="w-full border-collapse text-xs">
+
+                            <thead>
+
+                                <tr
+                                    class="text-[11px] font-bold text-slate-400 border-b border-slate-100"
+                                >
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.pid"
+                                    >
+                                        Patient ID
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.name"
+                                    >
+                                        Name
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.ageGender"
+                                    >
+                                        Age / Gender
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.contact"
+                                    >
+                                        Contact
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.registered"
+                                    >
+                                        Registered
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.status"
+                                    >
+                                        Status
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 text-center whitespace-nowrap"
+                                        data-i18n="table.actions"
+                                    >
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="patientsTableBody"
+                                class="text-xs divide-y divide-slate-100"
+                            >
+
+                                <!--
+                                    يتم إنشاء الصفوف ديناميكياً
+                                    بواسطة patients.js
+                                -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                 </div>
 
@@ -702,11 +1028,31 @@
          JAVASCRIPT
          ========================================================= -->
 
-    <!-- ملف الترجمة والإعدادات -->
+    <!-- Global Config / Translation / API -->
     <script src="assets/js/config.js"></script>
 
-    <!-- منطق صفحة المرضى -->
+    <!-- Mobile Navigation -->
+    <script src="assets/js/mobile-menu.js"></script>
+
+    <!-- Patients Page Logic -->
     <script src="assets/js/patients.js"></script>
+
+
+    <!-- =========================================================
+         PATIENTS LANGUAGE BUTTON
+         ========================================================= -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const langToggleBtn = document.getElementById('langToggleBtn');
+
+            if (langToggleBtn && typeof toggleLanguage === 'function') {
+                langToggleBtn.addEventListener('click', toggleLanguage);
+            }
+
+        });
+    </script>
 
 </body>
 </html>
