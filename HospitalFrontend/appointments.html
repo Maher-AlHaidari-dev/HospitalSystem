@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlTag">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title data-i18n="appointmentsTitle">
-        إدارة المواعيد - MediCore HMS
-    </title>
+    <title data-i18n="appointmentsTitle">إدارة المواعيد - MediCore HMS</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -17,97 +15,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap"
           rel="stylesheet">
 
+    <link rel="stylesheet" href="assets/css/resp_d.css">
+
     <style>
-
-        /* =========================================================
-           RESPONSIVE DESIGN
-           هذه الأسطر مسؤولة عن جعل التصميم متجاوبًا مع جميع الشاشات
-           ========================================================= */
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
         body {
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            overflow-x: hidden;
             font-family: 'Cairo', sans-serif;
         }
-
-        .responsive-table {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .responsive-table table {
-            min-width: 760px;
-        }
-
-        @media (max-width: 767px) {
-
-            body {
-                display: block !important;
-            }
-
-            .desktop-sidebar {
-                width: 100% !important;
-                min-height: auto !important;
-            }
-
-            .desktop-sidebar nav {
-                display: flex;
-                overflow-x: auto;
-                gap: 6px;
-                padding: 8px;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .desktop-sidebar nav a {
-                flex: 0 0 auto;
-                white-space: nowrap;
-            }
-
-            .main-layout {
-                width: 100% !important;
-                min-width: 0 !important;
-            }
-
-            .responsive-header {
-                padding: 12px 16px !important;
-                flex-wrap: wrap;
-            }
-
-            .header-search {
-                width: 100% !important;
-                max-width: 100% !important;
-                order: 2;
-            }
-
-            .responsive-main {
-                padding: 16px !important;
-            }
-        }
-
     </style>
 </head>
 
-
 <body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex text-sm">
+
+    <!-- =========================================================
+         MOBILE MENU OVERLAY
+         ========================================================= -->
+    <div id="mobileMenuOverlay"
+         class="mobile-menu-overlay"
+         aria-hidden="true"
+         onclick="closeMobileMenu()"></div>
 
 
     <!-- =========================================================
-         SIDEBAR
-         RESPONSIVE: يتحول إلى شريط أفقي على الجوال
+         DESKTOP SIDEBAR
          ========================================================= -->
-
     <aside class="desktop-sidebar w-64 bg-[#091E25] text-slate-300 flex flex-col justify-between shrink-0 min-h-screen">
 
         <div>
@@ -123,7 +53,6 @@
                 </span>
 
             </div>
-
 
             <nav class="p-3 space-y-1">
 
@@ -154,7 +83,7 @@
                 <a href="invoices.html"
                    class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl">
                     <i class="fa-solid fa-receipt w-5 shrink-0"></i>
-                    <span data-i18n="navInvoices">الفواتير</span>
+                    <span data-i18n="navInvoices">الفواتير والمدفوعات</span>
                 </a>
 
                 <a href="reports.html"
@@ -176,14 +105,133 @@
     </aside>
 
 
-    <!-- MAIN -->
+    <!-- =========================================================
+         MOBILE SIDEBAR
+         ========================================================= -->
+    <aside id="mobileMenu"
+           class="mobile-menu"
+           aria-hidden="true">
 
-    <div class="main-layout flex-1 flex flex-col min-w-0 w-full">
+        <div class="mobile-menu-header">
+
+            <div class="mobile-menu-brand">
+
+                <div class="mobile-menu-brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <span>MediCore HMS</span>
+
+            </div>
+
+            <button type="button"
+                    class="mobile-menu-close"
+                    aria-label="Close menu"
+                    onclick="closeMobileMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
 
 
-        <!-- HEADER -->
+        <nav>
 
+            <a href="dashboard.html">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span data-i18n="navDashboard">لوحة التحكم</span>
+            </a>
+
+            <a href="patients.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span data-i18n="navPatients">إدارة المرضى</span>
+            </a>
+
+            <a href="appointments.html" class="active">
+                <i class="fa-regular fa-calendar-check"></i>
+                <span data-i18n="navAppointments">المواعيد</span>
+            </a>
+
+            <a href="medical-records.html">
+                <i class="fa-solid fa-file-medical"></i>
+                <span data-i18n="navMedicalRecords">السجلات الطبية</span>
+            </a>
+
+            <a href="invoices.html">
+                <i class="fa-solid fa-receipt"></i>
+                <span data-i18n="navInvoices">الفواتير والمدفوعات</span>
+            </a>
+
+            <a href="reports.html">
+                <i class="fa-solid fa-chart-line"></i>
+                <span data-i18n="navReports">التقارير</span>
+            </a>
+
+            <a href="settings.html">
+                <i class="fa-solid fa-gear"></i>
+                <span data-i18n="navSettings">الإعدادات</span>
+            </a>
+
+        </nav>
+
+
+        <div class="mobile-menu-user">
+
+            <div class="mobile-menu-user-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="mobile-menu-user-info">
+                <strong>MediCore HMS</strong>
+                <span data-i18n="adminRole">إدارة النظام</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN LAYOUT
+         ========================================================= -->
+    <div class="main-layout responsive-layout flex-1 flex flex-col min-w-0 w-full">
+
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
         <header class="responsive-header bg-white border-b border-slate-200/80 px-8 py-3.5 flex items-center justify-between gap-4">
+
+            <div class="mobile-header-top">
+
+                <button id="mobileMenuButton"
+                        type="button"
+                        class="mobile-menu-button"
+                        aria-label="Open menu"
+                        aria-expanded="false"
+                        aria-controls="mobileMenu"
+                        onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+
+                <div class="header-actions">
+
+                    <button id="langToggleBtn"
+                            type="button"
+                            class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold">
+
+                        <i class="fa-solid fa-globe text-[#00A896]"></i>
+
+                        <span id="currentLangLabel">
+                            English
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
 
             <div class="header-search relative w-96 max-w-full">
 
@@ -198,26 +246,13 @@
 
             </div>
 
-
-            <button
-                id="langToggleBtn"
-                onclick="toggleLanguage()"
-                class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold">
-
-                <i class="fa-solid fa-globe text-[#00A896]"></i>
-
-                <span id="currentLangLabel">
-                    English
-                </span>
-
-            </button>
-
         </header>
 
 
-        <!-- MAIN CONTENT -->
-
-        <main class="responsive-main p-8 space-y-6 overflow-y-auto min-w-0 w-full">
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
+        <main class="responsive-main responsive-main p-8 space-y-6 overflow-y-auto min-w-0 w-full">
 
             <div>
 
@@ -234,15 +269,15 @@
             </div>
 
 
-            <!-- RESPONSIVE GRID
-                 على الجوال عمود واحد
-                 وعلى الشاشات الكبيرة جدول + نموذج -->
-
+            <!-- =================================================
+                 APPOINTMENTS GRID
+                 ================================================= -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
 
 
-                <!-- TABLE -->
-
+                <!-- =================================================
+                     APPOINTMENTS TABLE
+                     ================================================= -->
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4 min-w-0">
 
                     <div class="relative max-w-md w-full">
@@ -250,17 +285,14 @@
                         <input
                             type="text"
                             id="tableSearchInput"
-                            placeholder="تصفية المواعيد حسب الاسم، القسم..."
+                            placeholder="تصفية العناصر حسب الاسم، القسم..."
                             data-i18n-placeholder="filterPlaceholder"
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs">
 
-                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
 
                     </div>
 
-
-                    <!-- RESPONSIVE TABLE
-                         الجدول يسمح بالتمرير أفقيًا على الجوال بدل كسر الصفحة -->
 
                     <div class="responsive-table">
 
@@ -271,16 +303,41 @@
                                 <tr class="text-[11px] font-bold text-slate-400 border-b border-slate-100">
 
                                     <th class="pb-3 px-3">#</th>
-                                    <th class="pb-3 px-3">المريض</th>
-                                    <th class="pb-3 px-3">الطبيب</th>
-                                    <th class="pb-3 px-3">القسم</th>
-                                    <th class="pb-3 px-3">الموعد</th>
-                                    <th class="pb-3 px-3">الحالة</th>
-                                    <th class="pb-3 px-3 text-center">إجراءات</th>
+
+                                    <th class="pb-3 px-3"
+                                        data-i18n="thPatient">
+                                        المريض
+                                    </th>
+
+                                    <th class="pb-3 px-3"
+                                        data-i18n="thDoctor">
+                                        الطبيب
+                                    </th>
+
+                                    <th class="pb-3 px-3"
+                                        data-i18n="thDepartment">
+                                        القسم
+                                    </th>
+
+                                    <th class="pb-3 px-3"
+                                        data-i18n="thAppointmentDate">
+                                        الموعد
+                                    </th>
+
+                                    <th class="pb-3 px-3"
+                                        data-i18n="thStatus">
+                                        الحالة
+                                    </th>
+
+                                    <th class="pb-3 px-3 text-center"
+                                        data-i18n="thActions">
+                                        إجراءات
+                                    </th>
 
                                 </tr>
 
                             </thead>
+
 
                             <tbody
                                 id="appointmentsTableBody"
@@ -294,8 +351,9 @@
                 </div>
 
 
-                <!-- NEW APPOINTMENT -->
-
+                <!-- =================================================
+                     NEW APPOINTMENT
+                     ================================================= -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm h-fit space-y-4 min-w-0">
 
                     <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
@@ -311,8 +369,11 @@
 
                     <form id="appointmentForm" class="space-y-4">
 
+
                         <div>
-                            <label class="block text-xs font-bold mb-1">
+
+                            <label class="block text-xs font-bold mb-1"
+                                   data-i18n="lblPatientName">
                                 اسم المريض
                             </label>
 
@@ -321,11 +382,14 @@
                                 id="patientName"
                                 required
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
+
                         </div>
 
 
                         <div>
-                            <label class="block text-xs font-bold mb-1">
+
+                            <label class="block text-xs font-bold mb-1"
+                                   data-i18n="lblDoctorName">
                                 الطبيب المعالج
                             </label>
 
@@ -334,11 +398,14 @@
                                 id="doctorName"
                                 required
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
+
                         </div>
 
 
                         <div>
-                            <label class="block text-xs font-bold mb-1">
+
+                            <label class="block text-xs font-bold mb-1"
+                                   data-i18n="lblDepartment">
                                 القسم / العيادة
                             </label>
 
@@ -347,19 +414,23 @@
                                 required
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
 
-                                <option value="العيادة الباطنية">
+                                <option value="العيادة الباطنية"
+                                        data-i18n="deptInternal">
                                     العيادة الباطنية
                                 </option>
 
-                                <option value="عيادة العظام">
+                                <option value="عيادة العظام"
+                                        data-i18n="deptOrtho">
                                     عيادة العظام
                                 </option>
 
-                                <option value="عيادة الأطفال">
+                                <option value="عيادة الأطفال"
+                                        data-i18n="deptPediatrics">
                                     عيادة الأطفال
                                 </option>
 
-                                <option value="عيادة الأسنان">
+                                <option value="عيادة الأسنان"
+                                        data-i18n="deptDental">
                                     عيادة الأسنان
                                 </option>
 
@@ -370,7 +441,8 @@
 
                         <div>
 
-                            <label class="block text-xs font-bold mb-1">
+                            <label class="block text-xs font-bold mb-1"
+                                   data-i18n="lblAppointmentDate">
                                 تاريخ ووقت الموعد
                             </label>
 
@@ -386,7 +458,8 @@
 
                         <div>
 
-                            <label class="block text-xs font-bold mb-1">
+                            <label class="block text-xs font-bold mb-1"
+                                   data-i18n="lblNotes">
                                 ملاحظات إضافية
                             </label>
 
@@ -421,8 +494,13 @@
     </div>
 
 
+    <!-- =========================================================
+         SCRIPTS
+         ========================================================= -->
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/mobile-menu.js"></script>
     <script src="assets/js/appointments.js"></script>
 
 </body>
+
 </html>
