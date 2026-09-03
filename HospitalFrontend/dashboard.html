@@ -1,466 +1,1068 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlTag">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title data-i18n="dashboardTitle">لوحة التحكم - MediCore HMS</title>
+    <title data-i18n="patients.title">
+        إدارة المرضى - MediCore HMS
+    </title>
 
+    <!-- =========================================================
+         TAILWIND CSS
+         ========================================================= -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- =========================================================
+         FONTAWESOME
+         ========================================================= -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+    >
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- =========================================================
+         GOOGLE FONTS
+         ========================================================= -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- =========================================================
+         GLOBAL RESPONSIVE CSS
+         ========================================================= -->
+    <link rel="stylesheet" href="assets/css/resp_d.css">
 
     <style>
-        /* =========================================================
-           RESPONSIVE DESIGN
-           هذه الأسطر مسؤولة عن جعل التصميم متجاوبًا مع جميع الشاشات
-           Desktop / Laptop / Tablet / Mobile
-           ========================================================= */
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
         body {
-            width: 100%;
-            max-width: 100%;
-            min-height: 100%;
-            margin: 0;
-            padding: 0;
+            font-family: 'Cairo', 'Inter', sans-serif;
         }
 
-        body {
-            overflow-x: hidden;
-        }
+        /*
+         * =======================================================
+         * PATIENTS MOBILE HEADER SAFETY
+         * =======================================================
+         * هذا الجزء يضمن ظهور زر الثلاثة خطوط على الجوال
+         * حتى مع وجود Tailwind و resp_d.css.
+         */
 
-        /* منع العناصر الكبيرة من إجبار الصفحة على تجاوز عرض الشاشة */
-        img,
-        canvas,
-        iframe,
-        video {
-            max-width: 100%;
+        .patients-mobile-header {
+            display: none;
         }
-
-        /* تحسين الجداول على الشاشات الصغيرة */
-        .responsive-table {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* =========================================================
-           Responsive Sidebar
-           على الجوال يتحول الـ Sidebar إلى قائمة علوية
-           ========================================================= */
 
         @media (max-width: 767px) {
 
-            body {
-                display: block !important;
+            .patients-mobile-header {
+                display: flex !important;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
             }
 
-            .desktop-sidebar {
-                width: 100% !important;
-                min-height: auto !important;
-                height: auto !important;
-            }
-
-            .desktop-sidebar nav {
+            .patients-mobile-header-left {
                 display: flex;
-                overflow-x: auto;
-                padding: 8px;
-                gap: 6px;
-                -webkit-overflow-scrolling: touch;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
             }
 
-            .desktop-sidebar nav a {
-                flex: 0 0 auto;
+            #mobileMenuButton {
+                display: inline-flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                flex-shrink: 0;
+            }
+
+            .patients-mobile-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+            }
+
+            .patients-mobile-title-text {
+                min-width: 0;
+                max-width: 180px;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 white-space: nowrap;
             }
-
-            .main-layout {
-                width: 100% !important;
-                min-width: 0 !important;
-            }
-
-            .responsive-header {
-                padding: 12px 16px !important;
-                flex-wrap: wrap;
-            }
-
-            .header-search {
-                width: 100% !important;
-                max-width: 100% !important;
-                order: 2;
-            }
-
-            .header-actions {
-                width: auto;
-            }
-
-            .responsive-main {
-                padding: 16px !important;
-            }
-
-            .kpi-card {
-                min-width: 0 !important;
-            }
-
-            .chart-card {
-                min-width: 0 !important;
-                width: 100%;
-            }
-
-            .chart-container {
-                height: 240px !important;
-            }
-        }
-
-        /* Tablet */
-        @media (min-width: 768px) and (max-width: 1023px) {
-
-            .responsive-header {
-                padding-left: 20px !important;
-                padding-right: 20px !important;
-            }
-
-            .responsive-main {
-                padding: 20px !important;
-            }
-
-            .header-search {
-                width: 280px !important;
-            }
-        }
-
-        /* منع النصوص الطويلة من كسر التصميم */
-        .safe-text {
-            overflow-wrap: anywhere;
-            word-break: break-word;
         }
     </style>
 </head>
 
-<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex text-sm font-sans">
+
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex text-sm">
+
 
     <!-- =========================================================
-         SIDEBAR
-         RESPONSIVE:
-         على الجوال يتحول إلى شريط علوي بعرض الشاشة
+         DESKTOP SIDEBAR
          ========================================================= -->
-    <aside class="desktop-sidebar w-64 bg-[#0a2533] text-slate-300 flex flex-col justify-between p-4 flex-shrink-0">
+
+    <aside
+        class="desktop-sidebar w-64 bg-[#091E25] text-slate-300 flex flex-col justify-between shrink-0 min-h-screen"
+    >
 
         <div>
 
-            <!-- Brand -->
-            <div class="flex items-center gap-3 px-2 py-4 mb-6 border-b border-slate-800">
-                <div class="bg-teal-400 text-[#0a2533] p-2 rounded-lg font-bold text-xl flex items-center justify-center w-10 h-10 shrink-0">
+            <!-- Logo -->
+
+            <div class="p-5 flex items-center gap-3 border-b border-slate-800/60">
+
+                <div
+                    class="w-8 h-8 bg-[#00A896] rounded-lg flex items-center justify-center text-white font-bold shrink-0"
+                >
                     <i class="fa-solid fa-heart-pulse"></i>
                 </div>
 
-                <span class="font-bold text-lg text-white whitespace-nowrap">
+                <span class="text-lg font-bold text-white whitespace-nowrap">
                     MediCore HMS
                 </span>
+
             </div>
 
+
             <!-- Navigation -->
-            <nav class="space-y-1">
 
-                <a href="dashboard.html"
-                   class="flex items-center gap-3 px-4 py-3 bg-[#00A896] text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-table-cells-large w-5 shrink-0"></i>
-                    <span data-i18n="navDashboard">لوحة التحكم</span>
+            <nav class="p-3 space-y-1">
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-solid fa-chart-pie w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.dashboard">
+                        لوحة التحكم
+                    </span>
                 </a>
 
-                <a href="patients.html"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-user-group w-5 shrink-0"></i>
-                    <span data-i18n="navPatients">إدارة المرضى</span>
+
+                <!-- Patients -->
+
+                <a
+                    href="patients.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00A896] text-white font-semibold shadow-lg shadow-[#00A896]/20"
+                >
+                    <i class="fa-solid fa-user-group w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.patients">
+                        إدارة المرضى
+                    </span>
                 </a>
 
-                <a href="appointments.html"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-regular fa-calendar-check w-5 shrink-0"></i>
-                    <span data-i18n="navAppointments">المواعيد</span>
+
+                <!-- Appointments -->
+
+                <a
+                    href="appointments.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-regular fa-calendar-check w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.appointments">
+                        المواعيد
+                    </span>
                 </a>
 
-                <a href="medical-records.html"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-file-medical w-5 shrink-0"></i>
-                    <span data-i18n="navMedicalRecords">السجلات الطبية</span>
+
+                <!-- Medical Records -->
+
+                <a
+                    href="medical-records.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-solid fa-file-medical w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.medicalRecords">
+                        السجلات الطبية
+                    </span>
                 </a>
 
-                <a href="invoices.html"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-file-invoice-dollar w-5 shrink-0"></i>
-                    <span data-i18n="navInvoices">الفواتير</span>
+
+                <!-- Invoices -->
+
+                <a
+                    href="invoices.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-solid fa-receipt w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.invoices">
+                        الفواتير
+                    </span>
                 </a>
 
-                <a href="reports.html"
-                   class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl font-medium transition">
-                    <i class="fa-solid fa-chart-column w-5 shrink-0"></i>
-                    <span data-i18n="navReports">التقارير</span>
+
+                <!-- Reports -->
+
+                <a
+                    href="reports.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-solid fa-chart-line w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.reports">
+                        التقارير
+                    </span>
                 </a>
 
-                <a href="settings.html"
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-800/60 transition">
-                    <i class="fa-solid fa-gear w-5 shrink-0"></i>
-                    <span data-i18n="navSettings">الإعدادات</span>
+
+                <!-- Settings -->
+
+                <a
+                    href="settings.html"
+                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                >
+                    <i class="fa-solid fa-gear w-5 text-center shrink-0"></i>
+
+                    <span data-i18n="nav.settings">
+                        الإعدادات
+                    </span>
                 </a>
 
             </nav>
+
         </div>
+
+
+        <!-- User Profile -->
+
+        <div
+            class="p-4 border-t border-slate-800/60 flex items-center justify-between"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-9 h-9 rounded-full bg-[#00A896]/20 border border-[#00A896]/40 text-[#00A896] flex items-center justify-center font-bold"
+                >
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+
+                <div>
+
+                    <p
+                        class="text-[10px] text-slate-400"
+                        data-i18n="user.role"
+                    >
+                        إدارة النظام
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="text-slate-400 hover:text-red-400 transition"
+                title="تسجيل الخروج"
+                data-i18n-title="logout"
+            >
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+
+        </div>
+
     </aside>
+
+
+
+    <!-- =========================================================
+         MOBILE MENU OVERLAY
+         ========================================================= -->
+
+    <div
+        id="mobileMenuOverlay"
+        class="mobile-menu-overlay"
+        aria-hidden="true"
+        onclick="closeMobileMenu()"
+    ></div>
+
+
+
+    <!-- =========================================================
+         MOBILE SIDEBAR
+         ========================================================= -->
+
+    <aside
+        id="mobileMenu"
+        class="mobile-menu"
+        aria-hidden="true"
+    >
+
+        <!-- Mobile Menu Header -->
+
+        <div class="mobile-menu-header">
+
+            <div class="mobile-menu-brand">
+
+                <div class="mobile-menu-brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <span>
+                    MediCore HMS
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="mobile-menu-close"
+                aria-label="Close menu"
+                onclick="closeMobileMenu()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- Mobile Navigation -->
+
+        <nav>
+
+            <a href="dashboard.html">
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span data-i18n="nav.dashboard">
+                    لوحة التحكم
+                </span>
+            </a>
+
+
+            <a href="patients.html" class="active">
+                <i class="fa-solid fa-user-group"></i>
+
+                <span data-i18n="nav.patients">
+                    إدارة المرضى
+                </span>
+            </a>
+
+
+            <a href="appointments.html">
+                <i class="fa-regular fa-calendar-check"></i>
+
+                <span data-i18n="nav.appointments">
+                    المواعيد
+                </span>
+            </a>
+
+
+            <a href="medical-records.html">
+                <i class="fa-solid fa-file-medical"></i>
+
+                <span data-i18n="nav.medicalRecords">
+                    السجلات الطبية
+                </span>
+            </a>
+
+
+            <a href="invoices.html">
+                <i class="fa-solid fa-receipt"></i>
+
+                <span data-i18n="nav.invoices">
+                    الفواتير
+                </span>
+            </a>
+
+
+            <a href="reports.html">
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span data-i18n="nav.reports">
+                    التقارير
+                </span>
+            </a>
+
+
+            <a href="settings.html">
+                <i class="fa-solid fa-gear"></i>
+
+                <span data-i18n="nav.settings">
+                    الإعدادات
+                </span>
+            </a>
+
+        </nav>
+
+
+        <!-- Mobile User -->
+
+        <div class="mobile-menu-user">
+
+            <div class="mobile-menu-user-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+            <div class="mobile-menu-user-info">
+
+                <strong>
+                    MediCore HMS
+                </strong>
+
+                <span data-i18n="user.role">
+                    إدارة النظام
+                </span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
 
 
     <!-- =========================================================
          MAIN LAYOUT
-         min-w-0 مهم جدًا حتى لا يتجاوز المحتوى عرض الشاشة
          ========================================================= -->
-    <div class="main-layout flex-1 flex flex-col min-w-0 w-full">
 
-        <!-- HEADER -->
-        <header class="responsive-header flex items-center justify-between px-8 py-4 bg-white border-b border-slate-200 gap-4 shrink-0">
+    <div
+        class="responsive-layout flex-1 flex flex-col min-w-0 w-full"
+    >
 
-            <!-- Search -->
-            <div class="header-search relative w-96 max-w-full">
 
-                <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
 
-                <input
-                    type="text"
-                    data-i18n-placeholder="searchPlaceholder"
-                    placeholder="البحث عن مريض، موعد، أو طبيب..."
-                    class="w-full pr-10 pl-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]">
+        <header
+            class="responsive-header bg-white border-b border-slate-200/80 px-8 py-3.5 flex items-center justify-between gap-4"
+        >
 
-            </div>
 
-            <!-- Header Actions -->
-            <div class="header-actions flex items-center gap-3 shrink-0">
+            <!-- =================================================
+                 MOBILE HEADER
+                 ================================================= -->
 
-                <button
-                    id="langToggleBtn"
-                    onclick="toggleLanguage()"
-                    class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
-                    EN
-                </button>
+            <div class="patients-mobile-header">
 
-                <button class="relative p-2 text-slate-500 hover:text-slate-700">
-                    <i class="fa-regular fa-bell text-base"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                <div class="patients-mobile-header-left">
 
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs flex items-center gap-2 max-w-[220px]">
+                    <!-- Hamburger -->
 
-                    <i class="fa-solid fa-circle-check text-emerald-500 text-sm shrink-0"></i>
+                    <button
+                        id="mobileMenuButton"
+                        type="button"
+                        class="mobile-menu-button"
+                        aria-label="Open menu"
+                        aria-expanded="false"
+                        aria-controls="mobileMenu"
+                        onclick="toggleMobileMenu()"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
 
-                    <div class="min-w-0">
+
+                    <!-- Mobile Page Brand -->
+
+                    <div class="patients-mobile-title">
+
+                        <div
+                            class="w-9 h-9 rounded-xl bg-[#00A896]/10 text-[#00A896] flex items-center justify-center shrink-0"
+                        >
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+
                         <p
-                            class="font-semibold leading-tight truncate"
-                            id="adminWelcomeText"
-                            data-i18n="welcomeBack">
-                            مرحباً بعودتك
+                            class="patients-mobile-title-text font-bold text-slate-800 text-sm"
+                            data-i18n="patients.title"
+                        >
+                            إدارة المرضى
                         </p>
 
-                        <p
-                            class="text-[11px] text-slate-500 leading-tight truncate"
-                            id="adminEmail">
-                            admin@medicore.io
-                        </p>
                     </div>
 
                 </div>
 
             </div>
+
+
+
+            <!-- =================================================
+                 GLOBAL SEARCH
+                 ================================================= -->
+
+            <div
+                class="header-search relative w-96 max-w-full"
+            >
+
+                <input
+                    type="text"
+                    id="globalSearchInput"
+                    data-i18n-placeholder="header.searchPlaceholder"
+                    placeholder="البحث عن مريض بالاسم، البريد أو المعرّف (PID)..."
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/30 focus:border-[#00A896] transition"
+                >
+
+                <i
+                    class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+                ></i>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HEADER ACTIONS
+                 ================================================= -->
+
+            <div
+                class="header-actions flex items-center gap-3 shrink-0"
+            >
+
+                <!-- Language -->
+
+                <button
+                    id="langToggleBtn"
+                    type="button"
+                    onclick="toggleLanguage()"
+                    class="shrink-0 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition"
+                >
+
+                    <i class="fa-solid fa-globe text-[#00A896]"></i>
+
+                    <span id="currentLangLabel">
+                        English
+                    </span>
+
+                </button>
+
+
+                <!-- Notifications -->
+
+                <button
+                    type="button"
+                    class="w-9 h-9 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 relative transition"
+                    aria-label="Notifications"
+                >
+
+                    <i class="fa-regular fa-bell text-sm"></i>
+
+                    <span
+                        class="w-2 h-2 bg-rose-500 rounded-full absolute top-2 left-2"
+                    ></span>
+
+                </button>
+
+            </div>
+
         </header>
+
 
 
         <!-- =====================================================
              MAIN CONTENT
-             RESPONSIVE:
-             padding يتغير حسب حجم الشاشة
              ===================================================== -->
-        <main class="responsive-main p-8 space-y-6 overflow-y-auto min-w-0 w-full">
 
-            <!-- Greeting -->
-            <div class="safe-text">
-                <h1
-                    class="text-2xl sm:text-2xl text-xl font-bold text-slate-900"
-                    id="adminGreetingTitle"
-                    data-i18n="greetingAdmin">
-                    مساء الخير، المدير.
-                </h1>
+        <main
+            class="responsive-main flex-1 overflow-y-auto min-w-0 w-full"
+        >
 
-                <p
-                    class="text-slate-500 text-xs mt-1"
-                    data-i18n="greetingSub">
-                    إليك نظرة عامة على ما يحدث في المستشفى اليوم.
-                </p>
-            </div>
+            <div
+                class="page-content p-8 space-y-6"
+            >
 
 
-            <!-- KPI CARDS -->
-            <!-- هذه الـ classes تجعل البطاقات تتجاوب تلقائيًا مع حجم الشاشة -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <!-- =================================================
+                     PAGE TITLE
+                     ================================================= -->
 
-                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+                <div
+                    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                >
 
                     <div class="min-w-0">
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-                            إجمالي المرضى
-                        </span>
 
-                        <div
-                            class="text-2xl font-bold text-slate-900 mt-2"
-                            id="kpiTotalPatientsVal">
-                            0
-                        </div>
+                        <h1
+                            class="text-2xl font-bold text-slate-900"
+                            data-i18n="patients.title"
+                        >
+                            سجلات المرضى
+                        </h1>
+
+                        <p
+                            class="text-xs text-slate-500 mt-1"
+                            data-i18n="patients.subtitle"
+                        >
+                            تسجيل، تصفية، ومتابعة الملفات الطبية الشاملة لكافة المرضى.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Register Patient -->
+
+                    <button
+                        id="toggleFormBtn"
+                        type="button"
+                        class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                    >
+
+                        <i class="fa-solid fa-user-plus text-[11px]"></i>
 
                         <span
-                            class="text-xs text-emerald-600 font-medium mt-1 inline-block safe-text"
-                            id="kpiTotalPatientsSub">
-                            +12% مقارنة بالشهر الماضي
+                            id="toggleBtnText"
+                            data-i18n="patients.btnRegister"
+                        >
+                            تسجيل مريض جديد
                         </span>
-                    </div>
 
-                    <div class="p-3 bg-teal-50 text-[#00A896] rounded-xl shrink-0">
-                        <i class="fa-solid fa-users text-lg"></i>
-                    </div>
+                    </button>
 
                 </div>
 
 
-                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
 
-                    <div class="min-w-0">
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-                            مواعيد اليوم
-                        </span>
+                <!-- =================================================
+                     NEW PATIENT FORM
+                     ================================================= -->
 
-                        <div
-                            class="text-2xl font-bold text-slate-900 mt-2"
-                            id="kpiTodaysAppointmentsVal">
-                            0
-                        </div>
+                <div
+                    id="patientFormCard"
+                    class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm hidden space-y-5 transition-all min-w-0"
+                >
+
+
+                    <!-- Form Header -->
+
+                    <div
+                        class="flex items-center justify-between border-b border-slate-100 pb-3 gap-3"
+                    >
+
+                        <h3
+                            class="font-bold text-slate-800 text-sm flex items-center gap-2 min-w-0"
+                        >
+
+                            <i class="fa-solid fa-address-card text-[#00A896] shrink-0"></i>
+
+                            <span
+                                data-i18n="form.header"
+                                class="break-words"
+                            >
+                                نموذج تسجيل مريض جديد
+                            </span>
+
+                        </h3>
 
                         <span
-                            class="text-xs text-slate-500 mt-1 inline-block"
-                            id="kpiTodaysAppointmentsSub">
-                            4 إجمالي المجدول
-                        </span>
+                            class="w-2.5 h-2.5 rounded-full bg-[#00A896] shrink-0"
+                        ></span>
+
                     </div>
 
-                    <div class="p-3 bg-sky-50 text-sky-600 rounded-xl shrink-0">
-                        <i class="fa-regular fa-calendar-plus text-lg"></i>
-                    </div>
-
-                </div>
 
 
-                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+                    <!-- Form -->
 
-                    <div class="min-w-0">
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-                            الفواتير المعلقة
-                        </span>
+                    <form
+                        id="patientForm"
+                        class="space-y-4 w-full"
+                    >
 
-                        <div
-                            class="text-2xl font-bold text-slate-900 mt-2"
-                            id="kpiPendingBillsVal">
-                            0
+
+                        <!-- Name + DOB -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="fullName"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.fullName"
+                                >
+                                    الاسم الكامل *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="fullName"
+                                    required
+                                    data-i18n-placeholder="form.fullNamePlaceholder"
+                                    placeholder="مثال: أحمد السيد"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="dateOfBirth"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.dob"
+                                >
+                                    تاريخ الميلاد *
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="dateOfBirth"
+                                    required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
                         </div>
 
-                        <span
-                            class="text-xs text-amber-600 font-medium mt-1 inline-block"
-                            id="kpiPendingBillsSub">
-                            $139.00 المتبقي
-                        </span>
-                    </div>
-
-                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl shrink-0">
-                        <i class="fa-solid fa-receipt text-lg"></i>
-                    </div>
-
-                </div>
 
 
-                <div class="kpi-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start min-w-0">
+                        <!-- Gender + Contact -->
 
-                    <div class="min-w-0">
-                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-                            الإيرادات المحصلة
-                        </span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                        <div
-                            class="text-2xl font-bold text-slate-900 mt-2"
-                            id="kpiRevenueCollectedVal">
-                            $0.00
+                            <div class="min-w-0">
+
+                                <label
+                                    for="gender"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.gender"
+                                >
+                                    الجنس *
+                                </label>
+
+                                <select
+                                    id="gender"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                                    <option
+                                        value="ذكر"
+                                        data-i18n="gender.male"
+                                    >
+                                        ذكر
+                                    </option>
+
+                                    <option
+                                        value="أنثى"
+                                        data-i18n="gender.female"
+                                    >
+                                        أنثى
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="contactNumber"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.contact"
+                                >
+                                    رقم التواصل *
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="contactNumber"
+                                    required
+                                    data-i18n-placeholder="form.contactPlaceholder"
+                                    placeholder="+967 7XX XXX XXX"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
                         </div>
 
-                        <span class="text-xs text-slate-500 mt-1 inline-block">
-                            هذا الشهر
-                        </span>
-                    </div>
 
-                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
-                        <i class="fa-solid fa-arrow-trend-up text-lg"></i>
-                    </div>
+
+                        <!-- Email + Status -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="email"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.email"
+                                >
+                                    البريد الإلكتروني
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    data-i18n-placeholder="form.emailPlaceholder"
+                                    placeholder="patient@example.com"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <label
+                                    for="status"
+                                    class="block text-xs font-bold text-slate-700 mb-1"
+                                    data-i18n="form.status"
+                                >
+                                    الحالة
+                                </label>
+
+                                <select
+                                    id="status"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                                >
+
+                                    <option
+                                        value="نشط"
+                                        data-i18n="status.active"
+                                    >
+                                        نشط
+                                    </option>
+
+                                    <option
+                                        value="غير نشط"
+                                        data-i18n="status.inactive"
+                                    >
+                                        غير نشط
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Address -->
+
+                        <div class="min-w-0">
+
+                            <label
+                                for="address"
+                                class="block text-xs font-bold text-slate-700 mb-1"
+                                data-i18n="form.address"
+                            >
+                                العنوان
+                            </label>
+
+                            <input
+                                type="text"
+                                id="address"
+                                data-i18n-placeholder="form.addressPlaceholder"
+                                placeholder="المدينة، الدولة"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                            >
+
+                        </div>
+
+
+
+                        <!-- Medical History -->
+
+                        <div class="min-w-0">
+
+                            <label
+                                for="medicalHistory"
+                                class="block text-xs font-bold text-slate-700 mb-1"
+                                data-i18n="form.medicalHistory"
+                            >
+                                السجل الطبي
+                            </label>
+
+                            <textarea
+                                id="medicalHistory"
+                                rows="2"
+                                data-i18n-placeholder="form.historyPlaceholder"
+                                placeholder="الحساسية، الأمراض المزمنة، العمليات السابقة..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition resize-y"
+                            ></textarea>
+
+                        </div>
+
+
+
+                        <!-- Form Actions -->
+
+                        <div
+                            class="settings-form-actions pt-2 flex items-center justify-end gap-3"
+                        >
+
+                            <button
+                                type="button"
+                                id="cancelFormBtn"
+                                class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer"
+                                data-i18n="form.cancel"
+                            >
+                                إلغاء
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                class="bg-[#00A896] hover:bg-[#008f80] text-white font-bold px-6 py-2 rounded-xl text-xs shadow-md shadow-[#00A896]/20 transition flex items-center justify-center gap-2 cursor-pointer"
+                            >
+
+                                <i class="fa-solid fa-check text-[10px]"></i>
+
+                                <span data-i18n="form.save">
+                                    حفظ بيانات المريض
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-            </div>
 
 
-            <!-- =================================================
-                 CHARTS
-                 على الكمبيوتر 2 + 1
-                 على الجوال عمود واحد
-                 ================================================= -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 min-w-0">
+                <!-- =================================================
+                     PATIENTS TABLE CARD
+                     ================================================= -->
 
-                <!-- Line Chart -->
-                <div class="chart-card lg:col-span-2 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm min-w-0">
+                <div
+                    class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4 min-w-0 max-w-full"
+                >
 
-                    <h3
-                        class="font-bold text-slate-900 text-sm"
-                        data-i18n="chartPatientIntakeTitle">
-                        تسجيل المرضى — آخر 7 أيام
-                    </h3>
 
-                    <p
-                        class="text-xs text-slate-400 mb-4"
-                        data-i18n="chartPatientIntakeSub">
-                        تسجيلات المرضى الجدد يومياً
-                    </p>
+                    <!-- Table Header -->
 
-                    <div class="chart-container h-64 w-full relative">
-                        <canvas id="patientIntakeChart"></canvas>
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 min-w-0"
+                    >
+
+                        <div class="min-w-0">
+
+                            <h2 class="text-sm font-bold text-slate-800">
+
+                                <i class="fa-solid fa-users text-[#00A896] ml-1"></i>
+
+                                <span data-i18n="patients.title">
+                                    سجلات المرضى
+                                </span>
+
+                            </h2>
+
+                        </div>
+
+
+                        <!-- Search -->
+
+                        <div
+                            class="relative w-full sm:max-w-md min-w-0"
+                        >
+
+                            <input
+                                type="text"
+                                id="tableSearchInput"
+                                data-i18n-placeholder="table.filterPlaceholder"
+                                placeholder="البحث باسم المريض، PID، أو رقم التواصل..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-9 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#00A896]/20 focus:border-[#00A896] transition"
+                            >
+
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+                            ></i>
+
+                        </div>
+
                     </div>
 
-                </div>
 
 
-                <!-- Bar Chart -->
-                <div class="chart-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm min-w-0">
+                    <!-- Responsive Table -->
 
-                    <h3
-                        class="font-bold text-slate-900 text-sm"
-                        data-i18n="chartDeptTitle">
-                        المواعيد حسب القسم
-                    </h3>
+                    <div class="responsive-table">
 
-                    <p
-                        class="text-xs text-slate-400 mb-4"
-                        data-i18n="chartDeptSub">
-                        التوزيع عبر التخصصات
-                    </p>
+                        <table class="w-full border-collapse text-xs">
 
-                    <div class="chart-container h-64 w-full relative">
-                        <canvas id="deptChart"></canvas>
+                            <thead>
+
+                                <tr
+                                    class="text-[11px] font-bold text-slate-400 border-b border-slate-100"
+                                >
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.pid"
+                                    >
+                                        Patient ID
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.name"
+                                    >
+                                        Name
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.ageGender"
+                                    >
+                                        Age / Gender
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.contact"
+                                    >
+                                        Contact
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.registered"
+                                    >
+                                        Registered
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 whitespace-nowrap"
+                                        data-i18n="table.status"
+                                    >
+                                        Status
+                                    </th>
+
+
+                                    <th
+                                        class="pb-3 px-3 text-center whitespace-nowrap"
+                                        data-i18n="table.actions"
+                                    >
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="patientsTableBody"
+                                class="text-xs divide-y divide-slate-100"
+                            >
+                                <!-- يتم إنشاء الصفوف بواسطة patients.js -->
+                            </tbody>
+
+                        </table>
+
                     </div>
 
                 </div>
@@ -468,11 +1070,24 @@
             </div>
 
         </main>
+
     </div>
 
 
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <!-- Global Config / API / Translation -->
     <script src="assets/js/config.js"></script>
-    <script src="assets/js/dashboard.js"></script>
+
+    <!-- Mobile Navigation -->
+    <script src="assets/js/mobile-menu.js"></script>
+
+    <!-- Patients Logic -->
+    <script src="assets/js/patients.js"></script>
+
 
 </body>
 </html>
