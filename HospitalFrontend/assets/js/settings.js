@@ -8,57 +8,54 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ---------------------------------------------------------
-       1. تجهيز القائمة للجوال
-       --------------------------------------------------------- */
-    ensureSettingsMobileMenu();
+    initializeSettingsPage();
+
+});
 
 
-    /* ---------------------------------------------------------
-       2. تطبيق اللغة الحالية
-       --------------------------------------------------------- */
-    initializeSettingsLanguage();
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
+function initializeSettingsPage() {
 
-    /* ---------------------------------------------------------
-       3. عناصر الصفحة
-       --------------------------------------------------------- */
+    const lang =
+        typeof CONFIG !== "undefined" && CONFIG.LANG
+            ? CONFIG.LANG
+            : localStorage.getItem("app_lang") || "ar";
+
+    if (
+        typeof CONFIG !== "undefined" &&
+        typeof CONFIG.applyTranslations === "function"
+    ) {
+        CONFIG.applyTranslations(lang);
+    }
+
+    updateSettingsLanguageButton();
 
     const profileForm =
-        document.getElementById(
-            "profileForm"
-        );
+        document.getElementById("profileForm");
 
     const inputFullName =
-        document.getElementById(
-            "adminName"
-        );
+        document.getElementById("adminName");
 
     const inputEmail =
-        document.getElementById(
-            "adminEmail"
-        );
+        document.getElementById("adminEmail");
 
     const inputRole =
-        document.getElementById(
-            "adminRoleInput"
-        );
+        document.getElementById("adminRoleInput");
 
     const chkReminders =
-        document.getElementById(
-            "reminderToggle"
-        );
+        document.getElementById("reminderToggle");
 
     const btnSaveSettings =
         profileForm
-            ? profileForm.querySelector(
-                'button[type="submit"]'
-            )
+            ? profileForm.querySelector('button[type="submit"]')
             : null;
 
 
     /* ---------------------------------------------------------
-       4. تحميل بيانات المستخدم
+       Load user profile
        --------------------------------------------------------- */
 
     loadUserSettings(
@@ -70,17 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ---------------------------------------------------------
-       5. حفظ الإعدادات
+       Save profile
        --------------------------------------------------------- */
 
     if (profileForm) {
 
         profileForm.addEventListener(
             "submit",
-            async (e) => {
+            async (event) => {
 
-                e.preventDefault();
-
+                event.preventDefault();
 
                 const updatedProfile = {
 
@@ -98,14 +94,29 @@ document.addEventListener("DOMContentLoaded", () => {
                         chkReminders
                             ? chkReminders.checked
                             : false
+
                 };
+
+
+                if (
+                    !updatedProfile.fullName ||
+                    !updatedProfile.email
+                ) {
+
+                    alert(
+                        getSettingsLanguage() === "ar"
+                            ? "يرجى إدخال الاسم والبريد الإلكتروني."
+                            : "Please enter the name and email address."
+                    );
+
+                    return;
+                }
 
 
                 try {
 
                     if (btnSaveSettings) {
-                        btnSaveSettings.disabled =
-                            true;
+                        btnSaveSettings.disabled = true;
                     }
 
 
@@ -122,17 +133,34 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
 
 
+                    /* -------------------------------------------------
+                       Update local user information
+                       ------------------------------------------------- */
+
                     if (
                         response &&
                         response.user
                     ) {
 
-                        const currentUser =
-                            JSON.parse(
-                                localStorage.getItem(
-                                    "user_info"
-                                ) || "{}"
+                        let currentUser = {};
+
+                        try {
+
+                            currentUser =
+                                JSON.parse(
+                                    localStorage.getItem(
+                                        "user_info"
+                                    ) || "{}"
+                                );
+
+                        } catch (storageError) {
+
+                            console.warn(
+                                "Unable to parse existing user_info:",
+                                storageError
                             );
+
+                        }
 
 
                         const newUserData = {
@@ -140,13 +168,18 @@ document.addEventListener("DOMContentLoaded", () => {
                             ...currentUser,
 
                             fullName:
-                                response.user.fullName,
+                                response.user.fullName ||
+                                updatedProfile.fullName,
 
                             email:
-                                response.user.email,
+                                response.user.email ||
+                                updatedProfile.email,
 
                             role:
-                                response.user.role
+                                response.user.role ||
+                                currentUser.role ||
+                                "Admin"
+
                         };
 
 
@@ -156,8 +189,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                 newUserData
                             )
                         );
+
                     }
 
+
+                    /* -------------------------------------------------
+                       Save reminder preference locally
+                       ------------------------------------------------- */
 
                     if (chkReminders) {
 
@@ -167,43 +205,71 @@ document.addEventListener("DOMContentLoaded", () => {
                                 chkReminders.checked
                             )
                         );
+
                     }
 
 
+                    /* -------------------------------------------------
+                       Success
+                       ------------------------------------------------- */
+
                     alert(
                         typeof CONFIG.t === "function"
-                            ? CONFIG.t(
-                                "msgSaveSuccess"
-                            )
+                            ? CONFIG.t("msgSaveSuccess")
                             : (
                                 getSettingsLanguage() === "ar"
-                                    ? "تم حفظ الإعدادات بنجاح"
-                                    : "Settings saved successfully"
+                                    ? "تم حفظ التغييرات بنجاح!"
+                                    : "Changes saved successfully!"
                             )
                     );
+
+
+                    /* -------------------------------------------------
+                       Refresh displayed user data
+                       ------------------------------------------------- */
+
+                    await loadUserSettings(
+                        inputFullName,
+                        inputEmail,
+                        inputRole,
+                        chkReminders
+                    );
+
 
                 } catch (error) {
 
-                    alert(
-                        error.message ||
-                        (
-                            getSettingsLanguage() === "ar"
-                                ? "حدث خطأ أثناء حفظ الإعدادات"
-                                : "An error occurred while saving settings"
-                        )
+                    console.error(
+                        "Failed to save settings:",
+                        error
                     );
+
+
+                    alert(
+                        error &&
+                        error.message
+                            ? error.message
+                            : (
+                                getSettingsLanguage() === "ar"
+                                    ? "حدث خطأ أثناء حفظ الإعدادات."
+                                    : "An error occurred while saving settings."
+                            )
+                    );
+
 
                 } finally {
 
                     if (btnSaveSettings) {
-                        btnSaveSettings.disabled =
-                            false;
+                        btnSaveSettings.disabled = false;
                     }
+
                 }
+
             }
         );
+
     }
-});
+
+}
 
 
 /* =========================================================
@@ -212,100 +278,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function getSettingsLanguage() {
 
-    return (
-        localStorage.getItem("app_lang") ||
-        CONFIG.LANG ||
-        "ar"
-    );
-}
-
-
-function initializeSettingsLanguage() {
-
     const lang =
-        getSettingsLanguage();
-
-    CONFIG.LANG =
-        lang;
-
-
-    document.documentElement.lang =
-        lang;
-
-    document.documentElement.dir =
-        lang === "en"
-            ? "ltr"
-            : "rtl";
+        (
+            typeof CONFIG !== "undefined"
+                ? CONFIG.LANG
+                : null
+        ) ||
+        localStorage.getItem("app_lang") ||
+        "ar";
 
 
-    if (
-        typeof CONFIG.applyTranslations ===
-        "function"
-    ) {
-
-        CONFIG.applyTranslations(
-            lang
-        );
-    }
-
-
-    updateSettingsLanguageButton();
-    updateSettingsMobileLanguage();
+    return lang === "en"
+        ? "en"
+        : "ar";
 }
 
 
-/*
- * هذه هي الدالة الوحيدة المسؤولة عن زر اللغة
- * في صفحة الإعدادات.
- *
- * وبالتالي onclick="toggleLanguage()"
- * الموجود في HTML سيعمل بشكل صحيح.
- */
-function toggleLanguage() {
-
-    const currentLang =
-        getSettingsLanguage();
-
-    const newLang =
-        currentLang === "ar"
-            ? "en"
-            : "ar";
-
-
-    CONFIG.LANG =
-        newLang;
-
-
-    localStorage.setItem(
-        "app_lang",
-        newLang
-    );
-
-
-    document.documentElement.lang =
-        newLang;
-
-    document.documentElement.dir =
-        newLang === "en"
-            ? "ltr"
-            : "rtl";
-
-
-    if (
-        typeof CONFIG.applyTranslations ===
-        "function"
-    ) {
-
-        CONFIG.applyTranslations(
-            newLang
-        );
-    }
-
-
-    updateSettingsLanguageButton();
-    updateSettingsMobileLanguage();
-}
-
+/* =========================================================
+   LANGUAGE BUTTON
+   ========================================================= */
 
 function updateSettingsLanguageButton() {
 
@@ -317,11 +308,45 @@ function updateSettingsLanguageButton() {
     if (!btn) return;
 
 
-    btn.textContent =
-        getSettingsLanguage() === "ar"
-            ? "EN"
-            : "عربي";
+    const lang =
+        getSettingsLanguage();
+
+
+    const label =
+        document.getElementById(
+            "currentLangLabel"
+        );
+
+
+    if (label) {
+
+        label.textContent =
+            lang === "ar"
+                ? "EN"
+                : "عربي";
+
+    } else {
+
+        btn.textContent =
+            lang === "ar"
+                ? "EN"
+                : "عربي";
+
+    }
+
 }
+
+
+/* =========================================================
+   REFRESH AFTER GLOBAL LANGUAGE CHANGE
+   ========================================================= */
+
+window.refreshSettingsLanguage =
+    function () {
+
+        updateSettingsLanguageButton();
+
+    };
 
 
 /* =========================================================
@@ -348,42 +373,74 @@ async function loadUserSettings(
 
         if (data) {
 
+            /* -------------------------------------------------
+               Full name
+               ------------------------------------------------- */
+
             if (inputFullName) {
 
                 inputFullName.value =
                     data.fullName || "";
+
             }
 
+
+            /* -------------------------------------------------
+               Email
+               ------------------------------------------------- */
 
             if (inputEmail) {
 
                 inputEmail.value =
                     data.email || "";
+
             }
 
+
+            /* -------------------------------------------------
+               Role
+               ------------------------------------------------- */
 
             if (inputRole) {
 
-                inputRole.value =
-                    data.role === "Admin"
-                        ? CONFIG.t("adminRole")
-                        : (
-                            data.role ||
-                            CONFIG.t("adminRole")
+                if (data.role === "Admin") {
+
+                    inputRole.value =
+                        typeof CONFIG.t === "function"
+                            ? CONFIG.t("adminRole")
+                            : "System Admin";
+
+                } else {
+
+                    inputRole.value =
+                        data.role ||
+                        (
+                            typeof CONFIG.t === "function"
+                                ? CONFIG.t("adminRole")
+                                : "System Admin"
                         );
+
+                }
+
             }
 
+
+            /* -------------------------------------------------
+               Appointment reminders
+               ------------------------------------------------- */
 
             if (chkReminders) {
 
                 chkReminders.checked =
                     !!data.appointmentReminders;
+
             }
 
 
-            /*
-             * تحديث LocalStorage
-             */
+            /* -------------------------------------------------
+               Update localStorage
+               ------------------------------------------------- */
+
             try {
 
                 const currentUser =
@@ -395,13 +452,19 @@ async function loadUserSettings(
 
 
                 currentUser.fullName =
-                    data.fullName;
+                    data.fullName ||
+                    currentUser.fullName ||
+                    "";
 
                 currentUser.email =
-                    data.email;
+                    data.email ||
+                    currentUser.email ||
+                    "";
 
                 currentUser.role =
-                    data.role;
+                    data.role ||
+                    currentUser.role ||
+                    "Admin";
 
 
                 localStorage.setItem(
@@ -417,6 +480,7 @@ async function loadUserSettings(
                     "Error updating user_info:",
                     storageError
                 );
+
             }
 
 
@@ -426,6 +490,9 @@ async function loadUserSettings(
                     !!data.appointmentReminders
                 )
             );
+
+            return;
+
         }
 
     } catch (error) {
@@ -435,519 +502,109 @@ async function loadUserSettings(
             error
         );
 
-
-        /*
-         * fallback من LocalStorage
-         */
-        const userInfoRaw =
-            localStorage.getItem(
-                "user_info"
-            );
-
-
-        if (userInfoRaw) {
-
-            try {
-
-                const user =
-                    JSON.parse(
-                        userInfoRaw
-                    );
-
-
-                if (inputFullName) {
-
-                    inputFullName.value =
-                        user.fullName || "";
-                }
-
-
-                if (inputEmail) {
-
-                    inputEmail.value =
-                        user.email || "";
-                }
-
-
-                if (inputRole) {
-
-                    inputRole.value =
-                        user.role ||
-                        (
-                            typeof CONFIG.t ===
-                            "function"
-                                ? CONFIG.t(
-                                    "adminRole"
-                                )
-                                : "Administrator"
-                        );
-                }
-
-            } catch (e) {
-
-                console.error(
-                    "Error parsing user_info:",
-                    e
-                );
-            }
-        }
-
-
-        const savedReminders =
-            localStorage.getItem(
-                "pref_reminders"
-            );
-
-
-        if (
-            chkReminders &&
-            savedReminders !== null
-        ) {
-
-            chkReminders.checked =
-                savedReminders === "true";
-        }
     }
+
+
+    /* =========================================================
+       FALLBACK TO LOCAL STORAGE
+       ========================================================= */
+
+    const userInfoRaw =
+        localStorage.getItem(
+            "user_info"
+        );
+
+
+    if (userInfoRaw) {
+
+        try {
+
+            const user =
+                JSON.parse(
+                    userInfoRaw
+                );
+
+
+            if (inputFullName) {
+
+                inputFullName.value =
+                    user.fullName || "";
+
+            }
+
+
+            if (inputEmail) {
+
+                inputEmail.value =
+                    user.email || "";
+
+            }
+
+
+            if (inputRole) {
+
+                inputRole.value =
+                    user.role === "Admin"
+                        ? (
+                            typeof CONFIG.t === "function"
+                                ? CONFIG.t("adminRole")
+                                : "System Admin"
+                        )
+                        : (
+                            user.role ||
+                            (
+                                typeof CONFIG.t === "function"
+                                    ? CONFIG.t("adminRole")
+                                    : "System Admin"
+                            )
+                        );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error parsing user_info:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* ---------------------------------------------------------
+       Reminder fallback
+       --------------------------------------------------------- */
+
+    const savedReminders =
+        localStorage.getItem(
+            "pref_reminders"
+        );
+
+
+    if (
+        chkReminders &&
+        savedReminders !== null
+    ) {
+
+        chkReminders.checked =
+            savedReminders === "true";
+
+    }
+
 }
 
 
 /* =========================================================
-   MOBILE MENU
+   REMINDER TOGGLE
    ========================================================= */
 
-function ensureSettingsMobileMenu() {
-
-    const header =
-        document.querySelector(
-            ".responsive-header"
-        );
-
-    if (!header) return;
-
-
-    let button =
-        document.getElementById(
-            "mobileMenuButton"
-        );
-
-    let menu =
-        document.getElementById(
-            "mobileMenu"
-        );
-
-    let overlay =
-        document.getElementById(
-            "mobileMenuOverlay"
-        );
-
-
-    /* ---------------------------------------------------------
-       Mobile Header Top
-       --------------------------------------------------------- */
-
-    let headerTop =
-        header.querySelector(
-            ".mobile-header-top"
-        );
-
-
-    if (!headerTop) {
-
-        headerTop =
-            document.createElement("div");
-
-        headerTop.className =
-            "mobile-header-top hidden";
-
-        header.insertBefore(
-            headerTop,
-            header.firstChild
-        );
-    }
-
-
-    /* ---------------------------------------------------------
-       Menu Button
-       --------------------------------------------------------- */
-
-    if (!button) {
-
-        button =
-            document.createElement("button");
-
-        button.id =
-            "mobileMenuButton";
-
-        button.type =
-            "button";
-
-        button.className =
-            "mobile-menu-button";
-
-        button.setAttribute(
-            "aria-controls",
-            "mobileMenu"
-        );
-
-        button.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-        button.setAttribute(
-            "aria-label",
-            "Open menu"
-        );
-
-        button.innerHTML =
-            '<i class="fa-solid fa-bars"></i>';
-
-        headerTop.appendChild(
-            button
-        );
-    }
-
-
-    /* ---------------------------------------------------------
-       Overlay
-       --------------------------------------------------------- */
-
-    if (!overlay) {
-
-        overlay =
-            document.createElement("div");
-
-        overlay.id =
-            "mobileMenuOverlay";
-
-        overlay.className =
-            "mobile-menu-overlay";
-
-        document.body.appendChild(
-            overlay
-        );
-    }
-
-
-    /* ---------------------------------------------------------
-       Drawer
-       --------------------------------------------------------- */
-
-    if (!menu) {
-
-        menu =
-            document.createElement("aside");
-
-        menu.id =
-            "mobileMenu";
-
-        menu.className =
-            "mobile-menu";
-
-        menu.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-
-        const currentPage =
-            window.location.pathname
-                .split("/")
-                .pop() ||
-            "settings.html";
-
-
-        const links = [
-
-            [
-                "dashboard.html",
-                "fa-gauge-high",
-                "لوحة التحكم",
-                "Dashboard"
-            ],
-
-            [
-                "patients.html",
-                "fa-user-injured",
-                "المرضى",
-                "Patients"
-            ],
-
-            [
-                "appointments.html",
-                "fa-calendar-check",
-                "المواعيد",
-                "Appointments"
-            ],
-
-            [
-                "medical-records.html",
-                "fa-file-medical",
-                "السجلات الطبية",
-                "Medical Records"
-            ],
-
-            [
-                "invoices.html",
-                "fa-file-invoice-dollar",
-                "الفواتير",
-                "Invoices"
-            ],
-
-            [
-                "reports.html",
-                "fa-chart-column",
-                "التقارير",
-                "Reports"
-            ],
-
-            [
-                "settings.html",
-                "fa-gear",
-                "الإعدادات",
-                "Settings"
-            ]
-        ];
-
-
-        menu.innerHTML = `
-
-            <div class="mobile-menu-header">
-
-                <div class="mobile-menu-brand">
-
-                    <div class="mobile-menu-brand-icon">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                    </div>
-
-                    <span>
-                        MediCore HMS
-                    </span>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="mobile-menu-close"
-                    aria-label="Close menu">
-
-                    <i class="fa-solid fa-xmark"></i>
-
-                </button>
-
-            </div>
-
-
-            <nav>
-
-                ${links.map(link => `
-
-                    <a
-                        href="${link[0]}"
-                        class="${currentPage === link[0] ? "active" : ""}">
-
-                        <i class="fa-solid ${link[1]}"></i>
-
-                        <span
-                            data-mobile-ar="${link[2]}"
-                            data-mobile-en="${link[3]}">
-                            ${
-                                getSettingsLanguage() === "ar"
-                                    ? link[2]
-                                    : link[3]
-                            }
-                        </span>
-
-                    </a>
-
-                `).join("")}
-
-            </nav>
-
-
-            <div class="mobile-menu-user">
-
-                <div class="mobile-menu-user-avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-
-                <div class="mobile-menu-user-info">
-
-                    <strong>
-                        MediCore HMS
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
-                </div>
-
-            </div>
-        `;
-
-
-        document.body.appendChild(
-            menu
-        );
-    }
-
-
-    /* ---------------------------------------------------------
-       Events
-       --------------------------------------------------------- */
-
-    button.onclick =
-        () => {
-
-            menu.classList.toggle(
-                "active"
-            );
-
-            overlay.classList.toggle(
-                "active"
-            );
-
-
-            const active =
-                menu.classList.contains(
-                    "active"
-                );
-
-
-            menu.setAttribute(
-                "aria-hidden",
-                String(!active)
-            );
-
-
-            button.setAttribute(
-                "aria-expanded",
-                String(active)
-            );
-
-
-            document.body.style.overflow =
-                active
-                    ? "hidden"
-                    : "";
-        };
-
-
-    overlay.onclick =
-        closeSettingsMobileMenu;
-
-
-    const closeButton =
-        menu.querySelector(
-            ".mobile-menu-close"
-        );
-
-
-    if (closeButton) {
-
-        closeButton.onclick =
-            closeSettingsMobileMenu;
-    }
-
-
-    menu
-        .querySelectorAll(
-            "nav a"
-        )
-        .forEach(link => {
-
-            link.addEventListener(
-                "click",
-                closeSettingsMobileMenu
-            );
-        });
-
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            if (
-                window.innerWidth >
-                767
-            ) {
-
-                closeSettingsMobileMenu();
-            }
-        }
+function toggleReminders(checked) {
+
+    localStorage.setItem(
+        "pref_reminders",
+        String(!!checked)
     );
-}
 
-
-function closeSettingsMobileMenu() {
-
-    const menu =
-        document.getElementById(
-            "mobileMenu"
-        );
-
-    const overlay =
-        document.getElementById(
-            "mobileMenuOverlay"
-        );
-
-    const button =
-        document.getElementById(
-            "mobileMenuButton"
-        );
-
-
-    if (menu) {
-
-        menu.classList.remove(
-            "active"
-        );
-
-        menu.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    if (overlay) {
-
-        overlay.classList.remove(
-            "active"
-        );
-    }
-
-
-    if (button) {
-
-        button.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-    }
-
-
-    document.body.style.overflow = "";
-}
-
-
-function updateSettingsMobileLanguage() {
-
-    const lang =
-        getSettingsLanguage();
-
-
-    document
-        .querySelectorAll(
-            "#mobileMenu [data-mobile-ar]"
-        )
-        .forEach(element => {
-
-            element.textContent =
-                lang === "ar"
-                    ? element.dataset.mobileAr
-                    : element.dataset.mobileEn;
-        });
 }
