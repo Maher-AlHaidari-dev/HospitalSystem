@@ -13,7 +13,7 @@ const CONFIG = {
        ========================================================= */
 
     API_BASE_URL:
-        'https://hospitalsystem-production-80cc.up.railway.app',
+        "https://hospitalsystem-production-80cc.up.railway.app",
 
 
     /* =========================================================
@@ -21,7 +21,7 @@ const CONFIG = {
        ========================================================= */
 
     LANG:
-        localStorage.getItem('app_lang') || 'ar',
+        localStorage.getItem("app_lang") || "ar",
 
 
     /* =========================================================
@@ -145,8 +145,6 @@ const CONFIG = {
             genderFemale:
                 "أنثى",
 
-
-            /* ---------- Patients alternative keys ---------- */
 
             "patients.title":
                 "إدارة المرضى - MediCore HMS",
@@ -278,8 +276,6 @@ const CONFIG = {
             btnSaveRecord:
                 "حفظ السجل",
 
-
-            /* ---------- Medical Records alternative keys ---------- */
 
             "records.title":
                 "السجلات الطبية - MediCore HMS",
@@ -466,6 +462,7 @@ const CONFIG = {
             formSave:
                 "حفظ",
 
+
             "form.header":
                 "تسجيل مريض جديد",
 
@@ -627,6 +624,7 @@ const CONFIG = {
 
             msgRegisterSuccess:
                 "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن."
+
         },
 
 
@@ -745,8 +743,6 @@ const CONFIG = {
             genderFemale:
                 "Female",
 
-
-            /* ---------- Patients alternative keys ---------- */
 
             "patients.title":
                 "Patients - MediCore HMS",
@@ -1226,7 +1222,9 @@ const CONFIG = {
 
             msgRegisterSuccess:
                 "Account created successfully! You can now log in."
+
         }
+
     },
 
 
@@ -1241,6 +1239,7 @@ const CONFIG = {
             this.translations.ar;
 
         return dictionary[key] || key;
+
     },
 
 
@@ -1248,19 +1247,40 @@ const CONFIG = {
        APPLY TRANSLATIONS
        ========================================================= */
 
-    applyTranslations(lang = this.LANG) {
+    applyTranslations(
+        lang = this.LANG
+    ) {
 
-        /* حماية من لغة غير موجودة */
-        if (!this.translations[lang]) {
-            lang = 'ar';
+        if (
+            !this.translations[lang]
+        ) {
+
+            lang = "ar";
+
         }
 
 
-        this.LANG = lang;
+        this.LANG =
+            lang;
+
+
+        /*
+         * توحيد اسم localStorage
+         */
 
         localStorage.setItem(
-            'app_lang',
+            "app_lang",
             lang
+        );
+
+
+        /*
+         * إزالة القيمة القديمة إن كانت موجودة
+         * حتى لا يحدث تعارض بين الصفحات القديمة والجديدة.
+         */
+
+        localStorage.removeItem(
+            "appLang"
         );
 
 
@@ -1270,9 +1290,9 @@ const CONFIG = {
             lang;
 
         document.documentElement.dir =
-            lang === 'ar'
-                ? 'rtl'
-                : 'ltr';
+            lang === "ar"
+                ? "rtl"
+                : "ltr";
 
 
         /* ---------- Dictionary ---------- */
@@ -1284,68 +1304,80 @@ const CONFIG = {
         /* ---------- Normal text ---------- */
 
         document
-            .querySelectorAll('[data-i18n]')
-            .forEach(element => {
+            .querySelectorAll(
+                "[data-i18n]"
+            )
+            .forEach(
+                element => {
 
-                const key =
-                    element.getAttribute(
-                        'data-i18n'
-                    );
+                    const key =
+                        element.getAttribute(
+                            "data-i18n"
+                        );
 
-                if (
-                    key &&
-                    Object.prototype.hasOwnProperty.call(
-                        dictionary,
-                        key
-                    )
-                ) {
+                    if (
+                        key &&
+                        Object.prototype.hasOwnProperty.call(
+                            dictionary,
+                            key
+                        )
+                    ) {
 
-                    element.textContent =
-                        dictionary[key];
+                        element.textContent =
+                            dictionary[key];
+
+                    }
+
                 }
-            });
+            );
 
 
         /* ---------- Placeholders ---------- */
 
         document
             .querySelectorAll(
-                '[data-i18n-placeholder]'
+                "[data-i18n-placeholder]"
             )
-            .forEach(element => {
+            .forEach(
+                element => {
 
-                const key =
-                    element.getAttribute(
-                        'data-i18n-placeholder'
-                    );
+                    const key =
+                        element.getAttribute(
+                            "data-i18n-placeholder"
+                        );
 
-                if (
-                    key &&
-                    Object.prototype.hasOwnProperty.call(
-                        dictionary,
-                        key
-                    )
-                ) {
+                    if (
+                        key &&
+                        Object.prototype.hasOwnProperty.call(
+                            dictionary,
+                            key
+                        )
+                    ) {
 
-                    element.placeholder =
-                        dictionary[key];
+                        element.placeholder =
+                            dictionary[key];
+
+                    }
+
                 }
-            });
+            );
 
 
         /* ---------- Page title ---------- */
 
         const titleElement =
             document.querySelector(
-                'title[data-i18n]'
+                "title[data-i18n]"
             );
+
 
         if (titleElement) {
 
             const titleKey =
                 titleElement.getAttribute(
-                    'data-i18n'
+                    "data-i18n"
                 );
+
 
             if (
                 titleKey &&
@@ -1357,13 +1389,41 @@ const CONFIG = {
 
                 titleElement.textContent =
                     dictionary[titleKey];
+
             }
+
         }
 
 
         /* ---------- Language button ---------- */
 
         updateLanguageButton();
+
+
+        /*
+         * Dashboard-specific refresh.
+         */
+
+        if (
+            typeof window.refreshDashboardLanguage ===
+            "function"
+        ) {
+
+            try {
+
+                window.refreshDashboardLanguage();
+
+            } catch (error) {
+
+                console.warn(
+                    "Dashboard language refresh failed:",
+                    error
+                );
+
+            }
+
+        }
+
     },
 
 
@@ -1374,11 +1434,13 @@ const CONFIG = {
     createSafeElement(
         tag,
         textContent,
-        className = ''
+        className = ""
     ) {
 
         const element =
-            document.createElement(tag);
+            document.createElement(
+                tag
+            );
 
 
         if (
@@ -1388,16 +1450,20 @@ const CONFIG = {
 
             element.textContent =
                 textContent;
+
         }
 
 
         if (className) {
+
             element.className =
                 className;
+
         }
 
 
         return element;
+
     },
 
 
@@ -1413,67 +1479,93 @@ const CONFIG = {
         /* ---------- Authentication ---------- */
 
         const token =
-            localStorage.getItem('auth_token') ||
-            localStorage.getItem('token') ||
-            localStorage.getItem('authToken') ||
-            localStorage.getItem('jwt');
+            localStorage.getItem(
+                "auth_token"
+            ) ||
+            localStorage.getItem(
+                "token"
+            ) ||
+            localStorage.getItem(
+                "authToken"
+            ) ||
+            localStorage.getItem(
+                "jwt"
+            );
 
 
         /* ---------- Headers ---------- */
 
         const headers = {
 
-            'Content-Type':
-                'application/json',
+            "Content-Type":
+                "application/json",
 
-            'Accept':
-                'application/json',
+            "Accept":
+                "application/json",
 
             ...(token
                 ? {
-                    'Authorization':
+                    "Authorization":
                         `Bearer ${token}`
                 }
                 : {}),
 
             ...options.headers
+
         };
 
 
         /* ---------- Base URL ---------- */
 
         const baseUrl =
-            this.API_BASE_URL
-                .replace(/\/+$/, '');
+            this.API_BASE_URL.replace(
+                /\/+$/,
+                ""
+            );
 
 
         /* ---------- Endpoint ---------- */
 
         let cleanEndpoint =
-            endpoint.startsWith('/')
+            endpoint.startsWith("/")
                 ? endpoint
                 : `/${endpoint}`;
 
 
         /* =====================================================
            SMART API ROUTING
-
-           لا نغير أي endpoint موجود.
-           فقط نضيف /api للمسارات التي كانت مصممة لذلك.
            ===================================================== */
 
         if (
+
             (
-                cleanEndpoint.startsWith('/invoices') ||
-                cleanEndpoint.startsWith('/settings') ||
-                cleanEndpoint.startsWith('/medical-records') ||
-                cleanEndpoint.startsWith('/records')
+                cleanEndpoint.startsWith(
+                    "/invoices"
+                ) ||
+
+                cleanEndpoint.startsWith(
+                    "/settings"
+                ) ||
+
+                cleanEndpoint.startsWith(
+                    "/medical-records"
+                ) ||
+
+                cleanEndpoint.startsWith(
+                    "/records"
+                )
+
             ) &&
-            !cleanEndpoint.startsWith('/api')
+
+            !cleanEndpoint.startsWith(
+                "/api"
+            )
+
         ) {
 
             cleanEndpoint =
                 `/api${cleanEndpoint}`;
+
         }
 
 
@@ -1497,7 +1589,9 @@ const CONFIG = {
 
             /* ---------- HTTP Error ---------- */
 
-            if (!response.ok) {
+            if (
+                !response.ok
+            ) {
 
                 const errText =
                     await response.text();
@@ -1509,23 +1603,30 @@ const CONFIG = {
                 try {
 
                     err =
-                        JSON.parse(errText);
+                        JSON.parse(
+                            errText
+                        );
 
                 } catch {
 
                     err = {
+
                         message:
                             errText ||
-                            'حدث خطأ في النظام'
+                            "حدث خطأ في النظام"
+
                     };
+
                 }
 
 
                 const errorObj =
                     new Error(
+
                         err.title ||
                         err.message ||
                         `خطأ في الخادم (${response.status})`
+
                     );
 
 
@@ -1540,13 +1641,18 @@ const CONFIG = {
 
 
                 throw errorObj;
+
             }
 
 
             /* ---------- Empty Response ---------- */
 
-            if (response.status === 204) {
+            if (
+                response.status === 204
+            ) {
+
                 return null;
+
             }
 
 
@@ -1562,8 +1668,11 @@ const CONFIG = {
             );
 
             throw error;
+
         }
+
     }
+
 };
 
 
@@ -1573,27 +1682,53 @@ const CONFIG = {
 
 function updateLanguageButton() {
 
-    const langLabel =
+    /*
+     * ندعم الزرين:
+     * langToggleBtn
+     * currentLangLabel
+     */
+
+    const langButton =
         document.getElementById(
-            'currentLangLabel'
+            "langToggleBtn"
         );
 
 
-    if (!langLabel) {
-        return;
-    }
+    const langLabel =
+        document.getElementById(
+            "currentLangLabel"
+        );
 
 
     const currentLang =
         CONFIG.LANG ||
         document.documentElement.lang ||
-        'ar';
+        "ar";
 
 
-    langLabel.textContent =
-        currentLang === 'ar'
-            ? 'English'
-            : 'العربية';
+    const buttonText =
+        currentLang === "ar"
+            ? "EN"
+            : "عربي";
+
+
+    if (langButton) {
+
+        langButton.textContent =
+            buttonText;
+
+    }
+
+
+    if (langLabel) {
+
+        langLabel.textContent =
+            currentLang === "ar"
+                ? "English"
+                : "العربية";
+
+    }
+
 }
 
 
@@ -1605,14 +1740,17 @@ function toggleLanguage() {
 
     const currentLang =
         CONFIG.LANG ||
+        localStorage.getItem(
+            "app_lang"
+        ) ||
         document.documentElement.lang ||
-        'ar';
+        "ar";
 
 
     const newLang =
-        currentLang === 'ar'
-            ? 'en'
-            : 'ar';
+        currentLang === "ar"
+            ? "en"
+            : "ar";
 
 
     CONFIG.applyTranslations(
@@ -1621,53 +1759,118 @@ function toggleLanguage() {
 
 
     /*
-     * بعض الصفحات مثل appointments.js
-     * تحتاج إعادة رسم البيانات بعد تغيير اللغة.
-     *
-     * إذا كانت الدالة موجودة نستدعيها،
-     * وإذا لم تكن موجودة لا يحدث أي خطأ.
+     * Refresh dynamic tables after language change.
      */
 
     if (
         typeof renderAppointmentsTable ===
-        'function' &&
+        "function" &&
         typeof cacheAppointments !==
-        'undefined'
+        "undefined"
     ) {
 
-        renderAppointmentsTable(
-            cacheAppointments
-        );
+        try {
+
+            renderAppointmentsTable(
+                cacheAppointments
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to refresh appointments:",
+                error
+            );
+
+        }
+
     }
 
 
     if (
         typeof renderPatientsTable ===
-        'function' &&
-        typeof cachePatients !==
-        'undefined'
+        "function"
     ) {
 
-        renderPatientsTable(
-            cachePatients
-        );
+        try {
+
+            if (
+                typeof allPatientsCache !==
+                "undefined"
+            ) {
+
+                renderPatientsTable(
+                    allPatientsCache
+                );
+
+            } else if (
+                typeof cachePatients !==
+                "undefined"
+            ) {
+
+                renderPatientsTable(
+                    cachePatients
+                );
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to refresh patients:",
+                error
+            );
+
+        }
+
     }
 
 
     if (
         typeof renderRecords ===
-        'function'
+        "function"
     ) {
 
         try {
+
             renderRecords();
+
         } catch (error) {
+
             console.warn(
-                'Unable to refresh medical records after language change:',
+                "Unable to refresh medical records:",
                 error
             );
+
         }
+
     }
+
+
+    /*
+     * Dashboard.
+     */
+
+    if (
+        typeof window.refreshDashboardLanguage ===
+        "function"
+    ) {
+
+        try {
+
+            window.refreshDashboardLanguage();
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to refresh dashboard:",
+                error
+            );
+
+        }
+
+    }
+
 }
 
 
@@ -1677,10 +1880,46 @@ function toggleLanguage() {
 
 function initializeLanguage() {
 
-    const savedLang =
+    /*
+     * app_lang هو المفتاح الرسمي الآن.
+     *
+     * appLang يتم دعمه مرة واحدة للتوافق مع
+     * النسخ القديمة من المشروع.
+     */
+
+    let savedLang =
         localStorage.getItem(
-            'app_lang'
-        ) || 'ar';
+            "app_lang"
+        );
+
+
+    if (
+        savedLang !== "ar" &&
+        savedLang !== "en"
+    ) {
+
+        const oldLang =
+            localStorage.getItem(
+                "appLang"
+            );
+
+
+        if (
+            oldLang === "ar" ||
+            oldLang === "en"
+        ) {
+
+            savedLang =
+                oldLang;
+
+        } else {
+
+            savedLang =
+                "ar";
+
+        }
+
+    }
 
 
     CONFIG.applyTranslations(
@@ -1689,6 +1928,7 @@ function initializeLanguage() {
 
 
     updateLanguageButton();
+
 }
 
 
@@ -1697,7 +1937,7 @@ function initializeLanguage() {
    ========================================================= */
 
 document.addEventListener(
-    'DOMContentLoaded',
+    "DOMContentLoaded",
     () => {
 
         initializeLanguage();
